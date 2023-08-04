@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ProRecords.InputFieldControl"
+             xmlns:local="clr-namespace:ProRecords"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:DataType="local:InputFieldControl" x:Name="this" HorizontalOptions="FillAndExpand">
+    <StackLayout BindingContext="{x:Reference this}" Spacing="6">
+        <Label 
+            Text="{Binding Title,FallbackValue='Field Title'}" FontAttributes="Bold"/>
+        <Border 
+            Padding="5" 
+            HorizontalOptions="FillAndExpand" x:Name="MyBorder" StrokeThickness="2">
+            <StackLayout>
+                <Grid x:Name="EntryStack" ColumnSpacing="10" ColumnDefinitions="Auto,*,Auto" VerticalOptions="FillAndExpand">
+                    <Label Grid.Column="0" HorizontalOptions="Start" IsVisible="{Binding Icon, Converter={toolkit:IsNotNullConverter}}" Style="{StaticResource LabelIcon}" Text="{Binding Icon}"/>
+                    <Entry
+                        Grid.Column="1"
+                        x:Name="MyEntry" VerticalOptions="FillAndExpand"
+                        Keyboard="{Binding KeyboardType}" HorizontalOptions="FillAndExpand"
+                        IsTextPredictionEnabled="False" MaxLength="{Binding MaxLenght}"
+                        IsSpellCheckEnabled="False" ReturnType="Done"
+                        Placeholder="{Binding Placeholder,FallbackValue='Field Placeholder'}" 
+                        Text="{Binding Text}" />
+                    <Label x:Name="VisibilityPassword"
+                        Grid.Column="2" HorizontalOptions="End" Style="{StaticResource LabelIcon}" Text="{DynamicResource IconVisibility}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapVisibilityPassword"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Grid>
+                <DatePicker 
+                    x:Name="MyDatePicker" IsVisible="False" HorizontalOptions="FillAndExpand" Date="{Binding Date}"/>
+            </StackLayout>
+        </Border>
+    </StackLayout>
+</ContentView>
+

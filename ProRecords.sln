@@ -22,4 +22,8 @@ Global
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1BCFFC02-B713-4A50-9F76-D077CC384BA9}
 	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+	EndGlobalSection
 EndGlobal

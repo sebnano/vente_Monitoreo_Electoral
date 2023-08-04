@@ -4,9 +4,10 @@ public partial class MainPage : ContentPage
 {
 	int count = 0;
 
-	public MainPage()
+	public MainPage(MainPageModel vm)
 	{
 		InitializeComponent();
+		BindingContext = vm;
 	}
 
 	private void OnCounterClicked(object sender, EventArgs e)

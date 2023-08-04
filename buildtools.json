@@ -24,6 +24,10 @@
           {
             "name": "GoogleServicesInfoPlist",
             "type": "String"
+          },
+          {
+            "name": "BackendUrl",
+            "type": "String"
           }
         ]
       }

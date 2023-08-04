@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="RegisterPageTitle" xml:space="preserve">
+		<value>Registro</value>
+	</data>
+	<data name="LoginPageTitle" xml:space="preserve">
+		<value>Inicio de sesión</value>
+	</data>
+	<data name="NameFieldTitle" xml:space="preserve">
+		<value>Nombres</value>
+	</data>
+	<data name="NameFieldPlaceholder" xml:space="preserve">
+		<value>Ingrese su nombre</value>
+	</data>
+	<data name="EmailFieldTitle" xml:space="preserve">
+		<value>Correo electrónico</value>
+	</data>
+	<data name="EmailFieldPlaceholder" xml:space="preserve">
+		<value>Ingrese su correo electrónico</value>
+	</data>
+	<data name="PasswordFieldTitle" xml:space="preserve">
+		<value>Contraseña</value>
+	</data>
+	<data name="PasswordFieldPlaceholder" xml:space="preserve">
+		<value>Ingrese su contraseña</value>
+	</data>
+	<data name="ConfirmPasswordFieldTitle" xml:space="preserve">
+		<value>Confirmación de contraseña</value>
+	</data>
+	<data name="ConfirmPasswordFieldPlaceholder" xml:space="preserve">
+		<value>Confirme su contraseña</value>
+	</data>
+	<data name="RegisterBtn" xml:space="preserve">
+		<value>Registrarse</value>
+	</data>
+	<data name="LoginIndication" xml:space="preserve">
+		<value>¿Ya tienes cuenta? Inicia sesión </value>
+	</data>
+	<data name="RegisterIndication" xml:space="preserve">
+		<value>¿No tienes cuenta? Regístrate </value>
+	</data>
+	<data name="HereLabel" xml:space="preserve">
+		<value>aquí</value>
+	</data>
+	<data name="LoginPageTitle" xml:space="preserve">
+		<value>Inicio de sesión</value>
+	</data>
+	<data name="LoginBtn" xml:space="preserve">
+		<value>Ingresar</value>
+	</data>
+</root>
+

@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="RegisterPageTitle" xml:space="preserve">
+		<value>Register</value>
+	</data>
+	<data name="LoginPageTitle" xml:space="preserve">
+		<value>Login</value>
+	</data>
+	<data name="NameFieldTitle" xml:space="preserve">
+		<value>Names</value>
+	</data>
+	<data name="NameFieldPlaceholder" xml:space="preserve">
+		<value>Input your name</value>
+	</data>
+	<data name="EmailFieldTitle" xml:space="preserve">
+		<value>Email</value>
+	</data>
+	<data name="EmailFieldPlaceholder" xml:space="preserve">
+		<value>Input your email</value>
+	</data>
+	<data name="PasswordFieldTitle" xml:space="preserve">
+		<value>Password</value>
+	</data>
+	<data name="PasswordFieldPlaceholder" xml:space="preserve">
+		<value>Input your password</value>
+	</data>
+	<data name="ConfirmPasswordFieldTitle" xml:space="preserve">
+		<value>Password confirm</value>
+	</data>
+	<data name="ConfirmPasswordFieldPlaceholder" xml:space="preserve">
+		<value>Confirm your password</value>
+	</data>
+	<data name="RegisterBtn" xml:space="preserve">
+		<value>Register</value>
+	</data>
+	<data name="LoginIndication" xml:space="preserve">
+		<value>Already have an account? Log in </value>
+	</data>
+	<data name="HereLabel" xml:space="preserve">
+		<value>here</value>
+	</data>
+</root>
+
