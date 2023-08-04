@@ -403,3 +403,15 @@ ASALocalRun/
 
 # Local History for Visual Studio
 .localhistory/
+
+# Firebase
+google-services.json
+GoogleService-Info.plist
+
+# Signing keys
+*.keystore
+*.keyInfo
+
+# Mobile.BuildTools
+appsettings.json
+appsettings.*.json
