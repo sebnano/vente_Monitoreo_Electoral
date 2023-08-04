@@ -1,0 +1,11 @@
+﻿ProRecords App
+
+- Caracteristicas
+
+Inicio de sesion ❌
+Registro ❌
+Busqueda ❌
+Escaner ❌
+Coleccion ❌
+
+- Correcciones

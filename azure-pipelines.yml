@@ -1,0 +1,99 @@
+trigger:
+  branches:
+    include:
+    - develop
+
+variables:
+    AppFullVersionNumber: 0.1.$(Build.BuildNumber)
+    AppBuildNumber: $(Build.BuildNumber)
+    BuildConfiguration: Release
+    DotNetVersion: 7.0.306
+    VSVERSION: 17/pre
+
+name: $(Date:yyMMdd)$(Rev:r)
+
+
+stages:
+- stage: BuildAndroid
+  jobs:
+  - job: BuildMAUIApps
+    displayName: Build ProRecords App
+    pool:
+      vmImage: 'windows-2022'
+      demands:
+      - MSBuild
+      
+    steps:
+    - task: DownloadSecureFile@1
+      name: keystore
+      displayName: 'Download Keystore'
+      inputs:
+        secureFile: 'prorecords.keystore'
+
+    - task: DownloadSecureFile@1
+      name: firebaseId
+      displayName: 'Download GoogleServicesJson'
+      inputs:
+        secureFile: $(GoogleServicesJsonFileName)
+        
+    - task: CopyFiles@2
+      displayName: 'Copy GoogleServicesJsonFileName'
+      inputs:
+        SourceFolder: $(Agent.TempDirectory)
+        Contents: |
+            $(firebaseId.secureFilePath)
+            $(GoogleServicesJsonFileName)
+        TargetFolder: "$(Build.SourcesDirectory)/"
+
+
+    - task: Bash@3
+      displayName: Rename and list files
+      inputs:
+        targetType: 'inline'
+        script: |
+          mv "$(Build.SourcesDirectory)\GrowingFamily\$(GoogleServicesJsonFileName)" "$(Build.SourcesDirectory)\google-services.json"
+          echo "=============================================="
+          ls "$(Build.SourcesDirectory)"
+          echo "=============================================="
+
+    - task: UseDotNet@2
+      displayName: .NET Version
+      inputs:
+        packageType: 'sdk'
+        version: '$(DotNetVersion)'
+    
+    - task: Bash@3
+      displayName: Install MAUI
+      inputs:
+        targetType: 'inline'
+        script: |
+          dotnet workload install maui
+
+    - task: Bash@3
+      displayName: Restore nuget
+      inputs:
+        targetType: 'inline'
+        script: |
+          dotnet restore ProRecords.sln
+    
+    - task: Bash@3
+      displayName: Build Android App
+      inputs:
+        targetType: 'inline'
+        script: |
+          dotnet publish "ProRecords.csproj" -f:net7.0-android -c:$(BuildConfiguration) \
+          //p:ApplicationTitle="$(AppDisplayName)" //p:ApplicationId="$(AppId)" \
+          //p:AndroidSigningKeyStore="$(keystore.secureFilePath)" //p:AndroidSigningKeyPass="$(keystore_pass)" //p:AndroidSigningStorePass="$(keystore_pass)" //p:AndroidSigningKeyAlias="$(keystore_alias)" \
+          //p:ApplicationDisplayVersion="$(AppFullVersionNumber)" //p:ApplicationVersion="$(AppBuildNumber)"
+
+    - task: CopyFiles@2
+      inputs:
+        Contents: |
+          bin\Release\net7.0-android\publish\*.apk
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/bin\Release\net7.0-android\publish\*.apk'
+        ArtifactName: 'drop_android'
+        publishLocation: 'Container'
