@@ -2,8 +2,9 @@
 
 public partial class ScannerPage : ContentPage
 {
-	public ScannerPage()
+	public ScannerPage(ScannerPageModel vm)
 	{
 		InitializeComponent();
-	}
+        BindingContext = vm;
+    }
 }

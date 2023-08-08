@@ -2,7 +2,17 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ProRecords.SearchPage"
-             Title="SearchPage">
+             x:DataType="local:SearchPageModel"
+             xmlns:local="clr-namespace:ProRecords"
+             xmlns:res="clr-namespace:ProRecords.Resources.Lang">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding LogoutCommand}" Text="{x:Static res:AppRes.LogoutText}">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource FontFamily="AppIcons" Color="White" Glyph="&#xf106;" Size="20"/>
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+
+    </ContentPage.ToolbarItems>
     <ScrollView>
         <VerticalStackLayout
             Spacing="25"

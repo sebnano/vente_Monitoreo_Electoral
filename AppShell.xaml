@@ -4,18 +4,35 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:ProRecords"
-    Shell.FlyoutBehavior="Disabled">
-
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
-
+    Shell.FlyoutBehavior="Disabled"
+    xmlns:res="clr-namespace:ProRecords.Resources.Lang">
     <TabBar>
-        <Tab Icon="{StaticResource IconTextSearchVariant}" Title="Búsqueda" Route="SearchPageModel"></Tab>
-        <Tab Icon="{StaticResource IconLineScan}" Title="Escáner" Route="ScannerPageModel"></Tab>
-        <Tab Icon="{StaticResource IconLibrary}" Title="Colección" Route="CollectionPageModel"></Tab>
-    </TabBar>
+        <ShellContent
+            Title="{x:Static res:AppRes.SearchPageTitle}"
+            ContentTemplate="{DataTemplate local:SearchPage}"
+            Route="SearchPageModel">
+            <ShellContent.Icon>
+                <FontImageSource Color="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" FontFamily="AppIcons" Glyph="&#xf107;"/>
+            </ShellContent.Icon>
+        </ShellContent>
 
+        <ShellContent
+            Title="{x:Static res:AppRes.ScannerPageTitle}"
+            ContentTemplate="{DataTemplate local:ScannerPage}"
+            Route="ScannerPageModel">
+            <ShellContent.Icon>
+                <FontImageSource Color="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" FontFamily="AppIcons" Glyph="&#xf104;"/>
+            </ShellContent.Icon>
+        </ShellContent>
+    
+        <ShellContent
+            Title="{x:Static res:AppRes.CollectionPageTitle}"
+            ContentTemplate="{DataTemplate local:CollectionPage}"
+            Route="CollectionPageModel">
+            <ShellContent.Icon>
+                <FontImageSource Color="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" FontFamily="AppIcons" Glyph="&#xf103;"/>
+            </ShellContent.Icon>
+        </ShellContent>
+    </TabBar>
 </Shell>
 

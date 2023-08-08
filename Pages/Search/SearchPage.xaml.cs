@@ -2,8 +2,9 @@
 
 public partial class SearchPage : ContentPage
 {
-	public SearchPage()
+	public SearchPage(SearchPageModel vm)
 	{
 		InitializeComponent();
+		BindingContext = vm;
 	}
 }

@@ -148,6 +148,15 @@ namespace ProRecords.Resources.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Colección.
+        /// </summary>
+        internal static string CollectionPageTitle {
+            get {
+                return ResourceManager.GetString("CollectionPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirme su contraseña.
         /// </summary>
         internal static string ConfirmPasswordFieldPlaceholder {
@@ -193,15 +202,6 @@ namespace ProRecords.Resources.Lang {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Inicio.
-        /// </summary>
-        internal static string HomeTitle {
-            get {
-                return ResourceManager.GetString("HomeTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Ingresar.
         /// </summary>
         internal static string LoginBtn {
@@ -225,6 +225,15 @@ namespace ProRecords.Resources.Lang {
         internal static string LoginPageTitle {
             get {
                 return ResourceManager.GetString("LoginPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Salir.
+        /// </summary>
+        internal static string LogoutText {
+            get {
+                return ResourceManager.GetString("LogoutText", resourceCulture);
             }
         }
         
@@ -288,6 +297,24 @@ namespace ProRecords.Resources.Lang {
         internal static string RegisterPageTitle {
             get {
                 return ResourceManager.GetString("RegisterPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Escáner.
+        /// </summary>
+        internal static string ScannerPageTitle {
+            get {
+                return ResourceManager.GetString("ScannerPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Búsqueda.
+        /// </summary>
+        internal static string SearchPageTitle {
+            get {
+                return ResourceManager.GetString("SearchPageTitle", resourceCulture);
             }
         }
         

@@ -93,8 +93,17 @@
 	<data name="AlertPasswordsNotMatch" xml:space="preserve">
 		<value>Las contraseñas no coinciden.</value>
 	</data>
-	<data name="HomeTitle" xml:space="preserve">
-		<value>Inicio</value>
+	<data name="SearchPageTitle" xml:space="preserve">
+		<value>Búsqueda</value>
+	</data>
+	<data name="ScannerPageTitle" xml:space="preserve">
+		<value>Escáner</value>
+	</data>
+	<data name="CollectionPageTitle" xml:space="preserve">
+		<value>Colección</value>
+	</data>
+	<data name="LogoutText" xml:space="preserve">
+		<value>Salir</value>
 	</data>
 </root>
 

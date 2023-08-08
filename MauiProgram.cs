@@ -47,7 +47,6 @@ public static class MauiProgram
 
     private static MauiAppBuilder RegisterPageModels(this MauiAppBuilder builder)
     {
-        builder.Services.AddTransient<MainPageModel>();
         builder.Services.AddTransient<LoginPageModel>();
         builder.Services.AddTransient<RegisterPageModel>();
         builder.Services.AddTransient<SearchPageModel>();
@@ -58,7 +57,6 @@ public static class MauiProgram
 
     private static MauiAppBuilder RegisterPages(this MauiAppBuilder builder)
     {
-        builder.Services.AddTransient<MainPage>();
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<RegisterPage>();
         builder.Services.AddTransient<SearchPage>();

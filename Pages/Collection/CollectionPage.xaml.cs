@@ -2,8 +2,9 @@
 
 public partial class CollectionPage : ContentPage
 {
-	public CollectionPage()
+	public CollectionPage(CollectionPageModel vm)
 	{
 		InitializeComponent();
-	}
+        BindingContext = vm;
+    }
 }
