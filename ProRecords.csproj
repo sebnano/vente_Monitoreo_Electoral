@@ -88,8 +88,26 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <None Remove="Handlers\" />
+	  <None Remove="Models\Api\" />
+	  <None Remove="Models\Api\Responses\" />
+	  <None Remove="Models\Api\Requests\" />
+	  <None Remove="Pages\Search\" />
+	  <None Remove="Pages\Scanner\" />
+	  <None Remove="Pages\Collection\" />
+	  <None Remove="PageModels\Search\" />
+	  <None Remove="PageModels\Scanner\" />
+	  <None Remove="PageModels\Collection\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Handlers\" />
+	  <Folder Include="Models\Api\" />
+	  <Folder Include="Models\Api\Responses\" />
+	  <Folder Include="Models\Api\Requests\" />
+	  <Folder Include="Pages\Search\" />
+	  <Folder Include="Pages\Scanner\" />
+	  <Folder Include="Pages\Collection\" />
+	  <Folder Include="PageModels\Search\" />
+	  <Folder Include="PageModels\Scanner\" />
+	  <Folder Include="PageModels\Collection\" />
 	</ItemGroup>
 </Project>

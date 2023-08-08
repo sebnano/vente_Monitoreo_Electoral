@@ -14,7 +14,9 @@ namespace ProRecords
             handler.PlatformView.BackgroundColor = UIKit.UIColor.Clear;
             handler.PlatformView.Layer.BorderWidth = 0;
             handler.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
-            handler.PlatformView.FocusEffect = null;
+#if IOS15_0_OR_GREATER || MACCATALYST15_0_OR_GREATER
+                handler.PlatformView.FocusEffect = null;
+#endif
 #endif
             });
 
@@ -27,6 +29,9 @@ namespace ProRecords
             handler.PlatformView.BackgroundColor = UIKit.UIColor.Clear;
             handler.PlatformView.Layer.BorderWidth = 0;
             handler.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
+#if IOS15_0_OR_GREATER || MACCATALYST15_0_OR_GREATER
+                handler.PlatformView.FocusEffect = null;
+#endif
 #endif
             });
         }

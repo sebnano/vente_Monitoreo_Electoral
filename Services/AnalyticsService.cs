@@ -4,14 +4,14 @@ namespace ProRecords
 {
     public class LoggerAnalytics : IFirebaseAnalytics
     {
-        public void LogEvent(string eventName, IDictionary<string, object> parameters)
+        public void LogEvent(string eventName, IDictionary<string, object>? parameters)
         {
             
         }
     }
     public interface IFirebaseAnalytics
     {
-        void LogEvent(string eventName, IDictionary<string, object> parameters);
+        void LogEvent(string eventName, IDictionary<string, object>? parameters);
     }
 
     public class AnalyticsService
@@ -22,7 +22,7 @@ namespace ProRecords
         {
             _analyticsProvider = firebaseAnalytics;
         }
-        public void Track(string eventId, IDictionary<string, object> parameters = null,
+        public void Track(string eventId, IDictionary<string, object>? parameters = null,
                                 [CallerMemberName] string callerMemberName = "",
                                 [CallerLineNumber] int lineNumber = 0,
                                 [CallerFilePath] string filePath = "")
@@ -78,7 +78,7 @@ namespace ProRecords
         }
 
         [Conditional("DEBUG")]
-        void PrintException(Exception exception, string callerMemberName, int lineNumber, string filePath, IDictionary<string, object> properties = null)
+        void PrintException(Exception exception, string callerMemberName, int lineNumber, string filePath, IDictionary<string, object>? properties = null)
         {
             var fileName = System.IO.Path.GetFileName(filePath);
 
@@ -99,7 +99,7 @@ namespace ProRecords
 
         [Conditional("DEBUG")]
         void PrintEvent(string eventId,
-                                IDictionary<string, object> parameters = null,
+                                IDictionary<string, object>? parameters = null,
                                 string callerMemberName = "",
                                 int lineNumber = 0,
                                 string filePath = "")

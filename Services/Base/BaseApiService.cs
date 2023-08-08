@@ -9,16 +9,7 @@ namespace ProRecords
     {
         static HttpClient CreateHttpClient(in HttpMessageHandler httpMessageHandler)
         {
-            HttpClient client;
-            if (DeviceInfo.Platform == DevicePlatform.iOS || DeviceInfo.Platform == DevicePlatform.Android)
-            {
-                client = new HttpClient(httpMessageHandler);
-            }
-            else
-            {
-                client = new HttpClient(new HttpClientHandler { AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate });
-            }
-
+            HttpClient client = new HttpClient(httpMessageHandler);
             client.BaseAddress = new Uri(Helpers.AppSettings.BackendUrl);
             client.Timeout = TimeSpan.FromSeconds(9999);
             return client;
@@ -42,6 +33,15 @@ namespace ProRecords
             }
         }
 
+        static HttpClient DevLogging
+        {
+            get
+            {
+                return new Lazy<HttpClient>(() => CreateHttpClient(
+              new RateLimitedHttpMessageHandler(new HttpLoggingHandler(), Priority.UserInitiated))).Value;
+            }
+        }
+
         static HttpClient Speculative
         {
             get
@@ -62,7 +62,7 @@ namespace ProRecords
                 case Priority.Speculative:
                     return Speculative;
                 default:
-                    return UserInitiated;
+                    return DevLogging;
             }
         }
 
@@ -89,29 +89,21 @@ namespace ProRecords
             .WaitAndRetryAsync(numRetries, retryAttempt, onRetryInner)
             .ExecuteAsync<T>(token => action(), cancellationToken);
             static TimeSpan retryAttempt(int attemptNumber) => TimeSpan.FromSeconds(Math.Pow(2, attemptNumber));
-
-            static bool shouldHandleException(Exception exception)
-            {
-                if (exception is ApiException apiException)
-                {
-                    return !is404Or401or403(apiException);
-                }
-
-                return true;
-
-                static bool is404Or401or403(ApiException apiException) => apiException.StatusCode is System.Net.HttpStatusCode.Forbidden || apiException.StatusCode is System.Net.HttpStatusCode.Unauthorized || apiException.StatusCode is System.Net.HttpStatusCode.NotFound;
-            }
         }
 
-        public static bool ExceptionContainsErrorCode(Exception e, params int[] errorCode)
+        public static bool shouldHandleException(Exception exception)
         {
-            if (e is Win32Exception wex)
-                return errorCode.Contains(wex.ErrorCode);
+            if (exception is ApiException apiException)
+            {
+                return !is400or404Or401or403(apiException);
+            }
 
-            if (e.InnerException != null)
-                return ExceptionContainsErrorCode(e.InnerException, errorCode);
+            return true;
 
-            return false;
+            static bool is400or404Or401or403(ApiException apiException) => apiException.StatusCode is System.Net.HttpStatusCode.BadRequest
+                || apiException.StatusCode is System.Net.HttpStatusCode.Forbidden
+                || apiException.StatusCode is System.Net.HttpStatusCode.Unauthorized
+                || apiException.StatusCode is System.Net.HttpStatusCode.NotFound;
         }
     }
 }

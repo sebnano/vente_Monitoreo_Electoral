@@ -58,6 +58,96 @@ namespace ProRecords.Resources.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Aceptar.
+        /// </summary>
+        internal static string AlertAccept {
+            get {
+                return ResourceManager.GetString("AlertAccept", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancelar.
+        /// </summary>
+        internal static string AlertCancel {
+            get {
+                return ResourceManager.GetString("AlertCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debe ingresar la confirmación de contraseña..
+        /// </summary>
+        internal static string AlertConfirmPassEmpty {
+            get {
+                return ResourceManager.GetString("AlertConfirmPassEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debe ingresar el correo electrónico..
+        /// </summary>
+        internal static string AlertEmailEmpty {
+            get {
+                return ResourceManager.GetString("AlertEmailEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ocurrió un error inesperado..
+        /// </summary>
+        internal static string AlertErrorGeneral {
+            get {
+                return ResourceManager.GetString("AlertErrorGeneral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El campo nombres no puede estar vacío..
+        /// </summary>
+        internal static string AlertNamesEmpty {
+            get {
+                return ResourceManager.GetString("AlertNamesEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debe ingresar la contraseña..
+        /// </summary>
+        internal static string AlertPasswordEmpty {
+            get {
+                return ResourceManager.GetString("AlertPasswordEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Las contraseñas no coinciden..
+        /// </summary>
+        internal static string AlertPasswordsNotMatch {
+            get {
+                return ResourceManager.GetString("AlertPasswordsNotMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mensaje.
+        /// </summary>
+        internal static string AlertTitle {
+            get {
+                return ResourceManager.GetString("AlertTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El campo nombre de usuario no puede estar vacío..
+        /// </summary>
+        internal static string AlertUsernamesEmpty {
+            get {
+                return ResourceManager.GetString("AlertUsernamesEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirme su contraseña.
         /// </summary>
         internal static string ConfirmPasswordFieldPlaceholder {
@@ -99,6 +189,15 @@ namespace ProRecords.Resources.Lang {
         internal static string HereLabel {
             get {
                 return ResourceManager.GetString("HereLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inicio.
+        /// </summary>
+        internal static string HomeTitle {
+            get {
+                return ResourceManager.GetString("HomeTitle", resourceCulture);
             }
         }
         
@@ -189,6 +288,24 @@ namespace ProRecords.Resources.Lang {
         internal static string RegisterPageTitle {
             get {
                 return ResourceManager.GetString("RegisterPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ingrese su nombre de usuario.
+        /// </summary>
+        internal static string UsernameFieldPlaceholder {
+            get {
+                return ResourceManager.GetString("UsernameFieldPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nombre de usuario.
+        /// </summary>
+        internal static string UsernameFieldTitle {
+            get {
+                return ResourceManager.GetString("UsernameFieldTitle", resourceCulture);
             }
         }
     }

@@ -27,6 +27,12 @@
 	<data name="EmailFieldTitle" xml:space="preserve">
 		<value>Email</value>
 	</data>
+	<data name="UsernameFieldTitle" xml:space="preserve">
+		<value>Username</value>
+	</data>
+	<data name="UsernameFieldPlaceholder" xml:space="preserve">
+		<value>Input your username</value>
+	</data>
 	<data name="EmailFieldPlaceholder" xml:space="preserve">
 		<value>Input your email</value>
 	</data>
@@ -50,6 +56,39 @@
 	</data>
 	<data name="HereLabel" xml:space="preserve">
 		<value>here</value>
+	</data>
+	<data name="AlertTitle" xml:space="preserve">
+		<value>Message</value>
+	</data>
+	<data name="AlertCancel" xml:space="preserve">
+		<value>Cancel</value>
+	</data>
+	<data name="AlertAccept" xml:space="preserve">
+		<value>Accept</value>
+	</data>
+	<data name="AlertErrorGeneral" xml:space="preserve">
+		<value>An unexpected error occurred</value>
+	</data>
+	<data name="AlertEmailEmpty" xml:space="preserve">
+		<value>Email is empty.</value>
+	</data>
+	<data name="AlertPasswordEmpty" xml:space="preserve">
+		<value>Password is empty.</value>
+	</data>
+	<data name="AlertNamesEmpty" xml:space="preserve">
+		<value>Names is empty.</value>
+	</data>
+	<data name="AlertUsernamesEmpty" xml:space="preserve">
+		<value>Username is empty.</value>
+	</data>
+	<data name="AlertConfirmPassEmpty" xml:space="preserve">
+		<value>Password confirm is empty.</value>
+	</data>
+	<data name="AlertPasswordsNotMatch" xml:space="preserve">
+		<value>The passwords not match.</value>
+	</data>
+	<data name="HomeTitle" xml:space="preserve">
+		<value>Home</value>
 	</data>
 </root>
 

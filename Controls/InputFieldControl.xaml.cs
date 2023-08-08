@@ -9,7 +9,8 @@ public enum FieldType
     Name,
     DateTime,
     Email,
-    Password
+    Password,
+    Username
 }
 
 public partial class InputFieldControl : ContentView
@@ -32,12 +33,9 @@ public partial class InputFieldControl : ContentView
                 switch (type)
                 {
                     case FieldType.Text:
-                        control.EntryStack.IsVisible = true;
-                        control.MyDatePicker.IsVisible = false;
-                        control.VisibilityPassword.IsVisible = false;
-                        control.MyEntry.IsPassword = false;
-                        break;
                     case FieldType.Name:
+                    case FieldType.Username:
+                    case FieldType.Email:
                         control.EntryStack.IsVisible = true;
                         control.MyDatePicker.IsVisible = false;
                         control.VisibilityPassword.IsVisible = false;
@@ -46,12 +44,6 @@ public partial class InputFieldControl : ContentView
                     case FieldType.DateTime:
                         control.EntryStack.IsVisible = false;
                         control.MyDatePicker.IsVisible = true;
-                        control.VisibilityPassword.IsVisible = false;
-                        control.MyEntry.IsPassword = false;
-                        break;
-                    case FieldType.Email:
-                        control.EntryStack.IsVisible = true;
-                        control.MyDatePicker.IsVisible = false;
                         control.VisibilityPassword.IsVisible = false;
                         control.MyEntry.IsPassword = false;
                         break;
@@ -126,7 +118,7 @@ public partial class InputFieldControl : ContentView
         PropertyChanged += InputFieldControl_PropertyChanged;
     }
 
-    private void InputFieldControl_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    private void InputFieldControl_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (sender is InputFieldControl entryField && e.PropertyName == ContentView.IsEnabledProperty.PropertyName)
         {
@@ -137,7 +129,7 @@ public partial class InputFieldControl : ContentView
         }
     }
     int MyCursorPosition = 0;
-    private void MyEntry_TextChanged(object sender, TextChangedEventArgs e)
+    private void MyEntry_TextChanged(object? sender, TextChangedEventArgs e)
     {
         if (string.IsNullOrWhiteSpace(e.NewTextValue))
         {
@@ -164,7 +156,7 @@ public partial class InputFieldControl : ContentView
         }
     }
 
-    async void MyEntry_Completed(object sender, EventArgs e)
+    async void MyEntry_Completed(object? sender, EventArgs e)
     {
         MyEntry.Text = GetNameValidate(MyEntry.Text);
         MyEntry.IsEnabled = false;

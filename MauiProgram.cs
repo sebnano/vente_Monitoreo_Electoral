@@ -39,7 +39,7 @@ public static class MauiProgram
         //builder.Services.AddSingleton(CrossFirebaseAnalytics.Current);
 
         //Refit services
-        IAuthApi authApi = RefitExtensions.For<IAuthApi>(BaseApiService.GetApi(Fusillade.Priority.UserInitiated));
+        IAuthApi authApi = RefitExtensions.For<IAuthApi>(BaseApiService.GetApi(Fusillade.Priority.Explicit));
         builder.Services.AddSingleton(authApi);
 
         return builder;
@@ -50,6 +50,9 @@ public static class MauiProgram
         builder.Services.AddTransient<MainPageModel>();
         builder.Services.AddTransient<LoginPageModel>();
         builder.Services.AddTransient<RegisterPageModel>();
+        builder.Services.AddTransient<SearchPageModel>();
+        builder.Services.AddTransient<ScannerPageModel>();
+        builder.Services.AddTransient<CollectionPageModel>();
         return builder;
     }
 
@@ -58,6 +61,9 @@ public static class MauiProgram
         builder.Services.AddTransient<MainPage>();
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<RegisterPage>();
+        builder.Services.AddTransient<SearchPage>();
+        builder.Services.AddTransient<ScannerPage>();
+        builder.Services.AddTransient<CollectionPage>();
         return builder;
     }
 
@@ -65,6 +71,9 @@ public static class MauiProgram
     {
         Routing.RegisterRoute(nameof(LoginPageModel), typeof(LoginPage));
         Routing.RegisterRoute(nameof(RegisterPageModel), typeof(RegisterPage));
+        Routing.RegisterRoute(nameof(SearchPageModel), typeof(SearchPage));
+        Routing.RegisterRoute(nameof(ScannerPageModel), typeof(ScannerPage));
+        Routing.RegisterRoute(nameof(CollectionPageModel), typeof(CollectionPage));
         return builder;
     }
 }

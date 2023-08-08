@@ -11,5 +11,11 @@
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 
+    <TabBar>
+        <Tab Icon="{StaticResource IconTextSearchVariant}" Title="Búsqueda" Route="SearchPageModel"></Tab>
+        <Tab Icon="{StaticResource IconLineScan}" Title="Escáner" Route="ScannerPageModel"></Tab>
+        <Tab Icon="{StaticResource IconLibrary}" Title="Colección" Route="CollectionPageModel"></Tab>
+    </TabBar>
+
 </Shell>
 
