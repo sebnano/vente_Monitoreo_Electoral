@@ -42,7 +42,8 @@
   "automaticVersioning": {
     "behavior": "PreferBuildNumber",
     "environment": "All",
-    "versionOffset": 0
+    "versionOffset": 0,
+    "disable": true
   },
   "css": {
     "minify": false,

@@ -23,8 +23,6 @@ stages:
       - MSBuild
       
     steps:
-    - script: echo '$(Build.BuildNumber)' ## output run number
-    - script: echo '$(AppFullVersionNumber)'
     - task: DownloadSecureFile@1
       name: keystore
       displayName: 'Download Keystore'
