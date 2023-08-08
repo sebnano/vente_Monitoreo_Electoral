@@ -4,6 +4,7 @@
              x:Class="ProRecords.LoginPage"
              Title="{x:Static res:AppRes.LoginPageTitle}"
              Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
              x:DataType="local:LoginPageModel"
              xmlns:local="clr-namespace:ProRecords"
              xmlns:res="clr-namespace:ProRecords.Resources.Lang">

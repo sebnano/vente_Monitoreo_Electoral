@@ -5,6 +5,7 @@
              x:DataType="local:RegisterPageModel"
              Title="{x:Static res:AppRes.RegisterPageTitle}"
              Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
              xmlns:local="clr-namespace:ProRecords"
              xmlns:res="clr-namespace:ProRecords.Resources.Lang">
     <StackLayout VerticalOptions="CenterAndExpand" Spacing="20">
