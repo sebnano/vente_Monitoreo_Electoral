@@ -93,6 +93,6 @@ stages:
 
     - task: PublishBuildArtifacts@1
       inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)/bin\Release\net7.0-android\publish\*.apk'
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)\bin\Release\net7.0-android\publish\com.nsystech.prorecords.staging-Signed.apk'
         ArtifactName: 'drop_android'
         publishLocation: 'Container'
