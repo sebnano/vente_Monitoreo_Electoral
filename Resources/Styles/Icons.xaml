@@ -11,4 +11,6 @@
     <x:String x:Key="IconLockOutline">&#xf105;</x:String>
     <x:String x:Key="IconLogout">&#xf106;</x:String>
     <x:String x:Key="IconTextSearchVariant">&#xf107;</x:String>
+    <x:String x:Key="IconEyeOff">&#xf108;</x:String>
+    <x:String x:Key="IconEye">&#xf109;</x:String>
 </ResourceDictionary>

@@ -168,12 +168,12 @@ public partial class InputFieldControl : ContentView
     {
         if (MyEntry.IsPassword)
         {
-            VisibilityPassword.SetDynamicResource(Label.TextProperty, "IconVisibilityoff");
+            VisibilityPassword.SetDynamicResource(Label.TextProperty, "IconEyeOff");
             MyEntry.IsPassword = false;
         }
         else
         {
-            VisibilityPassword.SetDynamicResource(Label.TextProperty, "IconVisibility");
+            VisibilityPassword.SetDynamicResource(Label.TextProperty, "IconEye");
             MyEntry.IsPassword = true;
         }
     }

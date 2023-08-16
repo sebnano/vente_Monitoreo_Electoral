@@ -8,18 +8,20 @@
              x:DataType="local:LoginPageModel"
              xmlns:local="clr-namespace:ProRecords"
              xmlns:res="clr-namespace:ProRecords.Resources.Lang">
-    <StackLayout VerticalOptions="CenterAndExpand" Spacing="20">
-        <Image Source="dotnet_bot"/>
-        <Label FontSize="Title" Text="{x:Static res:AppRes.LoginPageTitle}"/>
-        <local:InputFieldControl Icon="{StaticResource IconAccount}" MaxLenght="40" Text="{Binding Username}" FieldType="Username" Title="{x:Static res:AppRes.UsernameFieldTitle}" Placeholder="{x:Static res:AppRes.UsernameFieldPlaceholder}"></local:InputFieldControl>
-        <local:InputFieldControl Icon="{StaticResource IconLockOutline}" MaxLenght="32" Text="{Binding Password}" FieldType="Password" Title="{x:Static res:AppRes.PasswordFieldTitle}" Placeholder="{x:Static res:AppRes.PasswordFieldPlaceholder}"></local:InputFieldControl>
-        <Button Text="{x:Static res:AppRes.LoginBtn}" Command="{Binding LoginCommand}" />
-        <StackLayout Orientation="Horizontal">
-            <Label Text="{x:Static res:AppRes.RegisterIndication}"/>
-            <Button Clicked="ClickGestureRecognizer_Clicked" Text="{x:Static res:AppRes.HereLabel}"
+    <ScrollView>
+        <StackLayout VerticalOptions="CenterAndExpand" Spacing="20">
+            <Image Source="dotnet_bot" HeightRequest="140" Aspect="AspectFit"/>
+            <Label FontSize="Title" Text="{x:Static res:AppRes.LoginPageTitle}"/>
+            <local:InputFieldControl Icon="{StaticResource IconAccount}" MaxLenght="40" Text="{Binding Username}" FieldType="Username" Title="{x:Static res:AppRes.UsernameFieldTitle}" Placeholder="{x:Static res:AppRes.UsernameFieldPlaceholder}"></local:InputFieldControl>
+            <local:InputFieldControl Icon="{StaticResource IconLockOutline}" MaxLenght="32" Text="{Binding Password}" FieldType="Password" Title="{x:Static res:AppRes.PasswordFieldTitle}" Placeholder="{x:Static res:AppRes.PasswordFieldPlaceholder}"></local:InputFieldControl>
+            <Button Text="{x:Static res:AppRes.LoginBtn}" Command="{Binding LoginCommand}" />
+            <StackLayout Orientation="Horizontal">
+                <Label Text="{x:Static res:AppRes.RegisterIndication}"/>
+                <Button Clicked="ClickGestureRecognizer_Clicked" Text="{x:Static res:AppRes.HereLabel}"
                     BackgroundColor="Transparent"
                     Padding="0" Margin="0" VerticalOptions="Start" CornerRadius="0"
                     MinimumHeightRequest="-1" MinimumWidthRequest="-1" FontAttributes="Bold" TextColor="{DynamicResource Primary}"/>
+            </StackLayout>
         </StackLayout>
-    </StackLayout>
+    </ScrollView>
 </ContentPage>

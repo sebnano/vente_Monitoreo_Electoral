@@ -19,11 +19,11 @@
                         x:Name="MyEntry" VerticalOptions="FillAndExpand"
                         Keyboard="{Binding KeyboardType}" HorizontalOptions="FillAndExpand"
                         IsTextPredictionEnabled="False" MaxLength="{Binding MaxLenght}"
-                        IsSpellCheckEnabled="False" ReturnType="Done"
+                        IsSpellCheckEnabled="False" ReturnType="Next"
                         Placeholder="{Binding Placeholder,FallbackValue='Field Placeholder'}" 
                         Text="{Binding Text}" />
                     <Label x:Name="VisibilityPassword"
-                        Grid.Column="2" HorizontalOptions="End" Style="{StaticResource LabelIcon}" Text="{DynamicResource IconVisibility}">
+                        Grid.Column="2" HorizontalOptions="End" Style="{StaticResource LabelIcon}" Text="{DynamicResource IconEye}">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Tapped="TapVisibilityPassword"/>
                         </Label.GestureRecognizers>
