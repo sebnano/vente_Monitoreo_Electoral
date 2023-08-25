@@ -36,7 +36,20 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
-
+	<PropertyGroup Condition="$(TargetFramework.Contains('-android')) and '$(Configuration)' == 'Release'">
+		<AndroidKeyStore>True</AndroidKeyStore>
+		<EnableLLVM>False</EnableLLVM>
+		<RunAOTCompilation>True</RunAOTCompilation>
+		<PublishTrimmed>True</PublishTrimmed>
+		<AndroidPackageFormat>aab;apk</AndroidPackageFormat>
+		<DebugSymbols>True</DebugSymbols>
+	</PropertyGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-ios'">
+		<BundleResource Include="GoogleService-Info.plist"></BundleResource>
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-android'">
+		<GoogleServicesJson Include="google-services.json"></GoogleServicesJson>
+	</ItemGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
 	  <CreatePackage>false</CreatePackage>
 	  <CodesignKey>iPhone Developer</CodesignKey>
@@ -92,11 +105,5 @@
 	  <Compile Update="Resources\Lang\AppRes.en.Designer.cs">
 	    <DependentUpon>AppRes.en.resx</DependentUpon>
 	  </Compile>
-	</ItemGroup>
-	<ItemGroup>
-	  <None Remove="google-services.json" />
-	</ItemGroup>
-	<ItemGroup>
-	  <BundleResource Include="google-services.json" />
 	</ItemGroup>
 </Project>

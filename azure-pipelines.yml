@@ -100,10 +100,12 @@ stages:
       inputs:
         Contents: |
           bin\Release\net7.0-android\publish\*.apk
+          bin\Release\net7.0-android\publish\*.aab
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        flattenFolders: true
 
     - task: PublishBuildArtifacts@1
       inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)\bin\Release\net7.0-android\publish\com.nsystech.electoralmonitoring-Signed.apk'
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'drop_android'
         publishLocation: 'Container'
