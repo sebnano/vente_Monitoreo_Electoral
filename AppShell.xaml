@@ -8,27 +8,9 @@
     xmlns:res="clr-namespace:ElectoralMonitoring.Resources.Lang">
     <TabBar>
         <ShellContent
-            Title="{x:Static res:AppRes.SearchPageTitle}"
-            ContentTemplate="{DataTemplate local:SearchPage}"
-            Route="SearchPageModel">
-            <ShellContent.Icon>
-                <FontImageSource Color="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" FontFamily="AppIcons" Glyph="&#xf107;"/>
-            </ShellContent.Icon>
-        </ShellContent>
-
-        <ShellContent
-            Title="{x:Static res:AppRes.ScannerPageTitle}"
-            ContentTemplate="{DataTemplate local:ScannerPage}"
-            Route="ScannerPageModel">
-            <ShellContent.Icon>
-                <FontImageSource Color="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" FontFamily="AppIcons" Glyph="&#xf104;"/>
-            </ShellContent.Icon>
-        </ShellContent>
-    
-        <ShellContent
-            Title="{x:Static res:AppRes.CollectionPageTitle}"
-            ContentTemplate="{DataTemplate local:CollectionPage}"
-            Route="CollectionPageModel">
+            Title="{x:Static res:AppRes.MonitorListPageTitle}"
+            ContentTemplate="{DataTemplate local:MonitorListPage}"
+            Route="MonitorListPageModel">
             <ShellContent.Icon>
                 <FontImageSource Color="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" FontFamily="AppIcons" Glyph="&#xf103;"/>
             </ShellContent.Icon>

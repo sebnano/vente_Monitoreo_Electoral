@@ -17,7 +17,7 @@ public partial class App : Application
 
         if (!_authService.IsAuthenticated)
         {
-            await Shell.Current.GoToAsync(nameof(RegisterPageModel));
+            await Shell.Current.GoToAsync(nameof(LoginPageModel));
         }
     }
 }

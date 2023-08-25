@@ -19,7 +19,7 @@
 		<ApplicationTitle>ElectoralMonitoring</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.nsystech.prorecords.staging</ApplicationId>
+		<ApplicationId>com.nsystech.monitoreoelectoral</ApplicationId>
 		<ApplicationIdGuid>45dc844f-1a21-4361-a513-7fe4fa5701fc</ApplicationIdGuid>
 
 		<!-- Versions -->
@@ -39,6 +39,11 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
 	  <CreatePackage>false</CreatePackage>
+	  <CodesignKey>iPhone Developer</CodesignKey>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+	  <WarningLevel>4</WarningLevel>
+	  <NoWarn>1701;1702;CS1573;CS1591;C1614</NoWarn>
 	</PropertyGroup>
 	<ItemGroup>
 		<!-- App Icon -->

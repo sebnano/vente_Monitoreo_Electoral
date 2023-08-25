@@ -1,11 +1,17 @@
 ﻿using System;
+using CommunityToolkit.Mvvm.ComponentModel;
+
 namespace ElectoralMonitoring
 {
-	public class MonitorListPageModel : BasePageModel
-	{
-		public MonitorListPageModel()
-		{
-		}
-	}
+    public partial class MonitorListPageModel : BasePageModel
+    {
+        [ObservableProperty]
+        string username;
+
+        public MonitorListPageModel(AuthService authService) : base(authService)
+        {
+            Username = _authService.NameUser;
+        }
+    }
 }
 

@@ -3,25 +3,48 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ElectoralMonitoring.MonitorListPage"
              x:DataType="local:MonitorListPageModel"
+             xmlns:res="clr-namespace:ElectoralMonitoring.Resources.Lang"
              xmlns:local="clr-namespace:ElectoralMonitoring">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding LogoutCommand}" Text="{x:Static res:AppRes.LogoutText}">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource FontFamily="AppIcons" Color="White" Glyph="&#xf106;" Size="20"/>
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
     <ScrollView>
-        <VerticalStackLayout
-            Spacing="25"
-            Padding="30,0"
-            VerticalOptions="Center">
+        <StackLayout
+            Spacing="25">
+            <Border Margin="10">
+                <StackLayout Padding="12" Orientation="Horizontal">
+                    <StackLayout Spacing="10" HorizontalOptions="StartAndExpand">
+                        <Label
+                        Text="{Binding Username, StringFormat={x:Static res:AppRes.WelcomeUser}}"
+                        SemanticProperties.HeadingLevel="Level1"
+                        FontSize="22"
+                        HorizontalOptions="Start" />
+                        <Label
+                        Text="{x:Static res:AppRes.MonitorListSubtitle}"
+                        SemanticProperties.HeadingLevel="Level1"
+                        FontSize="18"
+                        HorizontalOptions="Start" />
 
-            <Image
-                Source="dotnet_bot.png"
-                SemanticProperties.Description="Cute dot net bot waving hi to you!"
-                HeightRequest="200"
-                HorizontalOptions="Center" />
+                    </StackLayout>
+                    <Label Style="{StaticResource LabelIcon}"
+                           Text="{StaticResource IconLibrary}"
+                           FontSize="32"
+                           HorizontalOptions="End"/>
+                </StackLayout>
+            </Border>
 
-            <Label
-                Text="Hello, World!"
-                SemanticProperties.HeadingLevel="Level1"
-                FontSize="32"
-                HorizontalOptions="Center" />
+            <CollectionView VerticalOptions="FillAndExpand">
 
-        </VerticalStackLayout>
+
+            </CollectionView>
+
+            <Border VerticalOptions="End" Padding="0" StrokeThickness="0" Background="{StaticResource Primary}" StrokeShape="RoundRectangle 20,20,0,0">
+                <Button Text="{x:Static res:AppRes.AddButton}" HeightRequest="100" FontSize="Title"/>
+            </Border>
+        </StackLayout>
     </ScrollView>
 </ContentPage>

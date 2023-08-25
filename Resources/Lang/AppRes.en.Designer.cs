@@ -58,6 +58,15 @@ namespace ElectoralMonitoring.Resources.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        internal static string AddButton {
+            get {
+                return ResourceManager.GetString("AddButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Accept.
         /// </summary>
         internal static string AlertAccept {
@@ -148,15 +157,6 @@ namespace ElectoralMonitoring.Resources.Lang {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Collection.
-        /// </summary>
-        internal static string CollectionPageTitle {
-            get {
-                return ResourceManager.GetString("CollectionPageTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Confirm your password.
         /// </summary>
         internal static string ConfirmPasswordFieldPlaceholder {
@@ -229,6 +229,24 @@ namespace ElectoralMonitoring.Resources.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Home.
+        /// </summary>
+        internal static string MonitorListPageTitle {
+            get {
+                return ResourceManager.GetString("MonitorListPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minutes control list.
+        /// </summary>
+        internal static string MonitorListSubtitle {
+            get {
+                return ResourceManager.GetString("MonitorListSubtitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Input your name.
         /// </summary>
         internal static string NameFieldPlaceholder {
@@ -283,24 +301,6 @@ namespace ElectoralMonitoring.Resources.Lang {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scanner.
-        /// </summary>
-        internal static string ScannerPageTitle {
-            get {
-                return ResourceManager.GetString("ScannerPageTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Search.
-        /// </summary>
-        internal static string SearchPageTitle {
-            get {
-                return ResourceManager.GetString("SearchPageTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Input your username.
         /// </summary>
         internal static string UsernameFieldPlaceholder {
@@ -315,6 +315,15 @@ namespace ElectoralMonitoring.Resources.Lang {
         internal static string UsernameFieldTitle {
             get {
                 return ResourceManager.GetString("UsernameFieldTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome {0}.
+        /// </summary>
+        internal static string WelcomeUser {
+            get {
+                return ResourceManager.GetString("WelcomeUser", resourceCulture);
             }
         }
     }

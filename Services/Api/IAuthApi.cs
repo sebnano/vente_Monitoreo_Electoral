@@ -14,7 +14,10 @@ namespace ElectoralMonitoring
         Task<User> Register([Body] UserRegister user);
 
         [Post("/user/logout?_format=json")]
-        Task Logout([AliasAs("token")] string token);
+        Task Logout([Header("X-CSRF-Token")] string csrfToken, [AliasAs("token")] string token);
+
+        [Get("/user/{userId}?_format=json")]
+        Task<User> GetUser([Header("X-CSRF-Token")] string csrfToken, [AliasAs("userId")] string userId);
     }
 }
 

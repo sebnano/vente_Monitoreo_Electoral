@@ -6,19 +6,16 @@ namespace ElectoralMonitoring
 {
 	public partial class LoginPageModel : BasePageModel, IQueryAttributable
 	{
-		readonly AuthService _authService;
-
 		[ObservableProperty]
 		string username = string.Empty;
 
         [ObservableProperty]
         string password = string.Empty;
 
-        public LoginPageModel(AuthService authService)
+        public LoginPageModel(AuthService authService) : base(authService)
 		{
-			_authService = authService;
 #if DEBUG
-            Username = "demo";
+            Username = "juan.perez";
 			Password = "Aa.12345";
 #endif
 		}

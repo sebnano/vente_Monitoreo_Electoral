@@ -7,8 +7,6 @@ namespace ElectoralMonitoring
 {
 	public partial class RegisterPageModel : BasePageModel
     {
-        readonly AuthService _authService;
-
         [ObservableProperty]
 		string username = string.Empty;
         [ObservableProperty]
@@ -18,9 +16,8 @@ namespace ElectoralMonitoring
         [ObservableProperty]
         string confirmPassword = string.Empty;
 
-        public RegisterPageModel(AuthService authService)
+        public RegisterPageModel(AuthService authService) : base(authService)
 		{
-            _authService = authService;
         }
 
         [RelayCommand(AllowConcurrentExecutions = false)]

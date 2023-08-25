@@ -387,8 +387,11 @@
     </Style>
 
     <Style TargetType="Page" ApplyToDerivedTypes="True">
-        <Setter Property="Padding" Value="{OnIdiom Default='100,20', Phone='20,10,20,20'}"/>
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}" />
+    </Style>
+
+    <Style TargetType="Layout" ApplyToDerivedTypes="True" x:Key="PageLayoutBase">
+        <Setter Property="Padding" Value="{OnIdiom Default='100,20', Phone='20,10,20,20'}"/>
     </Style>
 
     <Style TargetType="Shell" ApplyToDerivedTypes="True">

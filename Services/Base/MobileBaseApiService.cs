@@ -20,7 +20,18 @@ namespace ElectoralMonitoring
                 using var timedEvent = AnalyticsService.TrackTime(callerName, properties);
                 return await AttemptAndRetry(action, cancellationToken, numRetries).ConfigureAwait(false);
             }
-            catch(ApiException ex) when (!shouldHandleException(ex))
+            catch (ApiException ex) when (ex.StatusCode is HttpStatusCode.Unauthorized)
+            {
+                AnalyticsService.Track(ex.Message);
+#if DEBUG
+                System.Diagnostics.Debug.WriteLine($"URI: {ex.Uri?.ToString()}");
+                System.Diagnostics.Debug.WriteLine($"Content: {ex.Content}");
+#endif
+                AnalyticsService.Track("force_logout");
+                await LogOut().ConfigureAwait(false);
+                return default(T);
+            }
+            catch (ApiException ex) when (!shouldHandleException(ex))
             {
                 AnalyticsService.Track(ex.Message);
 #if DEBUG
@@ -38,17 +49,6 @@ namespace ElectoralMonitoring
                 {
                     MainThread.BeginInvokeOnMainThread(async () => await Shell.Current.DisplayAlert(AppRes.AlertTitle, AppRes.AlertErrorGeneral, AppRes.AlertAccept));
                 }
-                return default(T);
-            }
-            catch (ApiException ex) when (ex.StatusCode is HttpStatusCode.Unauthorized)
-            {
-                AnalyticsService.Track(ex.Message);
-#if DEBUG
-                System.Diagnostics.Debug.WriteLine($"URI: {ex.Uri?.ToString()}");
-                System.Diagnostics.Debug.WriteLine($"Content: {ex.Content}");
-#endif
-                AnalyticsService.Track("force_logout");
-                await LogOut().ConfigureAwait(false);
                 return default(T);
             }
             catch (Exception ex)

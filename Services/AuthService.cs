@@ -86,21 +86,30 @@ namespace ElectoralMonitoring
             return registerResult;
         }
 
+        public async Task<User?> GetCurrentUser(CancellationToken cancellationToken)
+        {
+            var registerResult = await AttemptAndRetry_Mobile(async () => {
+
+                return await _authApi.GetUser(CsrfToken, IdUser).ConfigureAwait(false);
+
+            }, cancellationToken);
+
+            return registerResult;
+        }
+
         void OnLoggedOut() => _loggedOuteventManager.HandleEvent(this, EventArgs.Empty, nameof(LoggedOut));
 
         public async override Task LogOut()
         {
             await AttemptAndRetry_Mobile(async () => {
 
-                await _authApi.Logout(LogoutToken).ContinueWith((_) => {
-                    if (_.IsCompletedSuccessfully) {
-                        CsrfToken = string.Empty;
-                        LogoutToken = string.Empty;
-                        IdUser = string.Empty;
-                        NameUser = string.Empty;
-                        IsAuthenticated = false;
-                        OnLoggedOut();
-                    }
+                await _authApi.Logout(CsrfToken, LogoutToken).ContinueWith((_) => {
+                    CsrfToken = string.Empty;
+                    LogoutToken = string.Empty;
+                    IdUser = string.Empty;
+                    NameUser = string.Empty;
+                    IsAuthenticated = false;
+                    OnLoggedOut();
                 }).ConfigureAwait(false);
 
                 return Task.CompletedTask;
