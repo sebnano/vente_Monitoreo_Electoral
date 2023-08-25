@@ -102,5 +102,11 @@
 	<data name="MonitorListSubtitle" xml:space="preserve">
 		<value>Minutes control list</value>
 	</data>
+	<data name="ScannerPreviewPageTitle" xml:space="preserve">
+		<value>Preview</value>
+	</data>
+	<data name="ConfirmScanBtn" xml:space="preserve">
+		<value>Accept</value>
+	</data>
 </root>
 

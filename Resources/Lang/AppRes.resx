@@ -108,5 +108,11 @@
 	<data name="MonitorListSubtitle" xml:space="preserve">
 		<value>Listado de control de actas</value>
 	</data>
+	<data name="ScannerPreviewPageTitle" xml:space="preserve">
+		<value>Vista previa</value>
+	</data>
+	<data name="ConfirmScanBtn" xml:space="preserve">
+		<value>Aceptar</value>
+	</data>
 </root>
 

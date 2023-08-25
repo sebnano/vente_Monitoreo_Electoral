@@ -43,7 +43,8 @@
             </CollectionView>
 
             <Border VerticalOptions="End" Padding="0" StrokeThickness="0" Background="{StaticResource Primary}" StrokeShape="RoundRectangle 20,20,0,0">
-                <Button Text="{x:Static res:AppRes.AddButton}" HeightRequest="100" FontSize="Title"/>
+                <Button Text="{x:Static res:AppRes.AddButton}" HeightRequest="{StaticResource BottomButtonHeight}" FontSize="Title" FontAttributes="Bold"
+                        Command="{Binding TakePhotoCommand}"/>
             </Border>
         </StackLayout>
     </ScrollView>

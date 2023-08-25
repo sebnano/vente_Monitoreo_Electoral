@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 namespace ElectoralMonitoring
 {
 	public partial class LoginPageModel : BasePageModel, IQueryAttributable
-	{
+    {
 		[ObservableProperty]
 		string username = string.Empty;
 

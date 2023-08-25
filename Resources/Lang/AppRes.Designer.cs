@@ -175,6 +175,15 @@ namespace ElectoralMonitoring.Resources.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Aceptar.
+        /// </summary>
+        internal static string ConfirmScanBtn {
+            get {
+                return ResourceManager.GetString("ConfirmScanBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ingrese su correo electrónico.
         /// </summary>
         internal static string EmailFieldPlaceholder {
@@ -315,6 +324,15 @@ namespace ElectoralMonitoring.Resources.Lang {
         internal static string RegisterPageTitle {
             get {
                 return ResourceManager.GetString("RegisterPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vista previa.
+        /// </summary>
+        internal static string ScannerPreviewPageTitle {
+            get {
+                return ResourceManager.GetString("ScannerPreviewPageTitle", resourceCulture);
             }
         }
         
