@@ -3,7 +3,7 @@ using Refit;
 using Fusillade;
 using System.ComponentModel;
 
-namespace ProRecords
+namespace ElectoralMonitoring
 {
     public abstract class BaseApiService
     {

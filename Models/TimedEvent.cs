@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace ProRecords
+namespace ElectoralMonitoring
 {
     public class TimedEvent : IDisposable
     {

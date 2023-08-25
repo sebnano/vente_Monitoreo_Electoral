@@ -1,4 +1,4 @@
-﻿# ProRecords Collections App
+﻿# ElectoralMonitoring App
 
 Aplicación móvil para Android & iOS con .NET MAUI
 
@@ -11,10 +11,7 @@ Aplicación móvil para Android & iOS con .NET MAUI
 ## Features
 
 - Inicio de sesion
-- Registro
-- Busqueda
-- Escaner
-- Gestion de la coleccion
+- Registro de actas
 
 ## Resources
 

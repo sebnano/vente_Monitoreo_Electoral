@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using Refit;
 
-namespace ProRecords
+namespace ElectoralMonitoring
 {
-    [Headers("Accept: application/json", "Content-Type: application/json", "Accept-Encoding: gzip, deflate, br", "User-Agent: " + nameof(ProRecords) + "App", "")]
+    [Headers("Accept: application/json", "Content-Type: application/json", "Accept-Encoding: gzip, deflate, br", "User-Agent: " + nameof(ElectoralMonitoring) + "App", "")]
     public interface IAuthApi
     {
         [Post("/user/login?_format=json")]

@@ -16,7 +16,7 @@ stages:
 - stage: BuildAndroid
   jobs:
   - job: BuildMAUIApps
-    displayName: Build ProRecords App
+    displayName: Build ElectoralMonitoring App
     pool:
       vmImage: 'windows-2022'
       demands:
@@ -27,7 +27,7 @@ stages:
       name: keystore
       displayName: 'Download Keystore'
       inputs:
-        secureFile: 'prorecords.keystore'
+        secureFile: 'electoralmonitoring.keystore'
 
     #- task: DownloadSecureFile@1
     #  name: firebaseId
@@ -73,14 +73,14 @@ stages:
       inputs:
         targetType: 'inline'
         script: |
-          dotnet restore ProRecords.sln
+          dotnet restore ElectoralMonitoring.sln
     
     - task: Bash@3
       displayName: Build Android App
       inputs:
         targetType: 'inline'
         script: |
-          dotnet publish "ProRecords.csproj" -f:net7.0-android -c:$(BuildConfiguration) \
+          dotnet publish "ElectoralMonitoring.csproj" -f:net7.0-android -c:$(BuildConfiguration) \
           //p:ApplicationTitle="$(AppDisplayName)" //p:ApplicationId="$(AppId)" \
           //p:AndroidSigningKeyStore="$(keystore.secureFilePath)" //p:AndroidSigningKeyPass="$(keystore_pass)" //p:AndroidSigningStorePass="$(keystore_pass)" //p:AndroidSigningKeyAlias="$(keystore_alias)" \
           //p:ApplicationDisplayVersion="$(AppFullVersionNumber)" //p:ApplicationVersion="$(AppBuildNumber)"
@@ -93,6 +93,6 @@ stages:
 
     - task: PublishBuildArtifacts@1
       inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)\bin\Release\net7.0-android\publish\com.nsystech.prorecords.staging-Signed.apk'
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)\bin\Release\net7.0-android\publish\com.nsystech.electoralmonitoring-Signed.apk'
         ArtifactName: 'drop_android'
         publishLocation: 'Container'

@@ -1,11 +1,8 @@
-﻿ProRecords App
+﻿ElectoralMonitoring App
 
 - Caracteristicas
 
 Inicio de sesion ❌
-Registro ❌
-Busqueda ❌
-Escaner ❌
-Coleccion ❌
+Registro de actas ❌
 
 - Correcciones

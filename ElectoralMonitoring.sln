@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 25.0.1706.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProRecords", "ProRecords.csproj", "{732C2873-B0A8-424C-B5F6-67DB74FF20F5}"
+Project("{c241707d-e362-4ca2-b9c2-dbf80d764c20}") = "ElectoralMonitoring", "ElectoralMonitoring.csproj", "{d13bb437-b9a0-47c8-b266-68a5f971b5c4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,16 +11,16 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{732C2873-B0A8-424C-B5F6-67DB74FF20F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{732C2873-B0A8-424C-B5F6-67DB74FF20F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{732C2873-B0A8-424C-B5F6-67DB74FF20F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{732C2873-B0A8-424C-B5F6-67DB74FF20F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{d13bb437-b9a0-47c8-b266-68a5f971b5c4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{d13bb437-b9a0-47c8-b266-68a5f971b5c4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{d13bb437-b9a0-47c8-b266-68a5f971b5c4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{d13bb437-b9a0-47c8-b266-68a5f971b5c4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {1BCFFC02-B713-4A50-9F76-D077CC384BA9}
+		SolutionGuid = {2b328851-308e-4d1c-800e-6cf652d5f535}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

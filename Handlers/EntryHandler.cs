@@ -1,5 +1,5 @@
 ﻿using System;
-namespace ProRecords
+namespace ElectoralMonitoring
 {
     public static class EntryHandler
     {

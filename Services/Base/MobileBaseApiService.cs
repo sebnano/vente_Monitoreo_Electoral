@@ -1,9 +1,9 @@
 ﻿using System.Net;
 using System.Runtime.CompilerServices;
-using ProRecords.Resources.Lang;
+using ElectoralMonitoring.Resources.Lang;
 using Refit;
 
-namespace ProRecords
+namespace ElectoralMonitoring
 {
     public abstract class MobileBaseApiService : BaseApiService
     {

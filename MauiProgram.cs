@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
 
-namespace ProRecords;
+namespace ElectoralMonitoring;
 
 public static class MauiProgram
 {

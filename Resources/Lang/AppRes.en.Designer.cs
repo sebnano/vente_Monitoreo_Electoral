@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ProRecords.Resources.Lang {
+namespace ElectoralMonitoring.Resources.Lang {
     using System;
     
     
@@ -36,7 +36,7 @@ namespace ProRecords.Resources.Lang {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ProRecords.Resources.Lang.AppRes.en", typeof(AppRes_en).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ElectoralMonitoring.Resources.Lang.AppRes.en", typeof(AppRes_en).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

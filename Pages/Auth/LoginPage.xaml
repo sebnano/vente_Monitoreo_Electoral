@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ProRecords.LoginPage"
+             x:Class="ElectoralMonitoring.LoginPage"
              Title="{x:Static res:AppRes.LoginPageTitle}"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False"
              x:DataType="local:LoginPageModel"
-             xmlns:local="clr-namespace:ProRecords"
-             xmlns:res="clr-namespace:ProRecords.Resources.Lang">
+             xmlns:local="clr-namespace:ElectoralMonitoring"
+             xmlns:res="clr-namespace:ElectoralMonitoring.Resources.Lang">
     <ScrollView>
         <StackLayout VerticalOptions="CenterAndExpand" Spacing="20">
             <Image Source="dotnet_bot" HeightRequest="140" Aspect="AspectFit"/>

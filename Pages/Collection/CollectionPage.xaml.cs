@@ -1,4 +1,4 @@
-﻿namespace ProRecords;
+﻿namespace ElectoralMonitoring;
 
 public partial class CollectionPage : ContentPage
 {

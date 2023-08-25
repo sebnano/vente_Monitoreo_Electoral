@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 
-namespace ProRecords
+namespace ElectoralMonitoring
 {
 	public partial class SearchPageModel : BasePageModel
 	{

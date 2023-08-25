@@ -1,7 +1,7 @@
 ﻿using ObjCRuntime;
 using UIKit;
 
-namespace ProRecords;
+namespace ElectoralMonitoring;
 
 public class Program
 {

@@ -2,7 +2,7 @@
 using Microsoft.Maui;
 using Microsoft.Maui.Hosting;
 
-namespace ProRecords;
+namespace ElectoralMonitoring;
 
 class Program : MauiApplication
 {

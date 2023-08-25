@@ -5,7 +5,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ProRecords
+namespace ElectoralMonitoring
 {
     public class HttpLoggingHandler : DelegatingHandler
     {

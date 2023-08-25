@@ -1,6 +1,6 @@
 ﻿using Foundation;
 
-namespace ProRecords;
+namespace ElectoralMonitoring;
 
 [Register("AppDelegate")]
 public class AppDelegate : MauiUIApplicationDelegate

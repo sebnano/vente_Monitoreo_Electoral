@@ -7,7 +7,7 @@
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks> -->
 		<OutputType>Exe</OutputType>
-		<RootNamespace>ProRecords</RootNamespace>
+		<RootNamespace>ElectoralMonitoring</RootNamespace>
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -16,11 +16,11 @@
 		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
 		<Deterministic>False</Deterministic>
 		<!-- Display name -->
-		<ApplicationTitle>ProRecords</ApplicationTitle>
+		<ApplicationTitle>ElectoralMonitoring</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.nsystech.prorecords.staging</ApplicationId>
-		<ApplicationIdGuid>61f48b42-22ef-41f5-8b3a-40b8bc1757b0</ApplicationIdGuid>
+		<ApplicationIdGuid>45dc844f-1a21-4361-a513-7fe4fa5701fc</ApplicationIdGuid>
 
 		<!-- Versions -->
 		<!-- Versions -->

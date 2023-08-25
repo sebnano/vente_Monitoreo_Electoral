@@ -1,9 +1,9 @@
 ﻿<maui:MauiWinUIApplication
-    x:Class="ProRecords.WinUI.App"
+    x:Class="ElectoralMonitoring.WinUI.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:maui="using:Microsoft.Maui"
-    xmlns:local="using:ProRecords.WinUI">
+    xmlns:local="using:ElectoralMonitoring.WinUI">
 
 </maui:MauiWinUIApplication>
 

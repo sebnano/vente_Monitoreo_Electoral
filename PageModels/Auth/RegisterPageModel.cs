@@ -1,9 +1,9 @@
 ﻿using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ProRecords.Resources.Lang;
+using ElectoralMonitoring.Resources.Lang;
 
-namespace ProRecords
+namespace ElectoralMonitoring
 {
 	public partial class RegisterPageModel : BasePageModel
     {

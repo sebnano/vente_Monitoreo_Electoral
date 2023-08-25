@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ProRecords
+namespace ElectoralMonitoring
 {
     public record Field(
         [property: JsonPropertyName("value")] object Value

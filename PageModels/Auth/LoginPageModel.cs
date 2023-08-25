@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace ProRecords
+namespace ElectoralMonitoring
 {
 	public partial class LoginPageModel : BasePageModel, IQueryAttributable
 	{

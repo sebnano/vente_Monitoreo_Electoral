@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace ProRecords
+namespace ElectoralMonitoring
 {
 	public class AuthService : MobileBaseApiService
     {

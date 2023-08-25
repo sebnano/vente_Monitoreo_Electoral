@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace ProRecords
+namespace ElectoralMonitoring
 {
     public class LoggerAnalytics : IFirebaseAnalytics
     {

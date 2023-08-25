@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
 
-namespace ProRecords;
+namespace ElectoralMonitoring;
 
 [Application]
 public class MainApplication : MauiApplication

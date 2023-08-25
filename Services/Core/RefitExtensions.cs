@@ -1,6 +1,6 @@
 ﻿using Refit;
 using System.Text.Json;
-namespace ProRecords
+namespace ElectoralMonitoring
 {
     public static class RefitExtensions
     {

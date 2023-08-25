@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 
-namespace ProRecords
+namespace ElectoralMonitoring
 {
     public record ServerResponse([property: JsonPropertyName("message")] string Message);
 
