@@ -1,8 +1,8 @@
 ﻿namespace ElectoralMonitoring;
 
-public partial class ScannerPage : ContentPage
+public partial class MonitorListPage : ContentPage
 {
-	public ScannerPage(ScannerPageModel vm)
+	public MonitorListPage(MonitorListPageModel vm)
 	{
 		InitializeComponent();
         BindingContext = vm;

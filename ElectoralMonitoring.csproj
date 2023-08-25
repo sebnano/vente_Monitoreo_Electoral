@@ -60,7 +60,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
-		<PackageReference Include="CommunityToolkit.Maui" Version="5.2.0" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="5.3.0" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="3.2.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
 		<PackageReference Include="Refit" Version="7.0.0" />
@@ -87,5 +87,11 @@
 	  <Compile Update="Resources\Lang\AppRes.en.Designer.cs">
 	    <DependentUpon>AppRes.en.resx</DependentUpon>
 	  </Compile>
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="google-services.json" />
+	</ItemGroup>
+	<ItemGroup>
+	  <BundleResource Include="google-services.json" />
 	</ItemGroup>
 </Project>

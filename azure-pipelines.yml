@@ -29,31 +29,31 @@ stages:
       inputs:
         secureFile: 'electoralmonitoring.keystore'
 
-    #- task: DownloadSecureFile@1
-    #  name: firebaseId
-    #  displayName: 'Download GoogleServicesJson'
-    #  inputs:
-    #    secureFile: $(GoogleServicesJsonFileName)
+    - task: DownloadSecureFile@1
+      name: firebaseId
+      displayName: 'Download GoogleServicesJson'
+      inputs:
+        secureFile: $(GoogleServicesJsonFileName)
         
-    #- task: CopyFiles@2
-    #  displayName: 'Copy GoogleServicesJsonFileName'
-    #  inputs:
-    #    SourceFolder: $(Agent.TempDirectory)
-    #    Contents: |
-    #        $(firebaseId.secureFilePath)
-    #        $(GoogleServicesJsonFileName)
-    #    TargetFolder: "$(Build.SourcesDirectory)/"
+    - task: CopyFiles@2
+      displayName: 'Copy GoogleServicesJsonFileName'
+      inputs:
+        SourceFolder: $(Agent.TempDirectory)
+        Contents: |
+            $(firebaseId.secureFilePath)
+            $(GoogleServicesJsonFileName)
+        TargetFolder: "$(Build.SourcesDirectory)/"
 
 
-    #- task: Bash@3
-    #  displayName: Rename and list files
-    #  inputs:
-    #    targetType: 'inline'
-    #    script: |
-    #      mv "$(Build.SourcesDirectory)\GrowingFamily\$(GoogleServicesJsonFileName)" "$(Build.SourcesDirectory)\google-services.json"
-    #      echo "=============================================="
-    #      ls "$(Build.SourcesDirectory)"
-    #      echo "=============================================="
+    - task: Bash@3
+      displayName: Rename and list files
+      inputs:
+        targetType: 'inline'
+        script: |
+          mv "$(Build.SourcesDirectory)\$(GoogleServicesJsonFileName)" "$(Build.SourcesDirectory)\google-services.json"
+          echo "=============================================="
+          ls "$(Build.SourcesDirectory)"
+          echo "=============================================="
 
     - task: UseDotNet@2
       displayName: .NET Version
