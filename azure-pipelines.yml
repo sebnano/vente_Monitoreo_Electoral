@@ -33,15 +33,15 @@ stages:
       name: firebaseId
       displayName: 'Download GoogleServicesJson'
       inputs:
-        secureFile: $(GoogleServicesJsonFileName)
+        secureFile: $(GoogleServicesJson)
         
     - task: CopyFiles@2
-      displayName: 'Copy GoogleServicesJsonFileName'
+      displayName: 'Copy GoogleServicesJson'
       inputs:
         SourceFolder: $(Agent.TempDirectory)
         Contents: |
             $(firebaseId.secureFilePath)
-            $(GoogleServicesJsonFileName)
+            $(GoogleServicesJson)
         TargetFolder: "$(Build.SourcesDirectory)/"
 
 
@@ -50,7 +50,7 @@ stages:
       inputs:
         targetType: 'inline'
         script: |
-          mv "$(Build.SourcesDirectory)\$(GoogleServicesJsonFileName)" "$(Build.SourcesDirectory)\google-services.json"
+          mv "$(Build.SourcesDirectory)\$(GoogleServicesJson)" "$(Build.SourcesDirectory)\google-services.json"
           echo "=============================================="
           ls "$(Build.SourcesDirectory)"
           echo "=============================================="
@@ -67,6 +67,17 @@ stages:
         targetType: 'inline'
         script: |
           dotnet workload install maui
+
+    # - task: InstallAppleCertificate@2
+    #   inputs:
+    #     certSecureFile: 'DevelopmentCert.p12'
+    #     certPwd: '$(iOSCertPassword)'
+    #     keychain: 'temp'
+
+    # - task: InstallAppleProvisioningProfile@1
+    #   inputs:
+    #     provisioningProfileLocation: 'secureFiles'
+    #     provProfileSecureFile: 'Development.mobileprovision'
 
     - task: Bash@3
       displayName: Restore nuget
