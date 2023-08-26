@@ -41,7 +41,6 @@
 		<EnableLLVM>False</EnableLLVM>
 		<RunAOTCompilation>True</RunAOTCompilation>
 		<PublishTrimmed>True</PublishTrimmed>
-		<AndroidPackageFormat>aab</AndroidPackageFormat>
 		<DebugSymbols>True</DebugSymbols>
 	</PropertyGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-ios'">
