@@ -98,9 +98,8 @@ stages:
 
     - task: CopyFiles@2
       inputs:
-        Contents: |
-          bin\Release\net7.0-android\publish\*.apk
-          bin\Release\net7.0-android\publish\*.aab
+        SourceFolder: '$(Agent.BuildDirectory)'
+        Contents: '**/*.aab'
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
         flattenFolders: true
 
