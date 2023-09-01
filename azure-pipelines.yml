@@ -109,7 +109,7 @@ stages:
       name: firebaseId
       displayName: 'Download $(GoogleServicesInfoPlist)'
       inputs:
-        secureFile: $($(GoogleServicesInfoPlist))
+        secureFile: $(GoogleServicesInfoPlist)
           
     - task: CopyFiles@2
       displayName: 'Copy $(GoogleServicesInfoPlist)'
@@ -117,7 +117,7 @@ stages:
         SourceFolder: $(Agent.TempDirectory)
         Contents: |
             $(firebaseId.secureFilePath)
-            $($(GoogleServicesInfoPlist))
+            $(GoogleServicesInfoPlist)
         TargetFolder: "$(Build.SourcesDirectory)/"
 
 
@@ -126,7 +126,7 @@ stages:
       inputs:
         targetType: 'inline'
         script: |
-          mv "$(Build.SourcesDirectory)\$($(GoogleServicesInfoPlist))" "$(Build.SourcesDirectory)\GoogleService-Info.plist"
+          mv "$(Build.SourcesDirectory)\$(GoogleServicesInfoPlist)" "$(Build.SourcesDirectory)\GoogleService-Info.plist"
           echo "=============================================="
           ls "$(Build.SourcesDirectory)"
           echo "=============================================="
