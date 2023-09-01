@@ -173,3 +173,15 @@ stages:
         arguments: '-f:net7.0-ios -c:$(BuildConfiguration) /p:ArchiveOnBuild=true /p:EnableAssemblyILStripping=false //p:ApplicationDisplayVersion="$(AppFullVersionNumber)" //p:ApplicationVersion="$(AppBuildNumber)" //p:ApplicationTitle="$(AppDisplayName)" //p:ApplicationId="$(AppId)"'
         zipAfterPublish: false
         modifyOutputPath: false
+
+    - task: CopyFiles@2
+      inputs:
+        Contents: |
+          bin\Release\net7.0-ios\publish\*.ipa
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        flattenFolders: true
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop_ios'
+        publishLocation: 'Container'
