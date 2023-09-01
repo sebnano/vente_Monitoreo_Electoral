@@ -15,7 +15,7 @@ name: $(Date:yyMMdd)$(Rev:r)
 stages:
 - stage: BuildAndroid
   jobs:
-  - job: BuildMAUIApps
+  - job: BuildAndroidMAUIApps
     displayName: Build ElectoralMonitoring App
     pool:
       vmImage: 'windows-2022'
@@ -44,7 +44,6 @@ stages:
             $(GoogleServicesJson)
         TargetFolder: "$(Build.SourcesDirectory)/"
 
-
     - task: Bash@3
       displayName: Rename and list files
       inputs:
@@ -67,17 +66,6 @@ stages:
         targetType: 'inline'
         script: |
           dotnet workload install maui
-
-    # - task: InstallAppleCertificate@2
-    #   inputs:
-    #     certSecureFile: 'DevelopmentCert.p12'
-    #     certPwd: '$(iOSCertPassword)'
-    #     keychain: 'temp'
-
-    # - task: InstallAppleProvisioningProfile@1
-    #   inputs:
-    #     provisioningProfileLocation: 'secureFiles'
-    #     provProfileSecureFile: 'Development.mobileprovision'
 
     - task: Bash@3
       displayName: Restore nuget
@@ -110,3 +98,80 @@ stages:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'drop_android'
         publishLocation: 'Container'
+
+- stage: BuildiOS
+  jobs:
+  - job: BuildiOSMAUIApp
+    displayName: Build ElectoralMonitoring iOS App
+    pool:
+      vmImage: 'macos-latest'
+
+    steps:
+    - task: DownloadSecureFile@1
+      name: firebaseId
+      displayName: 'Download $(GoogleServicesInfoPlist)'
+      inputs:
+        secureFile: $($(GoogleServicesInfoPlist))
+          
+    - task: CopyFiles@2
+      displayName: 'Copy $(GoogleServicesInfoPlist)'
+      inputs:
+        SourceFolder: $(Agent.TempDirectory)
+        Contents: |
+            $(firebaseId.secureFilePath)
+            $($(GoogleServicesInfoPlist))
+        TargetFolder: "$(Build.SourcesDirectory)/"
+
+
+    - task: Bash@3
+      displayName: Rename and list files
+      inputs:
+        targetType: 'inline'
+        script: |
+          mv "$(Build.SourcesDirectory)\$($(GoogleServicesInfoPlist))" "$(Build.SourcesDirectory)\GoogleService-Info.plist"
+          echo "=============================================="
+          ls "$(Build.SourcesDirectory)"
+          echo "=============================================="
+
+    - task: UseDotNet@2
+      displayName: .NET Version
+      inputs:
+        packageType: 'sdk'
+        version: '$(DotNetVersion)'
+    
+    - task: Bash@3
+      displayName: Install MAUI
+      inputs:
+        targetType: 'inline'
+        script: |
+          dotnet workload install maui
+
+
+    - task: InstallAppleCertificate@2
+      inputs:
+        certSecureFile: 'Certificates.p12'
+        certPwd: '$(iOSCertPassword)'
+        keychain: 'temp'
+
+    - task: InstallAppleProvisioningProfile@1
+      inputs:
+        provisioningProfileLocation: 'secureFiles'
+        provProfileSecureFile: 'MonitoreoElectoral_DIST.mobileprovision'
+
+
+    - task: Bash@3
+      displayName: Restore nuget
+      inputs:
+        targetType: 'inline'
+        script: |
+          dotnet restore ElectoralMonitoring.sln
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet publish (Release)'
+      inputs:
+        command: 'publish'
+        publishWebProjects: false
+        projects: 'ElectoralMonitoring.csproj'
+        arguments: '-f:net7.0-ios -c:$(BuildConfiguration) /p:ArchiveOnBuild=true /p:EnableAssemblyILStripping=false //p:ApplicationDisplayVersion="$(AppFullVersionNumber)" //p:ApplicationVersion="$(AppBuildNumber)" //p:ApplicationTitle="$(AppDisplayName)" //p:ApplicationId="$(AppId)"'
+        zipAfterPublish: false
+        modifyOutputPath: false
