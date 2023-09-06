@@ -56,6 +56,11 @@
 	  <WarningLevel>4</WarningLevel>
 	  <NoWarn>1701;1702;CS1573;CS1591;C1614</NoWarn>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
+	  <CreatePackage>false</CreatePackage>
+	  <CodesignProvision>MonitoreoElectoral_DIST</CodesignProvision>
+	  <CodesignKey>iPhone Distribution: Sebastian Campanella (54URG96KXY)</CodesignKey>
+	</PropertyGroup>
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
