@@ -14,6 +14,7 @@ name: $(Date:yyMMdd)$(Rev:r)
 
 stages:
 - stage: BuildAndroid
+  condition: false
   jobs:
   - job: BuildAndroidMAUIApps
     displayName: Build ElectoralMonitoring App
