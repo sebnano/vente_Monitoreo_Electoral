@@ -182,6 +182,7 @@ stages:
       inputs:
         Contents: |
           bin\Release\net7.0-ios\ios-arm64\publish\*.ipa
+          bin/Release/net7.0-ios/ios-arm64/publish//ElectoralMonitoring.ipa
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
         flattenFolders: true
     - task: PublishBuildArtifacts@1
