@@ -174,7 +174,7 @@ stages:
         command: 'publish'
         publishWebProjects: false
         projects: 'ElectoralMonitoring.csproj'
-        arguments: '-f:net7.0-ios -c:$(BuildConfiguration) /p:ArchiveOnBuild=true /p:EnableAssemblyILStripping=false /p:ApplicationDisplayVersion="$(AppFullVersionNumber)" /p:ApplicationVersion="$(AppBuildNumber)" /p:ApplicationTitle="$(AppDisplayName)" /p:ApplicationId="$(AppId)"'
+        arguments: '-f:net7.0-ios -r:ios-arm64 -c:$(BuildConfiguration) /p:ArchiveOnBuild=true /p:EnableAssemblyILStripping=false /p:ApplicationDisplayVersion="$(AppFullVersionNumber)" /p:ApplicationVersion="$(AppBuildNumber)" /p:ApplicationTitle="$(AppDisplayName)" /p:ApplicationId="$(AppId)"'
         zipAfterPublish: false
         modifyOutputPath: false
 
