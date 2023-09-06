@@ -9,14 +9,16 @@ variables:
     BuildConfiguration: Release
     DotNetVersion: 7.0.306
     VSVERSION: 17/pre
+    BuildAndroid: false
+    BuildiOS: true
 
 name: $(Date:yyMMdd)$(Rev:r)
 
 stages:
 - stage: BuildAndroid
-  condition: false
   jobs:
   - job: BuildAndroidMAUIApps
+    condition: eq(variables.BuildAndroid, true)
     displayName: Build ElectoralMonitoring App
     pool:
       vmImage: 'windows-2022'
@@ -101,6 +103,7 @@ stages:
 - stage: BuildiOS
   jobs:
   - job: BuildiOSMAUIApp
+    condition: eq(variables.BuildiOS, true)
     displayName: Build ElectoralMonitoring iOS App
     pool:
       vmImage: 'macos-latest'
