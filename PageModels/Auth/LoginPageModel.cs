@@ -1,6 +1,7 @@
 ﻿using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Plugin.Firebase.Auth;
 
 namespace ElectoralMonitoring
 {
@@ -40,6 +41,8 @@ namespace ElectoralMonitoring
 			var result = await _authService.Login(Username, Password, CancellationToken.None);
 			if(result != null)
 			{
+				await CrossFirebaseAuth.Current.SignInAnonymouslyAsync();
+				
 				await Shell.Current.Navigation.PopToRootAsync();
 			}
 		}

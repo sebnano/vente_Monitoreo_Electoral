@@ -31,9 +31,15 @@ namespace ElectoralMonitoring
 
                     await sourceStream.CopyToAsync(localFileStream);
 
+                    var memoryStream = new MemoryStream();
+
+                    await localFileStream.CopyToAsync(memoryStream);
+                    var base64 = Convert.ToBase64String(memoryStream.ToArray());
+
                     var navigationParameter = new Dictionary<string, object>
                     {
-                        { "localFilePath", localFilePath }
+                        { "localFilePath", localFilePath },
+                        { "base64", base64 }
                     };
                     await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter);
                 }
