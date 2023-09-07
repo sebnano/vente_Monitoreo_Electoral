@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using Plugin.Firebase.Auth;
 
 namespace ElectoralMonitoring
 {
@@ -59,7 +60,9 @@ namespace ElectoralMonitoring
 
             }, cancellationToken);
 
-            if(loginResult != null) {
+            var firAuth = await CrossFirebaseAuth.Current.SignInAnonymouslyAsync();
+
+            if (loginResult != null && firAuth != null) {
 
                 CsrfToken = loginResult.CsrfToken;
                 LogoutToken = loginResult.LogoutToken;

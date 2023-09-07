@@ -164,7 +164,7 @@
     </Style>
 
     <Style TargetType="Label">
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextLight}, Dark={StaticResource TextDark}}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular" />
         <Setter Property="FontSize" Value="14" />
@@ -184,6 +184,7 @@
 
     
     <Style TargetType="Label" x:Key="LabelIcon">
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource IconLight}, Dark={StaticResource IconDark}}" />
         <Setter Property="FontFamily" Value="AppIcons" />
         <Setter Property="FontSize" Value="24" />
         <Setter Property="Padding" Value="5"/>
@@ -387,7 +388,7 @@
     </Style>
 
     <Style TargetType="Page" ApplyToDerivedTypes="True">
-        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light='#e1e1e1', Dark='#212121'}" />
     </Style>
 
     <Style TargetType="Layout" ApplyToDerivedTypes="True" x:Key="PageLayoutBase">

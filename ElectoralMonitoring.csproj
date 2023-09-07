@@ -105,4 +105,10 @@
 	    <DependentUpon>AppRes.en.resx</DependentUpon>
 	  </Compile>
 	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="Platforms\Android\Resources\values-night\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Platforms\Android\Resources\values-night\" />
+	</ItemGroup>
 </Project>

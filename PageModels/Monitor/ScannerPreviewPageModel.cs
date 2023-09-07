@@ -30,13 +30,19 @@ namespace ElectoralMonitoring
 
         public async void GetContent(string imageBase64)
         {
-            await _firebaseFunctions
-            .GetHttpsCallable("imageTextRecognition")
-            .CallAsync();
-            var json = new OCRDocumentRequest(imageBase64).ToJson();
-            var response = await _firebaseFunctions.GetHttpsCallable("imageTextRecognition")
-                .CallAsync<dynamic>(json);//OCRDocumentResponse
-            Console.WriteLine(response);
+            try
+            {
+                Console.WriteLine("Base64 Image:");
+                Console.WriteLine(imageBase64);
+                var json = new OCRDocumentRequest(imageBase64).ToJson();
+                var response = await _firebaseFunctions.GetHttpsCallable("imageTextRecognition")
+                    .CallAsync<dynamic>(json);//OCRDocumentResponse
+                Console.WriteLine(response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

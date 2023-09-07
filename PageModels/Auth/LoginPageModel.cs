@@ -41,8 +41,6 @@ namespace ElectoralMonitoring
 			var result = await _authService.Login(Username, Password, CancellationToken.None);
 			if(result != null)
 			{
-				await CrossFirebaseAuth.Current.SignInAnonymouslyAsync();
-				
 				await Shell.Current.Navigation.PopToRootAsync();
 			}
 		}
