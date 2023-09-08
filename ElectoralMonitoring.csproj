@@ -77,9 +77,6 @@
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
-		<MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
-
-		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
@@ -121,9 +118,13 @@
 	<ItemGroup>
 	  <None Remove="Platforms\Android\Resources\values-night\" />
 	  <None Remove="Platforms\iOS\Utils\" />
+	  <None Remove="Resources\Images\app_logo.svg" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Platforms\Android\Resources\values-night\" />
 	  <Folder Include="Platforms\iOS\Utils\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <BundleResource Include="Resources\Images\app_logo.svg" />
 	</ItemGroup>
 </Project>

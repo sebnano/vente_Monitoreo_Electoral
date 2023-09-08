@@ -15,7 +15,7 @@
         <StackLayout
             Spacing="25">
             <Border Margin="10">
-                <StackLayout Padding="12" Orientation="Horizontal">
+                <StackLayout Padding="12" Orientation="Horizontal" HeightRequest="100">
                     <StackLayout Spacing="10" HorizontalOptions="StartAndExpand">
                         <Label
                         Text="{Binding Username, StringFormat={x:Static res:AppRes.WelcomeUser}}"
@@ -36,7 +36,7 @@
                 </StackLayout>
             </Border>
 
-            <CollectionView VerticalOptions="FillAndExpand">
+            <CollectionView VerticalOptions="StartAndExpand" EmptyView="No hay documentos cargados, presione Agregar para cargar uno.">
 
 
             </CollectionView>
