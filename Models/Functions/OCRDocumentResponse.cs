@@ -144,24 +144,6 @@ namespace ElectoralMonitoring
         public DetectedBreak DetectedBreak { get; set; }
     }
 
-    public class Response
-    {
-        [JsonPropertyName("labelAnnotations")]
-        public List<LabelAnnotation> LabelAnnotations { get; set; }
-
-        [JsonPropertyName("textAnnotations")]
-        public List<TextAnnotation> TextAnnotations { get; set; }
-
-        [JsonPropertyName("fullTextAnnotation")]
-        public FullTextAnnotation FullTextAnnotation { get; set; }
-
-        [JsonPropertyName("error")]
-        public Error Error { get; set; }
-
-        [JsonPropertyName("context")]
-        public Context Context { get; set; }
-    }
-
     public class Symbol
     {
         [JsonPropertyName("property")]
@@ -210,11 +192,28 @@ namespace ElectoralMonitoring
         public int Confidence { get; set; }
     }
 
+    //public class OCRDocumentResponse
+    //{
+    //    [JsonPropertyName("responses")]
+    //    public List<Response> Responses { get; set; }
+    //}
 
     public class OCRDocumentResponse
     {
-        [JsonPropertyName("responses")]
-        public List<Response> Responses { get; set; }
+        [JsonPropertyName("labelAnnotations")]
+        public List<LabelAnnotation> LabelAnnotations { get; set; }
+
+        [JsonPropertyName("textAnnotations")]
+        public List<TextAnnotation> TextAnnotations { get; set; }
+
+        [JsonPropertyName("fullTextAnnotation")]
+        public FullTextAnnotation FullTextAnnotation { get; set; }
+
+        [JsonPropertyName("error")]
+        public Error Error { get; set; }
+
+        [JsonPropertyName("context")]
+        public Context Context { get; set; }
     }
 }
 

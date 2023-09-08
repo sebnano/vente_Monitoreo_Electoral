@@ -45,13 +45,13 @@ namespace ElectoralMonitoring
 
     public class OCRDocument
     {
-        public OCRDocument(List<Request> requests)
+        public OCRDocument(Request requests)
         {
             Requests = requests;
         }
 
         [JsonPropertyName("requests")]
-        public List<Request> Requests { get; set; }
+        public Request Requests { get; set; }
     }
 
     public class OCRDocumentRequest
@@ -60,18 +60,16 @@ namespace ElectoralMonitoring
 
         public OCRDocumentRequest(string imageContent)
         {
-            Data = new OCRDocument(new()
-                    {
+            Data = new OCRDocument(
                         new Request(new Image(imageContent), new List<Feature>()
-                            {
-                                new("DOCUMENT_TEXT_DETECTION", 1)
-                            })
-                    });
+                        {
+                            new("DOCUMENT_TEXT_DETECTION", 1)
+                        }));
         }
 
         public string ToJson()
         {
-            return JsonSerializer.Serialize(Data);
+            return JsonSerializer.Serialize(Data.Requests);
         }
     }
 }
