@@ -1,4 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
 	<Target Name="MBTHack" BeforeTargets="Secrets" DependsOnTargets="MobileBuildToolsInit">
 	</Target>
 	<PropertyGroup>
@@ -9,50 +10,46 @@
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-
 		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
 		<Deterministic>False</Deterministic>
 		<!-- Display name -->
 		<ApplicationTitle>ElectoralMonitoring</ApplicationTitle>
-
 		<!-- App Identifier -->
 		<ApplicationId>com.nsystech.monitoreoelectoral</ApplicationId>
 		<ApplicationIdGuid>45dc844f-1a21-4361-a513-7fe4fa5701fc</ApplicationIdGuid>
-
 		<!-- Versions -->
 		<!-- Versions -->
 		<!-- major.minor.patch -->
 		<ApplicationDisplayVersion>0.1</ApplicationDisplayVersion>
 		<!-- major*10000 + minor * 100 + patch -->
 		<ApplicationVersion>1</ApplicationVersion>
-
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 	<!-- Debug Configuration iOS -->
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
-	  <CreatePackage>false</CreatePackage>
-	  <CodesignKey>iPhone Developer: Sebastian Campanella (QV87V23BBC)</CodesignKey>
-	  <CodesignProvision>MonitoreoElectoral_dev</CodesignProvision>
-	  <CodesignEntitlements>Platforms\iOS\Entitlements.plist</CodesignEntitlements>
+		<CreatePackage>false</CreatePackage>
+		<CodesignKey>iPhone Developer: Sebastian Campanella (QV87V23BBC)</CodesignKey>
+		<CodesignProvision>MonitoreoElectoral_dev</CodesignProvision>
+		<CodesignEntitlements>Platforms\iOS\Entitlements.plist</CodesignEntitlements>
 	</PropertyGroup>
 	<!-- Debug Configuration All -->
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-	  <WarningLevel>4</WarningLevel>
-	  <NoWarn>1701;1702;CS1573;CS1591;C1614</NoWarn>
+		<WarningLevel>4</WarningLevel>
+		<NoWarn>1701;1702;CS1573;CS1591;C1614</NoWarn>
 	</PropertyGroup>
-	
 	<!-- Global Configuration iOS -->
 	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-ios'">
-		<BundleResource Include="GoogleService-Info.plist"></BundleResource>
+		<BundleResource Include="GoogleService-Info.plist">
+		</BundleResource>
 	</ItemGroup>
 	<!-- Global Configuration Android -->
 	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-android'">
-		<GoogleServicesJson Include="google-services.json"></GoogleServicesJson>
+		<GoogleServicesJson Include="google-services.json">
+		</GoogleServicesJson>
 		<PackageReference Include="Xamarin.Kotlin.StdLib.Jdk7" Version="1.8.21.1" ExcludeAssets="build;buildTransitive" />
 		<PackageReference Include="Xamarin.Kotlin.StdLib.Jdk8" Version="1.8.21.1" ExcludeAssets="build;buildTransitive" />
 	</ItemGroup>
-
 	<!-- Release Configuration Android -->
 	<PropertyGroup Condition="$(TargetFramework.Contains('-android')) and '$(Configuration)' == 'Release'">
 		<EnableLLVM>False</EnableLLVM>
@@ -60,29 +57,24 @@
 		<PublishTrimmed>True</PublishTrimmed>
 		<DebugSymbols>True</DebugSymbols>
 	</PropertyGroup>
-	
 	<!-- Release Configuration iOS -->
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
-	  <CreatePackage>false</CreatePackage>
-	  <CodesignProvision>MonitoreoElectoral_DIST</CodesignProvision>
-	  <CodesignKey>iPhone Distribution: Sebastian Campanella (54URG96KXY)</CodesignKey>
-	  <CodesignEntitlements>Platforms\iOS\Entitlements.plist</CodesignEntitlements>
+		<CreatePackage>false</CreatePackage>
+		<CodesignProvision>MonitoreoElectoral_DIST</CodesignProvision>
+		<CodesignKey>iPhone Distribution: Sebastian Campanella (54URG96KXY)</CodesignKey>
+		<CodesignEntitlements>Platforms\iOS\Entitlements.plist</CodesignEntitlements>
 	</PropertyGroup>
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
-
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#0e83e1" BaseSize="128,128" />
-
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
 		<MauiFont Include="Resources\Fonts\*" />
-
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
-
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 		<PackageReference Include="CommunityToolkit.Maui" Version="5.3.0" />
@@ -96,35 +88,57 @@
 		<PackageReference Include="ImageCropper.Maui" Version="1.0.3" />
 	</ItemGroup>
 	<ItemGroup>
-	  <EmbeddedResource Update="Resources\Lang\AppRes.resx">
-	    <Generator>ResXFileCodeGenerator</Generator>
-	    <LastGenOutput>AppRes.Designer.cs</LastGenOutput>
-	  </EmbeddedResource>
-	  <EmbeddedResource Update="Resources\Lang\AppRes.en.resx">
-	    <Generator>ResXFileCodeGenerator</Generator>
-	    <LastGenOutput>AppRes.en.Designer.cs</LastGenOutput>
-	  </EmbeddedResource>
+		<EmbeddedResource Update="Resources\Lang\AppRes.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>AppRes.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\Lang\AppRes.en.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>AppRes.en.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
 	</ItemGroup>
 	<ItemGroup>
-	  <Compile Update="Resources\Lang\AppRes.Designer.cs">
-	    <DependentUpon>AppRes.resx</DependentUpon>
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	  </Compile>
-	  <Compile Update="Resources\Lang\AppRes.en.Designer.cs">
-	    <DependentUpon>AppRes.en.resx</DependentUpon>
-	  </Compile>
+		<Compile Update="Resources\Lang\AppRes.Designer.cs">
+			<DependentUpon>AppRes.resx</DependentUpon>
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+		</Compile>
+		<Compile Update="Resources\Lang\AppRes.en.Designer.cs">
+			<DependentUpon>AppRes.en.resx</DependentUpon>
+		</Compile>
 	</ItemGroup>
 	<ItemGroup>
-	  <None Remove="Platforms\Android\Resources\values-night\" />
-	  <None Remove="Platforms\iOS\Utils\" />
-	  <None Remove="Resources\Images\app_logo.svg" />
+		<None Remove="Platforms\Android\Resources\values-night\" />
+		<None Remove="Platforms\iOS\Utils\" />
+		<None Remove="Resources\Images\app_logo.svg" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Platforms\Android\Resources\values-night\" />
-	  <Folder Include="Platforms\iOS\Utils\" />
+		<Folder Include="Platforms\Android\Resources\values-night\" />
+		<Folder Include="Platforms\iOS\Utils\" />
 	</ItemGroup>
 	<ItemGroup>
-	  <BundleResource Include="Resources\Images\app_logo.svg" />
+		<BundleResource Include="Resources\Images\app_logo.svg" />
 	</ItemGroup>
+	<PropertyGroup>
+		<!-- Properties used to strip bitcode from frameworks when using Visual Studio for Mac -->
+		<_StripBitcodeFromFrameworksMasterAfterTargets Condition="'$(OS)'=='Unix'">_ExpandNativeReferences</_StripBitcodeFromFrameworksMasterAfterTargets>
+		<_StripBitcodeFromFrameworksMasterDependsOnTargets Condition="'$(OS)'=='Unix'">_StripBitcodeFromFrameworksOnMac</_StripBitcodeFromFrameworksMasterDependsOnTargets>
+		<!-- Properties used to strip bitcode from frameworks when using Visual Studio for Windows -->
+		<_StripBitcodeFromFrameworksMasterAfterTargets Condition="'$(OS)'!='Unix'">_ComputeFrameworkFilesToPublish</_StripBitcodeFromFrameworksMasterAfterTargets>
+		<_StripBitcodeFromFrameworksMasterDependsOnTargets Condition="'$(OS)'!='Unix'">_StripBitcodeFromFrameworksOnWindows</_StripBitcodeFromFrameworksMasterDependsOnTargets>
+	</PropertyGroup>
+	<Target Name="_StripBitcodeFromFrameworksMasterTarget" Condition="'$(_StripBitcodeFromFrameworksMasterDependsOnTargets)'!='' AND @(_FrameworkNativeReference-&gt;Count()) != 0" AfterTargets="$(_StripBitcodeFromFrameworksMasterAfterTargets)" DependsOnTargets="$(_StripBitcodeFromFrameworksMasterDependsOnTargets)" />
+	<Target Name="_StripBitcodeFromFrameworksOnMac" Condition="('$(OutputType)'!='Library' OR '$(IsAppExtension)'=='True') AND '$(_SdkIsSimulator)'=='False'">
+		<!-- Find the bitcode_strip command -->
+		<Exec Command="xcrun -find bitcode_strip" ConsoleToMSBuild="true">
+			<Output TaskParameter="ConsoleOutput" PropertyName="_BitcodeStripCommand" />
+		</Exec>
+		<!-- Strip the bitcode from frameworks -->
+		<Exec Command="$(_BitcodeStripCommand) %(_FrameworkNativeReference.Identity) -r -o %(_FrameworkNativeReference.Identity)" />
+	</Target>
+	<Target Name="_StripBitcodeFromFrameworksOnWindows" Condition="('$(OutputType)'!='Library' OR '$(IsAppExtension)'=='True') AND '$(_SdkIsSimulator)'=='False' AND '$(IsMacEnabled)'=='true'">
+		<!-- Strip the bitcode from frameworks -->
+		<Exec SessionId="$(BuildSessionId)" Command="&quot;%24(xcrun -find bitcode_strip)&quot; %(_FrameworkNativeReference.Identity) -r -o %(_FrameworkNativeReference.Identity)" />
+		<CopyFileFromBuildServer SessionId="$(BuildSessionId)" File="%(_FrameworkNativeReference.Identity)" TargetFile="%(_FrameworkNativeReference.Identity)" />
+	</Target>
 </Project>

@@ -200,9 +200,6 @@ namespace ElectoralMonitoring
 
     public class OCRDocumentResponse
     {
-        [JsonPropertyName("labelAnnotations")]
-        public List<LabelAnnotation> LabelAnnotations { get; set; }
-
         [JsonPropertyName("textAnnotations")]
         public List<TextAnnotation> TextAnnotations { get; set; }
 

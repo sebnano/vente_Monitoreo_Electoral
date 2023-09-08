@@ -34,9 +34,10 @@ namespace ElectoralMonitoring
             {
                 var data = new OCRDocumentRequest(base64Image);
                 var json = data.ToJson();
-                //var function = _firebaseFunctions.GetHttpsCallable("imageTextRecognition");
-                
-                //var response = await function.CallAsync<OCRDocumentResponse>(json);
+                var function = _firebaseFunctions.GetHttpsCallable("imageTextRecognition");
+
+                var response = await function.CallAsync<List<OCRDocumentResponse>>(json);
+                Console.WriteLine(response.FirstOrDefault()?.FullTextAnnotation.Text);
 
                 //Console.WriteLine(response);
             }
