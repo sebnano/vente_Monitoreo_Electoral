@@ -19,7 +19,7 @@
                         x:Name="MyEntry" VerticalOptions="FillAndExpand"
                         Keyboard="{Binding KeyboardType}" HorizontalOptions="FillAndExpand"
                         IsTextPredictionEnabled="False" MaxLength="{Binding MaxLenght}"
-                        IsSpellCheckEnabled="False" ReturnType="Next"
+                        IsSpellCheckEnabled="False" ReturnType="Done"
                         Placeholder="{Binding Placeholder,FallbackValue='Field Placeholder'}" 
                         Text="{Binding Text}" />
                     <Label x:Name="VisibilityPassword"

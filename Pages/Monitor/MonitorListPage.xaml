@@ -12,7 +12,6 @@
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
     </ContentPage.ToolbarItems>
-    <ScrollView>
         <StackLayout
             Spacing="25">
             <Border Margin="10">
@@ -47,5 +46,4 @@
                         Command="{Binding TakePhotoCommand}"/>
             </Border>
         </StackLayout>
-    </ScrollView>
 </ContentPage>

@@ -10,9 +10,9 @@
         <StackLayout Spacing="25">
             <Grid ColumnDefinitions="Auto,*" Margin="10" ColumnSpacing="10">
                 
-            <Border Grid.Column="0" HorizontalOptions="Start" >
-                <Image Source="{Binding ImagePreview}" Aspect="AspectFit"
-                       HeightRequest="200"></Image>
+            <Border Grid.Column="0" HorizontalOptions="Start" HeightRequest="200" WidthRequest="116">
+                <Image Source="{Binding ImagePreview}"
+                       Aspect="AspectFit"/>
             </Border>
                 <StackLayout Grid.Column="1" Spacing="6">
                     <Label Text="Acta escaneada" FontSize="Title" FontAttributes="Bold"/>

@@ -8,7 +8,7 @@
              Shell.TabBarIsVisible="False"
              xmlns:local="clr-namespace:ElectoralMonitoring"
              xmlns:res="clr-namespace:ElectoralMonitoring.Resources.Lang">
-    <ScrollView>
+    <local:FixedScrollView>
         <StackLayout VerticalOptions="CenterAndExpand" Spacing="20" Style="{StaticResource PageLayoutBase}">
             <Image Source="dotnet_bot" HeightRequest="140" Aspect="AspectFit"/>
             <Label FontSize="Title" Text="{x:Static res:AppRes.RegisterPageTitle}"/>
@@ -25,5 +25,5 @@
                     MinimumHeightRequest="-1" MinimumWidthRequest="-1" FontAttributes="Bold" TextColor="{DynamicResource Primary}"/>
             </StackLayout>
         </StackLayout>
-    </ScrollView>
+    </local:FixedScrollView>
 </ContentPage>

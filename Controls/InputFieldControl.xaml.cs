@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
+using CommunityToolkit.Maui.Core.Platform;
 
 namespace ElectoralMonitoring;
 
@@ -159,9 +160,10 @@ public partial class InputFieldControl : ContentView
     async void MyEntry_Completed(object? sender, EventArgs e)
     {
         MyEntry.Text = GetNameValidate(MyEntry.Text);
-        MyEntry.IsEnabled = false;
-        await Task.Delay(200);
-        MyEntry.IsEnabled = true;
+        if (KeyboardExtensions.IsSoftKeyboardShowing(MyEntry))
+        {
+            await MyEntry.HideKeyboardAsync(default);
+        }
     }
 
     private void TapVisibilityPassword(object sender, TappedEventArgs e)

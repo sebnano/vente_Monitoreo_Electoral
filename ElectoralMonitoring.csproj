@@ -29,39 +29,51 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
+	<!-- Debug Configuration iOS -->
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
+	  <CreatePackage>false</CreatePackage>
+	  <CodesignKey>iPhone Developer: Sebastian Campanella (QV87V23BBC)</CodesignKey>
+	  <CodesignProvision>MonitoreoElectoral_dev</CodesignProvision>
+	  <CodesignEntitlements>Platforms\iOS\Entitlements.plist</CodesignEntitlements>
+	</PropertyGroup>
+	<!-- Debug Configuration All -->
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+	  <WarningLevel>4</WarningLevel>
+	  <NoWarn>1701;1702;CS1573;CS1591;C1614</NoWarn>
+	</PropertyGroup>
+	
+	<!-- Global Configuration iOS -->
+	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-ios'">
+		<BundleResource Include="GoogleService-Info.plist"></BundleResource>
+	</ItemGroup>
+	<!-- Global Configuration Android -->
+	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-android'">
+		<GoogleServicesJson Include="google-services.json"></GoogleServicesJson>
+		<PackageReference Include="Xamarin.Kotlin.StdLib.Jdk7" Version="1.8.21.1" ExcludeAssets="build;buildTransitive" />
+		<PackageReference Include="Xamarin.Kotlin.StdLib.Jdk8" Version="1.8.21.1" ExcludeAssets="build;buildTransitive" />
+	</ItemGroup>
+
+	<!-- Release Configuration Android -->
 	<PropertyGroup Condition="$(TargetFramework.Contains('-android')) and '$(Configuration)' == 'Release'">
 		<EnableLLVM>False</EnableLLVM>
 		<RunAOTCompilation>True</RunAOTCompilation>
 		<PublishTrimmed>True</PublishTrimmed>
 		<DebugSymbols>True</DebugSymbols>
 	</PropertyGroup>
-	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-ios'">
-		<BundleResource Include="GoogleService-Info.plist"></BundleResource>
-	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-android'">
-		<GoogleServicesJson Include="google-services.json"></GoogleServicesJson>
-		<PackageReference Include="Xamarin.Kotlin.StdLib.Jdk7" Version="1.8.21.1" ExcludeAssets="build;buildTransitive" />
-		<PackageReference Include="Xamarin.Kotlin.StdLib.Jdk8" Version="1.8.21.1" ExcludeAssets="build;buildTransitive" />
-	</ItemGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
-	  <CreatePackage>false</CreatePackage>
-	  <CodesignKey>iPhone Developer</CodesignKey>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-	  <WarningLevel>4</WarningLevel>
-	  <NoWarn>1701;1702;CS1573;CS1591;C1614</NoWarn>
-	</PropertyGroup>
+	
+	<!-- Release Configuration iOS -->
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
 	  <CreatePackage>false</CreatePackage>
 	  <CodesignProvision>MonitoreoElectoral_DIST</CodesignProvision>
 	  <CodesignKey>iPhone Distribution: Sebastian Campanella (54URG96KXY)</CodesignKey>
+	  <CodesignEntitlements>Platforms\iOS\Entitlements.plist</CodesignEntitlements>
 	</PropertyGroup>
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#0e83e1" BaseSize="128,128" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
@@ -84,6 +96,7 @@
 		<PackageReference Include="Mobile.BuildTools" Version="2.0.245" />
 		<PackageReference Include="fusillade" Version="2.4.67" />
 		<PackageReference Include="Plugin.Firebase" Version="2.0.5" />
+		<PackageReference Include="ImageCropper.Maui" Version="1.0.3" />
 	</ItemGroup>
 	<ItemGroup>
 	  <EmbeddedResource Update="Resources\Lang\AppRes.resx">
@@ -107,8 +120,10 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <None Remove="Platforms\Android\Resources\values-night\" />
+	  <None Remove="Platforms\iOS\Utils\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Platforms\Android\Resources\values-night\" />
+	  <Folder Include="Platforms\iOS\Utils\" />
 	</ItemGroup>
 </Project>

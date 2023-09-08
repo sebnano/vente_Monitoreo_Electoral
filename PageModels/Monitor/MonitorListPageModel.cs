@@ -14,34 +14,39 @@ namespace ElectoralMonitoring
             Username = _authService.NameUser;
         }
 
-        [RelayCommand]
-        public async Task TakePhoto()
+        public Microsoft.Maui.Controls.Page ContextPage { get; set; }
+
+        [RelayCommand(AllowConcurrentExecutions = false)]
+        public Task TakePhoto()
         {
             if (MediaPicker.Default.IsCaptureSupported)
             {
-                FileResult photo = await MediaPicker.Default.CapturePhotoAsync();
-
-                if (photo != null)
+                new ImageCropper.Maui.ImageCropper()
                 {
-                    // save the file into local storage
-                    string localFilePath = Path.Combine(FileSystem.CacheDirectory, photo.FileName);
-
-                    using Stream sourceStream = await photo.OpenReadAsync();
-                    using FileStream localFileStream = File.OpenWrite(localFilePath);
-
-                    await sourceStream.CopyToAsync(localFileStream);
-
-                    byte[] imageArray = System.IO.File.ReadAllBytes(photo.FullPath);
-                    string base64ImageRepresentation = Convert.ToBase64String(imageArray);
-
-                    var navigationParameter = new Dictionary<string, object>
+                    PageTitle = "Recorte la imagen",
+                    AspectRatioX = 9,
+                    AspectRatioY = 16,
+                    CropShape = ImageCropper.Maui.ImageCropper.CropShapeType.Rectangle,
+                    SelectSourceTitle = "Seleccione",
+                    TakePhotoTitle = "Tomar foto",
+                    PhotoLibraryTitle = "Desde galería",
+                    CropButtonTitle = "Recortar",
+                    CancelButtonTitle = "Cancelar",
+                    Success = async (imageFile) =>
                     {
-                        { "localFilePath", localFilePath },
-                        { "base64", base64ImageRepresentation }
-                    };
-                    await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter);
-                }
+                        var bytes = await File.ReadAllBytesAsync(imageFile);
+                        var base64 = Convert.ToBase64String(bytes);
+                        var navigationParameter = new Dictionary<string, object>
+                        {
+                            { "localFilePath", imageFile },
+                            { "imageBase64", base64 }
+                        };
+                        await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter);
+                    }
+                }.Show(ContextPage);
             }
+
+            return Task.CompletedTask;
         }
     }
 }

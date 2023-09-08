@@ -84,10 +84,10 @@ public static class MauiProgram
             events.AddiOS(iOS => iOS.FinishedLaunching((app, launchOptions) => {
                 Plugin.Firebase.Bundled.Platforms.iOS.CrossFirebase.Initialize(CreateCrossFirebaseSettings());
 
-                Firebase.Core.App.Configure();
                 Firebase.Crashlytics.Crashlytics.SharedInstance.Init();
                 Firebase.Crashlytics.Crashlytics.SharedInstance.SetCrashlyticsCollectionEnabled(true);
                 Firebase.Crashlytics.Crashlytics.SharedInstance.SendUnsentReports();
+                new ImageCropper.Maui.Platform().Init();
                 return false;
             }));
 #else
