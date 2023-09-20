@@ -8,22 +8,53 @@ namespace ElectoralMonitoring
 {
     public partial class MonitorListPageModel : BasePageModel
     {
+        readonly NodeService _nodeService;
         [ObservableProperty]
         string username;
 
         [ObservableProperty]
-        ObservableCollection<object> minutes;
+        ObservableCollection<Minute>? minutes;
 
-        public MonitorListPageModel(AuthService authService) : base(authService)
+        public MonitorListPageModel(NodeService nodeService, AuthService authService) : base(authService)
         {
+            _nodeService = nodeService;
             Username = _authService.NameUser;
-            Minutes = new();
             AuthService.NamedChanged += AuthService_NamedChanged;
+            _ = Init();
+        }
+
+        private async Task Init()
+        {
+            if (_authService.IsAuthenticated)
+            {
+                Minutes ??= new();
+                var list = await _nodeService.GetMinutesByUser(CancellationToken.None);
+                if(list != null && list.Count > 0)
+                {
+                    Minutes = new(list.Select(x => new Minute()
+                    {
+                        field_centro_de_votacion = x.field_centro_de_votacion,
+                        field_mesa = x.field_mesa,
+                        nid = x.nid,
+                        Icon = IconFont.FileDocumentCheck
+                    }));
+                }
+
+                var minute = new Minute()
+                {
+                    field_mesa = "1",
+                    field_centro_de_votacion = "ESCUELA BASICA DC- 21 EL BOSTERO",
+                    nid = "16108",
+                    Icon = IconFont.FileDocumentCheck
+                };
+                Minutes.Add(minute);
+            }
         }
 
         private void AuthService_NamedChanged(object? sender, EventArgs e)
         {
             Username = _authService.NameUser;
+            _ = Init();
         }
 
         public Microsoft.Maui.Controls.Page? ContextPage { get; set; }
@@ -58,7 +89,7 @@ namespace ElectoralMonitoring
                     Success = (imageFile) =>
                     {
                         var rootRef = CrossFirebaseStorage.Current.GetRootReference();
-                        var fileName = Path.GetFileName(imageFile);
+                        var fileName = System.IO.Path.GetFileName(imageFile);
                         var imageRef = rootRef.GetChild($"app/actas/{fileName}");
                         var uploadTask = imageRef.PutFile(imageFile);
                         uploadTask.AddObserver(StorageTaskStatus.Success, async (_) =>
@@ -112,7 +143,7 @@ namespace ElectoralMonitoring
 
         static async Task<string> SaveFileInLocalStorage(FileResult photo)
         {
-            string localFilePath = Path.Combine(FileSystem.CacheDirectory, photo.FileName);
+            string localFilePath = System.IO.Path.Combine(FileSystem.CacheDirectory, photo.FileName);
 
             using (var sourceStream = await photo.OpenReadAsync())
             {

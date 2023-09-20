@@ -105,7 +105,7 @@ namespace ElectoralMonitoring
         {
             var currentUserResult = await AttemptAndRetry_Mobile(async () => {
 
-                return await _authApi.GetUser(await GetAccessToken(), IdUser).ConfigureAwait(false);
+                return await _authApi.GetUser(IdUser).ConfigureAwait(false);
 
             }, cancellationToken);
 
@@ -130,23 +130,27 @@ namespace ElectoralMonitoring
 
         public async Task<string> GetAccessToken()
         {
-            var token = new JwtSecurityToken(AccessToken);
-            if(token.ValidTo < DateTime.Now)
+            if (!string.IsNullOrEmpty(AccessToken))
             {
-                var tokenResponse = await AttemptAndRetry_Mobile(async () => {
-
-                    return await _authApi.OAuth2TokenRefresh(new RefreshTokenCredentials("refresh_token", AppSettings.ClientId, AppSettings.ClientSecret, RefreshToken)).ConfigureAwait(false);
-
-                }, CancellationToken.None);
-
-                if (tokenResponse != null)
+                var token = new JwtSecurityToken(AccessToken);
+                if (token.ValidTo < DateTime.UtcNow)
                 {
-                    AccessToken = tokenResponse.AccessToken;
-                    RefreshToken = tokenResponse.RefreshToken;
-                    IsAuthenticated = true;
-                }
+                    var tokenResponse = await AttemptAndRetry_Mobile(async () => {
 
+                        return await _authApi.OAuth2TokenRefresh(new RefreshTokenCredentials("refresh_token", AppSettings.ClientId, AppSettings.ClientSecret, RefreshToken)).ConfigureAwait(false);
+
+                    }, CancellationToken.None);
+
+                    if (tokenResponse != null)
+                    {
+                        AccessToken = tokenResponse.AccessToken;
+                        RefreshToken = tokenResponse.RefreshToken;
+                        IsAuthenticated = true;
+                    }
+
+                }
             }
+            
 
             return AccessToken;
         }

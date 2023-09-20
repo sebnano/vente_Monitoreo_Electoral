@@ -38,6 +38,7 @@ public static class MauiProgram
     private static MauiAppBuilder RegisterServices(this MauiAppBuilder builder)
     {
         builder.Services.AddSingleton<AuthService>();
+        builder.Services.AddSingleton<NodeService>();
         builder.Services.AddSingleton<AnalyticsService>();
         builder.Services.AddSingleton<IFirebaseAnalytics, LoggerAnalytics>();
 
@@ -48,7 +49,9 @@ public static class MauiProgram
 
         //Refit services
         IAuthApi authApi = RefitExtensions.For<IAuthApi>(BaseApiService.GetApi(Fusillade.Priority.Explicit));
+        INodeApi nodeApi = RefitExtensions.For<INodeApi>(BaseApiService.GetApi(Fusillade.Priority.Explicit));
         builder.Services.AddSingleton(authApi);
+        builder.Services.AddSingleton(nodeApi);
 
         return builder;
     }

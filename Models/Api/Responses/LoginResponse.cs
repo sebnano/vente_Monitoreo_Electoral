@@ -13,7 +13,7 @@ namespace ElectoralMonitoring
 
     public record TokenResponse(
         [property: JsonPropertyName("token_type")] string TokenType,
-        [property: JsonPropertyName("expires_in")] string ExpireIn,
+        [property: JsonPropertyName("expires_in")] int ExpireIn,
         [property: JsonPropertyName("access_token")] string AccessToken,
         [property: JsonPropertyName("refresh_token")] string RefreshToken
     );

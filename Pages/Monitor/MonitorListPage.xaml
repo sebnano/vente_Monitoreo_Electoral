@@ -13,7 +13,7 @@
         </ToolbarItem>
     </ContentPage.ToolbarItems>
         <StackLayout
-            Spacing="25">
+            Spacing="10">
             <Border Margin="10">
                 <StackLayout Padding="12" Orientation="Horizontal" HeightRequest="100">
                     <StackLayout Spacing="10" HorizontalOptions="StartAndExpand">
@@ -31,7 +31,11 @@
                     </StackLayout>
                     <Label Style="{StaticResource LabelIcon}"
                            Text="{StaticResource IconLibrary}"
-                           FontSize="32" VerticalTextAlignment="Center" VerticalOptions="FillAndExpand" Margin="0,20"
+                           FontSize="32" VerticalTextAlignment="Center"
+                           HeightRequest="50"
+                           WidthRequest="50"
+                           VerticalOptions="FillAndExpand"
+                           Margin="0,20"
                            HorizontalOptions="End"/>
                 </StackLayout>
             </Border>
@@ -45,8 +49,33 @@
                         </StackLayout>
                     </ContentView>
                 </CollectionView.EmptyView>
-
-
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="local:Minute">
+                        <Border Margin="10,5">
+                            <Grid ColumnSpacing="10" Padding="10" RowDefinitions="*,*" ColumnDefinitions="Auto,*,Auto">
+                                <Label Style="{StaticResource LabelIcon}"
+                                       Text="{Binding Icon}"
+                                       FontSize="32" HorizontalOptions="Start"
+                                       Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"/>
+                                <Label Grid.Column="1" Grid.Row="0">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding field_centro_de_votacion}"/>
+                                            <Span Text=" #"/>
+                                            <Span Text="{Binding nid}"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label Grid.Column="1" Grid.Row="1" Text="{Binding field_mesa, StringFormat='Mesa {0}'}" />
+                                <Label Style="{StaticResource LabelIcon}"
+                                       Text="{StaticResource IconUpload}"
+                                       FontSize="32" HorizontalOptions="Start"
+                                       Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
+                                       IsVisible="False"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
             </CollectionView>
 
             <Border VerticalOptions="End" Padding="0" StrokeThickness="0" Background="{StaticResource Primary}" StrokeShape="RoundRectangle 20,20,0,0">
