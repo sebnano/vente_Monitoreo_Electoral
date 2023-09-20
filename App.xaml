@@ -10,7 +10,7 @@
                 <ResourceDictionary Source="Resources/Styles/Icons.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <x:Double x:Key="BottomButtonHeight">100</x:Double>
+            <x:Double x:Key="BottomButtonHeight">80</x:Double>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -31,12 +31,20 @@
                     </StackLayout>
                     <Label Style="{StaticResource LabelIcon}"
                            Text="{StaticResource IconLibrary}"
-                           FontSize="32"
+                           FontSize="32" VerticalTextAlignment="Center" VerticalOptions="FillAndExpand" Margin="0,20"
                            HorizontalOptions="End"/>
                 </StackLayout>
             </Border>
 
-            <CollectionView VerticalOptions="StartAndExpand" EmptyView="No hay documentos cargados, presione Agregar para cargar uno.">
+            <CollectionView VerticalOptions="StartAndExpand" ItemsSource="{Binding Minutes}">
+                <CollectionView.EmptyView>
+                    <ContentView>
+                        <StackLayout Spacing="12">
+                            <Image Source="no_data" WidthRequest="100" HeightRequest="100" Aspect="AspectFit" HorizontalOptions="Center"/>
+                            <Label Text="{x:Static res:AppRes.EmptyDocs}" HorizontalTextAlignment="Center"/>
+                        </StackLayout>
+                    </ContentView>
+                </CollectionView.EmptyView>
 
 
             </CollectionView>

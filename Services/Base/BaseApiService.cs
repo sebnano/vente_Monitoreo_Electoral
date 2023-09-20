@@ -38,7 +38,7 @@ namespace ElectoralMonitoring
             get
             {
                 return new Lazy<HttpClient>(() => CreateHttpClient(
-              new RateLimitedHttpMessageHandler(new HttpLoggingHandler(), Priority.UserInitiated))).Value;
+              new RateLimitedHttpMessageHandler(new AuthHeaderHandler(), Priority.UserInitiated))).Value;
             }
         }
 

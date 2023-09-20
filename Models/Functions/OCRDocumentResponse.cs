@@ -18,7 +18,7 @@ namespace ElectoralMonitoring
         public string BlockType { get; set; }
 
         [JsonPropertyName("confidence")]
-        public int Confidence { get; set; }
+        public decimal Confidence { get; set; }
     }
 
     public class BoundingBox
@@ -60,7 +60,7 @@ namespace ElectoralMonitoring
         public string LanguageCode { get; set; }
 
         [JsonPropertyName("confidence")]
-        public int Confidence { get; set; }
+        public decimal Confidence { get; set; }
     }
 
     public class Error
@@ -117,7 +117,7 @@ namespace ElectoralMonitoring
         public List<Block> Blocks { get; set; }
 
         [JsonPropertyName("confidence")]
-        public int Confidence { get; set; }
+        public decimal Confidence { get; set; }
     }
 
     public class Paragraph
@@ -132,7 +132,7 @@ namespace ElectoralMonitoring
         public List<Word> Words { get; set; }
 
         [JsonPropertyName("confidence")]
-        public int Confidence { get; set; }
+        public decimal Confidence { get; set; }
     }
 
     public class Property
@@ -156,7 +156,7 @@ namespace ElectoralMonitoring
         public string Text { get; set; }
 
         [JsonPropertyName("confidence")]
-        public int Confidence { get; set; }
+        public decimal Confidence { get; set; }
     }
 
     public class TextAnnotation
@@ -189,14 +189,8 @@ namespace ElectoralMonitoring
         public List<Symbol> Symbols { get; set; }
 
         [JsonPropertyName("confidence")]
-        public int Confidence { get; set; }
+        public decimal Confidence { get; set; }
     }
-
-    //public class OCRDocumentResponse
-    //{
-    //    [JsonPropertyName("responses")]
-    //    public List<Response> Responses { get; set; }
-    //}
 
     public class OCRDocumentResponse
     {

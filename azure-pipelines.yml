@@ -9,7 +9,7 @@ variables:
     BuildConfiguration: Release
     DotNetVersion: 7.0.306
     VSVERSION: 17/pre
-    BuildAndroid: true
+    BuildAndroid: false
     BuildiOS: true
 
 name: $(Date:yyMMdd)$(Rev:r)

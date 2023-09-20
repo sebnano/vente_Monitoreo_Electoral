@@ -28,6 +28,14 @@
           {
             "name": "BackendUrl",
             "type": "String"
+          },
+          {
+            "name": "ClientId",
+            "type": "String"
+          },
+          {
+            "name": "ClientSecret",
+            "type": "String"
           }
         ]
       }

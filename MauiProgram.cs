@@ -3,6 +3,8 @@ using CommunityToolkit.Maui;
 using Plugin.Firebase.Bundled.Shared;
 using Microsoft.Maui.LifecycleEvents;
 using Plugin.Firebase.Functions;
+using Plugin.Firebase.Storage;
+using System.Diagnostics;
 
 namespace ElectoralMonitoring;
 
@@ -42,6 +44,7 @@ public static class MauiProgram
         builder.Services.AddSingleton(Preferences.Default);
         builder.Services.AddSingleton(Connectivity.Current);
         builder.Services.AddSingleton(CrossFirebaseFunctions.Current);
+        //builder.Services.AddSingleton(CrossFirebaseStorage.Current);
 
         //Refit services
         IAuthApi authApi = RefitExtensions.For<IAuthApi>(BaseApiService.GetApi(Fusillade.Priority.Explicit));
@@ -83,7 +86,6 @@ public static class MauiProgram
 #if IOS
             events.AddiOS(iOS => iOS.FinishedLaunching((app, launchOptions) => {
                 Plugin.Firebase.Bundled.Platforms.iOS.CrossFirebase.Initialize(CreateCrossFirebaseSettings());
-
                 Firebase.Crashlytics.Crashlytics.SharedInstance.Init();
                 Firebase.Crashlytics.Crashlytics.SharedInstance.SetCrashlyticsCollectionEnabled(true);
                 Firebase.Crashlytics.Crashlytics.SharedInstance.SendUnsentReports();
@@ -114,7 +116,7 @@ public static class MauiProgram
             isCrashlyticsEnabled: true,
             isFunctionsEnabled: true,
             isRemoteConfigEnabled: false,
-            isStorageEnabled: false,
+            isStorageEnabled: true,
             googleRequestIdToken: Helpers.AppSettings.GoogleRequestIdToken);
     }
 }

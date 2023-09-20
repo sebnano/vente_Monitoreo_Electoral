@@ -114,5 +114,14 @@
 	<data name="ConfirmScanBtn" xml:space="preserve">
 		<value>Aceptar</value>
 	</data>
+	<data name="EmptyDocs" xml:space="preserve">
+		<value>No hay documentos cargados, presione Agregar para cargar uno.</value>
+	</data>
+	<data name="MinutesScannedTitle" xml:space="preserve">
+		<value>Acta escaneada</value>
+	</data>
+	<data name="ConfirmDataAndSubmit" xml:space="preserve">
+		<value>Confirme los datos y presione Aceptar</value>
+	</data>
 </root>
 

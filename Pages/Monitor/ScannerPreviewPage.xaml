@@ -10,14 +10,14 @@
         <StackLayout Spacing="25">
             <Grid ColumnDefinitions="Auto,*" Margin="10" ColumnSpacing="10">
                 
-            <Border Grid.Column="0" HorizontalOptions="Start" HeightRequest="200" WidthRequest="116">
+            <Border Grid.Column="0" HorizontalOptions="Start" WidthRequest="116">
                 <Image Source="{Binding ImagePreview}"
                        Aspect="AspectFit"/>
             </Border>
                 <StackLayout Grid.Column="1" Spacing="6">
-                    <Label Text="Acta escaneada" FontSize="Title" FontAttributes="Bold"/>
-                    <Label Text="Confirme los datos y presione Aceptar" FontSize="Subtitle"/>
-                    <Label Text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged." FontSize="Caption"/>
+                    <Label Text="{x:Static res:AppRes.MinutesScannedTitle}" FontSize="Title" FontAttributes="Bold"/>
+                    <Label Text="{x:Static res:AppRes.ConfirmDataAndSubmit}" FontSize="Subtitle"/>
+                    <Label Text="{Binding TextScanned}" FontSize="Caption"/>
                 </StackLayout>
             </Grid>
             <StackLayout VerticalOptions="FillAndExpand"></StackLayout>
