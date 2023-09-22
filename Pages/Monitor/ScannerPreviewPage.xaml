@@ -8,7 +8,7 @@
              xmlns:local="clr-namespace:ElectoralMonitoring">
     <ScrollView>
         <StackLayout Spacing="25">
-            <Grid ColumnDefinitions="Auto,*" Margin="10" ColumnSpacing="10">
+            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto" Margin="10" ColumnSpacing="10">
                 
             <Border Grid.Column="0" HorizontalOptions="Start" WidthRequest="116">
                 <Image Source="{Binding ImagePreview}"

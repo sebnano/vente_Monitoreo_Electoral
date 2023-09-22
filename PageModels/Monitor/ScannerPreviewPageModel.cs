@@ -10,17 +10,26 @@ namespace ElectoralMonitoring
 {
 	public partial class ScannerPreviewPageModel : BasePageModel, IQueryAttributable
     {
+        readonly NodeService _nodeService;
+
         [ObservableProperty]
         string imagePreview = string.Empty;
 
         [ObservableProperty]
         string textScanned = string.Empty;
 
-        public ScannerPreviewPageModel(AuthService authService) : base(authService)
+        public ScannerPreviewPageModel(NodeService nodeService, AuthService authService) : base(authService)
         {
+            _nodeService = nodeService;
         }
 
-        public void ApplyQueryAttributes(IDictionary<string, object> query)
+        private async Task Init()
+        {
+            var form = await _nodeService.GetMinutesForm(CancellationToken.None);
+            
+        }
+
+        public async void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if (query.ContainsKey("localFilePath") && query.ContainsKey("image") && query.ContainsKey("imageType"))
             {
@@ -29,6 +38,7 @@ namespace ElectoralMonitoring
                 var image = query["image"] as string ?? string.Empty;
                 var imageType = (ImageType)query["imageType"];
                 GetContent(imageType, image);
+                await Init().ConfigureAwait(false);
             }
         }
 

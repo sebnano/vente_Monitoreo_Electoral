@@ -9,6 +9,7 @@ namespace ElectoralMonitoring
     public partial class MonitorListPageModel : BasePageModel
     {
         readonly NodeService _nodeService;
+
         [ObservableProperty]
         string username;
 
@@ -39,15 +40,6 @@ namespace ElectoralMonitoring
                         Icon = IconFont.FileDocumentCheck
                     }));
                 }
-
-                var minute = new Minute()
-                {
-                    field_mesa = "1",
-                    field_centro_de_votacion = "ESCUELA BASICA DC- 21 EL BOSTERO",
-                    nid = "16108",
-                    Icon = IconFont.FileDocumentCheck
-                };
-                Minutes.Add(minute);
             }
         }
 

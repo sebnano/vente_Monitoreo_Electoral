@@ -11,6 +11,9 @@ namespace ElectoralMonitoring
 
         [Get("/jsonapi/node/registro_de_actas")]
         Task<NodeResponse<MinuteAttributes, MinuteRelationships>> GetMinutes();
+
+        [Get("/entity/entity_form_display/node.registro_de_actas.default?_format=json")]
+        Task<FormResponse> GetMinutesForm();
     }
 }
 
