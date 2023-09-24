@@ -41,6 +41,17 @@ namespace ElectoralMonitoring
             return result;
         }
 
+        public async Task<Dictionary<string,List<Node>>?> CreateNode(object values, CancellationToken cancellationToken)
+        {
+            var result = await AttemptAndRetry_Mobile(async () => {
+
+                return await _nodeApi.CreateNode(values).ConfigureAwait(false);
+
+            }, cancellationToken);
+
+            return result;
+        }
+
         public override Task LogOut()
         {
             return _authService.LogOut();

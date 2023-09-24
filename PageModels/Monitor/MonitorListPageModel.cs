@@ -14,6 +14,9 @@ namespace ElectoralMonitoring
         string username;
 
         [ObservableProperty]
+        bool isAdding;
+
+        [ObservableProperty]
         ObservableCollection<Minute>? minutes;
 
         public MonitorListPageModel(NodeService nodeService, AuthService authService) : base(authService)
@@ -28,6 +31,7 @@ namespace ElectoralMonitoring
         {
             if (_authService.IsAuthenticated)
             {
+                IsBusy = true;
                 Minutes ??= new();
                 var list = await _nodeService.GetMinutesByUser(CancellationToken.None);
                 if(list != null && list.Count > 0)
@@ -40,6 +44,7 @@ namespace ElectoralMonitoring
                         Icon = IconFont.FileDocumentCheck
                     }));
                 }
+                IsBusy = false;
             }
         }
 
@@ -54,6 +59,7 @@ namespace ElectoralMonitoring
         [RelayCommand(AllowConcurrentExecutions = false)]
         public Task TakePhoto()
         {
+            IsAdding = true;
 #if IOS
             return TakePhotoCropAndUpload();
 #endif
@@ -93,9 +99,13 @@ namespace ElectoralMonitoring
                                 { "image", imageUri },
                                 { "imageType", ImageType.URI }
                             };
+                            IsAdding = false;
                             await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter);
                         });
 
+                    },
+                    Failure = () => {
+                        IsAdding = false;
                     }
                 }.Show(ContextPage);
             }
@@ -126,6 +136,7 @@ namespace ElectoralMonitoring
                             { "image", imageUri },
                             { "imageType", ImageType.URI }
                         };
+                        IsAdding = false;
                         await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter);
                     });
                     

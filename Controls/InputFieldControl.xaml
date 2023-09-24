@@ -12,17 +12,17 @@
             Padding="5" 
             HorizontalOptions="FillAndExpand" x:Name="MyBorder" StrokeThickness="2">
             <StackLayout>
-                <Grid x:Name="EntryStack" ColumnSpacing="10" ColumnDefinitions="Auto,*,Auto" VerticalOptions="FillAndExpand">
+                <Grid x:Name="EntryStack" ColumnSpacing="10" ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto" VerticalOptions="FillAndExpand">
                     <Label Grid.Column="0" HorizontalOptions="Start" IsVisible="{Binding Icon, Converter={toolkit:IsNotNullConverter}}" Style="{StaticResource LabelIcon}" Text="{Binding Icon}"/>
                     <Entry
                         Grid.Column="1"
                         x:Name="MyEntry" VerticalOptions="FillAndExpand"
                         Keyboard="{Binding KeyboardType}" HorizontalOptions="FillAndExpand"
                         IsTextPredictionEnabled="False" MaxLength="{Binding MaxLenght}"
-                        IsSpellCheckEnabled="False" ReturnType="Done"
+                        IsSpellCheckEnabled="False" ReturnType="Next"
                         Placeholder="{Binding Placeholder,FallbackValue='Field Placeholder'}" 
                         Text="{Binding Text}" />
-                    <Label x:Name="VisibilityPassword"
+                    <Label x:Name="VisibilityPassword" IsVisible="False" 
                         Grid.Column="2" HorizontalOptions="End" Style="{StaticResource LabelIcon}" Text="{DynamicResource IconEye}">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Tapped="TapVisibilityPassword"/>

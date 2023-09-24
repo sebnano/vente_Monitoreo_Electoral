@@ -69,9 +69,9 @@ namespace ElectoralMonitoring
                 properties = new Dictionary<string,object>();
 
             properties.Add("Error: ", ex?.Message ?? string.Empty);
-            properties.Add("Error: ", lineNumber);
-            properties.Add("Error: ", callerMemberName);
-            properties.Add("Error: ", fileName);
+            properties.Add("lineNumber: ", lineNumber);
+            properties.Add("callerMemberName: ", callerMemberName);
+            properties.Add("fileName: ", fileName);
 
             //CrossFirebaseCrashlytics.Current.SetCustomKeys(properties);
             //CrossFirebaseCrashlytics.Current.RecordException(ex);

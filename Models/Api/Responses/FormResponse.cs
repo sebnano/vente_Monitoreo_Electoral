@@ -53,7 +53,8 @@ namespace ElectoralMonitoring
         public string type { get; set; }
         public int weight { get; set; }
         public string region { get; set; }
-        public Settings settings { get; set; }
+        //todo, agrear jsonconverter custom para manejar settings: []
+        //public Settings settings { get; set; }
         public List<object> third_party_settings { get; set; }
     }
 
@@ -67,7 +68,8 @@ namespace ElectoralMonitoring
         public string targetEntityType { get; set; }
         public string bundle { get; set; }
         public string mode { get; set; }
-        public Content content { get; set; }
+        public Dictionary<string, FormField> content { get; set; }
+        //public Content content { get; set; }
         public List<object> hidden { get; set; }
     }
 

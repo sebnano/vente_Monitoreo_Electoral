@@ -14,6 +14,9 @@ namespace ElectoralMonitoring
 
         [Get("/entity/entity_form_display/node.registro_de_actas.default?_format=json")]
         Task<FormResponse> GetMinutesForm();
+
+        [Post("/node?_format=json")]
+        Task<Dictionary<string,List<Node>>> CreateNode([Body] object body);
     }
 }
 

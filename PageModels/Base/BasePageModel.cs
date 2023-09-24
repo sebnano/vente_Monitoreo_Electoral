@@ -7,6 +7,9 @@ namespace ElectoralMonitoring
     {
         protected readonly AuthService _authService;
 
+        [ObservableProperty]
+        bool isBusy;
+
         public BasePageModel(AuthService authService)
 		{
             _authService = authService;

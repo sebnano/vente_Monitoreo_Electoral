@@ -1,29 +1,55 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ElectoralMonitoring.ScannerPreviewPage"
              Title="{x:Static res:AppRes.ScannerPreviewPageTitle}"
              x:DataType="local:ScannerPreviewPageModel"
              xmlns:res="clr-namespace:ElectoralMonitoring.Resources.Lang"
              xmlns:local="clr-namespace:ElectoralMonitoring">
-    <ScrollView>
-        <StackLayout Spacing="25">
-            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto" Margin="10" ColumnSpacing="10">
-                
-            <Border Grid.Column="0" HorizontalOptions="Start" WidthRequest="116">
-                <Image Source="{Binding ImagePreview}"
+    <StackLayout>
+        <ScrollView VerticalOptions="FillAndExpand">
+            <StackLayout Spacing="0">
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto" Margin="10" ColumnSpacing="10">
+
+                    <Border Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Start" WidthRequest="116">
+                        <Image Source="{Binding ImagePreview}"
                        Aspect="AspectFit"/>
-            </Border>
-                <StackLayout Grid.Column="1" Spacing="6">
-                    <Label Text="{x:Static res:AppRes.MinutesScannedTitle}" FontSize="Title" FontAttributes="Bold"/>
-                    <Label Text="{x:Static res:AppRes.ConfirmDataAndSubmit}" FontSize="Subtitle"/>
-                    <Label Text="{Binding TextScanned}" FontSize="Caption"/>
+                    </Border>
+                    <StackLayout Grid.Column="1" Spacing="6">
+                        <Label Text="{x:Static res:AppRes.MinutesScannedTitle}" FontSize="Title" FontAttributes="Bold"/>
+                        <Label Text="{x:Static res:AppRes.ConfirmDataAndSubmit}" FontSize="Subtitle"/>
+                        <Label Text="{Binding TextScanned}" FontSize="Caption" MaxLines="6" LineBreakMode="CharacterWrap"/>
+                    </StackLayout>
+                </Grid>
+                <StackLayout VerticalOptions="FillAndExpand">
+                    <StackLayout Orientation="Horizontal" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" Margin="-10,0,0,0">
+                        <ActivityIndicator IsRunning="{Binding IsBusy}" Scale="0.5"/>
+                        <Label Text="Obteniendo la información del acta..." HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </StackLayout>
+                    <StackLayout BindableLayout.ItemsSource="{Binding Fields}" Margin="12,0">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <ContentView Content="{Binding .}">
+
+
+                                </ContentView>
+
+                            </DataTemplate>
+
+                        </BindableLayout.ItemTemplate>
+
+                    </StackLayout>
                 </StackLayout>
-            </Grid>
-            <StackLayout VerticalOptions="FillAndExpand"></StackLayout>
-            <Border VerticalOptions="End" Padding="0" StrokeThickness="0" Background="{StaticResource Primary}" StrokeShape="RoundRectangle 20,20,0,0">
-                <Button Text="{x:Static res:AppRes.ConfirmScanBtn}" HeightRequest="{StaticResource BottomButtonHeight}" FontSize="Title"/>
-            </Border>
-        </StackLayout>
-    </ScrollView>
+
+            </StackLayout>
+        </ScrollView>
+        <Border VerticalOptions="End" HeightRequest="80" Padding="0" StrokeThickness="0" Background="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" StrokeShape="RoundRectangle 20,20,0,0">
+            <StackLayout>
+                <ActivityIndicator Color="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Primary}}" VerticalOptions="CenterAndExpand"  IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}"></ActivityIndicator>
+                <Button Text="{x:Static res:AppRes.AddButton}" IsVisible="{Binding IsLoading, Converter={toolkit:InvertedBoolConverter}}" HeightRequest="{StaticResource BottomButtonHeight}" FontSize="Title" FontAttributes="Bold"
+                    Command="{Binding SubmitFormCommand}"/>
+            </StackLayout>
+        </Border>
+    </StackLayout>
 </ContentPage>

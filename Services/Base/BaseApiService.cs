@@ -103,7 +103,8 @@ namespace ElectoralMonitoring
             static bool is400or404Or401or403(ApiException apiException) => apiException.StatusCode is System.Net.HttpStatusCode.BadRequest
                 || apiException.StatusCode is System.Net.HttpStatusCode.Forbidden
                 || apiException.StatusCode is System.Net.HttpStatusCode.Unauthorized
-                || apiException.StatusCode is System.Net.HttpStatusCode.NotFound;
+                || apiException.StatusCode is System.Net.HttpStatusCode.NotFound
+                || apiException.StatusCode is System.Net.HttpStatusCode.UnprocessableEntity;
         }
     }
 }

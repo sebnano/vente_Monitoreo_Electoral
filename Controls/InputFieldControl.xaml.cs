@@ -11,7 +11,8 @@ public enum FieldType
     DateTime,
     Email,
     Password,
-    Username
+    Username,
+    Number
 }
 
 public partial class InputFieldControl : ContentView
@@ -34,8 +35,23 @@ public partial class InputFieldControl : ContentView
                 switch (type)
                 {
                     case FieldType.Text:
+                        control.EntryStack.IsVisible = true;
+                        control.MyDatePicker.IsVisible = false;
+                        control.VisibilityPassword.IsVisible = false;
+                        control.MyEntry.IsPassword = false;
+                        break;
                     case FieldType.Name:
+                        control.EntryStack.IsVisible = true;
+                        control.MyDatePicker.IsVisible = false;
+                        control.VisibilityPassword.IsVisible = false;
+                        control.MyEntry.IsPassword = false;
+                        break;
                     case FieldType.Username:
+                        control.EntryStack.IsVisible = true;
+                        control.MyDatePicker.IsVisible = false;
+                        control.VisibilityPassword.IsVisible = false;
+                        control.MyEntry.IsPassword = false;
+                        break;
                     case FieldType.Email:
                         control.EntryStack.IsVisible = true;
                         control.MyDatePicker.IsVisible = false;
@@ -53,6 +69,13 @@ public partial class InputFieldControl : ContentView
                         control.MyEntry.IsPassword = true;
                         control.EntryStack.IsVisible = true;
                         control.MyDatePicker.IsVisible = false;
+                        break;
+                    case FieldType.Number:
+                        control.EntryStack.IsVisible = true;
+                        control.MyDatePicker.IsVisible = false;
+                        control.VisibilityPassword.IsVisible = false;
+                        control.MyEntry.IsPassword = false;
+                        control.MyEntry.Keyboard = Keyboard.Numeric;
                         break;
                     default:
                         break;

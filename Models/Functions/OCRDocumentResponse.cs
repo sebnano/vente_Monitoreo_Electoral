@@ -19,6 +19,9 @@ namespace ElectoralMonitoring
 
         [JsonPropertyName("confidence")]
         public decimal Confidence { get; set; }
+
+        [JsonPropertyName("text")]
+        public string Text { get; set; }
     }
 
     public class BoundingBox
@@ -133,6 +136,9 @@ namespace ElectoralMonitoring
 
         [JsonPropertyName("confidence")]
         public decimal Confidence { get; set; }
+
+        [JsonPropertyName("text")]
+        public string Text { get; set; }
     }
 
     public class Property
@@ -190,6 +196,9 @@ namespace ElectoralMonitoring
 
         [JsonPropertyName("confidence")]
         public decimal Confidence { get; set; }
+
+        [JsonPropertyName("text")]
+        public string Text { get; set; }
     }
 
     public class OCRDocumentResponse
