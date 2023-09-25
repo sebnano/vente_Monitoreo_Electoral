@@ -24,10 +24,9 @@ namespace ElectoralMonitoring
             _nodeService = nodeService;
             Username = _authService.NameUser;
             AuthService.NamedChanged += AuthService_NamedChanged;
-            _ = Init();
         }
 
-        private async Task Init()
+        public async Task Init()
         {
             if (_authService.IsAuthenticated)
             {

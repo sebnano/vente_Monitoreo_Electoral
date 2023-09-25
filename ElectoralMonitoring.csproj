@@ -56,6 +56,7 @@
 		<RunAOTCompilation>True</RunAOTCompilation>
 		<PublishTrimmed>True</PublishTrimmed>
 		<DebugSymbols>True</DebugSymbols>
+		<AndroidKeyStore>True</AndroidKeyStore>
 	</PropertyGroup>
 	<!-- Release Configuration iOS -->
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
@@ -107,22 +108,6 @@
 		<Compile Update="Resources\Lang\AppRes.en.Designer.cs">
 			<DependentUpon>AppRes.en.resx</DependentUpon>
 		</Compile>
-	</ItemGroup>
-	<ItemGroup>
-		<None Remove="Platforms\Android\Resources\values-night\" />
-		<None Remove="Platforms\iOS\Utils\" />
-		<None Remove="Resources\Images\app_logo.svg" />
-		<None Remove="Resources\Images\undraw_no_data_re_kwbl.svg" />
-		<None Remove="Resources\Images\no_data.svg" />
-	</ItemGroup>
-	<ItemGroup>
-		<Folder Include="Platforms\Android\Resources\values-night\" />
-		<Folder Include="Platforms\iOS\Utils\" />
-	</ItemGroup>
-	<ItemGroup>
-		<BundleResource Include="Resources\Images\app_logo.svg" />
-		<BundleResource Include="Resources\Images\no_data.svg" />
-		<BundleResource Include="Resources\Images\no_data.svg" />
 	</ItemGroup>
 	<PropertyGroup>
 		<!-- Properties used to strip bitcode from frameworks when using Visual Studio for Mac -->
