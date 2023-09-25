@@ -56,6 +56,9 @@ stages:
           echo "=============================================="
           ls "$(Build.SourcesDirectory)"
           echo "=============================================="
+          echo "Vars AppFullVersionNumber and AppBuildNumber"
+          echo "$(AppFullVersionNumber)"
+          echo "$(AppBuildNumber)"
 
     - task: UseDotNet@2
       displayName: .NET Version
