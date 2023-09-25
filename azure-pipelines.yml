@@ -10,7 +10,7 @@ variables:
     DotNetVersion: 7.0.306
     VSVERSION: 17/pre
     BuildAndroid: true
-    BuildiOS: true
+    BuildiOS: false
 
 name: $(Date:yyMMdd)$(Rev:r)
 
@@ -86,8 +86,8 @@ stages:
         targetType: 'inline'
         script: |
           dotnet publish "ElectoralMonitoring.csproj" -f:net7.0-android -c:$(BuildConfiguration) \
-          -p:ApplicationTitle="$(AppDisplayName)" -p:ApplicationId="$(AppId)" -p:ApplicationDisplayVersion="$(AppFullVersionNumber)" -p:ApplicationVersion="$(AppBuildNumber)" \
-          -p:AndroidSigningKeyStore="$(keystore.secureFilePath)" -p:AndroidSigningKeyPass="$(keystore_pass)" -p:AndroidSigningStorePass="$(keystore_pass)" -p:AndroidSigningKeyAlias="$(keystore_alias)"
+          //p:ApplicationTitle="$(AppDisplayName)" //p:ApplicationId="$(AppId)" //p:ApplicationDisplayVersion="$(AppFullVersionNumber)" //p:ApplicationVersion="$(AppBuildNumber)" \
+          //p:AndroidSigningKeyStore="$(keystore.secureFilePath)" //p:AndroidSigningKeyPass="$(keystore_pass)" //p:AndroidSigningStorePass="$(keystore_pass)" //p:AndroidSigningKeyAlias="$(keystore_alias)"
     - task: CopyFiles@2
       inputs:
         Contents: |
