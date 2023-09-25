@@ -17,6 +17,9 @@ namespace ElectoralMonitoring
 
         [Post("/node?_format=json")]
         Task<Dictionary<string,List<Node>>> CreateNode([Body] object body);
+
+        [Get("/garantes-y-sus-centros/{userId}?_format=json")]
+        Task<List<VotingCenter>> GetVotingCenters(string userId);
     }
 }
 

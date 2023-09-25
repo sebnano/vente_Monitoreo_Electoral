@@ -8,11 +8,11 @@ namespace ElectoralMonitoring
     {
         [JsonPropertyName("target_id")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string? TargetId { get; set; }
+        public object? TargetId { get; set; }
 
         [JsonPropertyName("value")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string? Value { get; set; }
+        public object? Value { get; set; }
     }
 }
 

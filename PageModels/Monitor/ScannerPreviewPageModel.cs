@@ -13,6 +13,7 @@ namespace ElectoralMonitoring
 	public partial class ScannerPreviewPageModel : BasePageModel, IQueryAttributable
     {
         readonly NodeService _nodeService;
+        List<VotingCenter> _votingCenters;
 
         [ObservableProperty]
         string imagePreview = string.Empty;
@@ -59,22 +60,31 @@ namespace ElectoralMonitoring
             }
         }
 
+        async Task LoadVotingCenters()
+        {
+            var request = await _nodeService.GetVotingCenters(CancellationToken.None);
+            if(request != null)
+            {
+                _votingCenters = request;
+            }
+        }
+
         public async void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if (query.ContainsKey("localFilePath") && query.ContainsKey("image") && query.ContainsKey("imageType"))
             {
-                IsBusy = true;
+                IsBusy = IsLoading = true;
                 ImagePreview = query["localFilePath"] as string ?? string.Empty;
 
                 var image = query["image"] as string ?? string.Empty;
                 var imageType = (ImageType)query["imageType"];
-                await Task.WhenAll(RenderForm(), GetContent(imageType, image)).ContinueWith(async(t) => {
+                await Task.WhenAll(RenderForm(), GetContent(imageType, image), LoadVotingCenters()).ContinueWith(async(t) => {
                     if (t.IsCompletedSuccessfully) {
                         await SetFields();
                     }
                 });
-                
-                IsBusy = false;
+
+                IsBusy = IsLoading = false;
             }
         }
 
@@ -82,7 +92,7 @@ namespace ElectoralMonitoring
         {
             try
             {
-                SetFieldText("CÓD. CV:", "field_centro_de_votacion", 9);
+                SetFieldText("CÓD. CV:", "field_centro_de_votacion", 10);
                 SetFieldText("MESA: ", "field_mesa", 2);
                 SetFieldText("ESCRUTADAS ", "field_boletas_escrutadas", 2);
             }
@@ -91,10 +101,6 @@ namespace ElectoralMonitoring
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
             }
-
-            
-
-        
 
             return Task.CompletedTask;
         }
@@ -151,14 +157,32 @@ namespace ElectoralMonitoring
 
                     if (field.Title == "field_centro_de_votacion")
                     {
-                        //field_votacion_a_observar, field_votos_por_candidatos, field_centro_de_votacion
-                        //add with target_id
+                        var targetCdv = _votingCenters.FirstOrDefault(x => x.CodCNECentroVotacion == field.Text || x.CodCNECentroVotacion == field.Text.TrimStart('0'));
+                        if(targetCdv != null)
+                        {
+                            values.Add(field.Title, new List<Node>() { new() { TargetId = targetCdv.IdCentroVotacion } });
+
+                            values.Add("field_votacion_a_observar", new List<Node>() { new() { TargetId = targetCdv.IdVotacion } });
+                        }
+                        else
+                        {
+                            await Shell.Current.DisplayAlert("Advertencia", $"No se encontró el centro de votación con el código {field.Text}.", "Aceptar");
+                            IsLoading = false;
+                            return;
+                        }
                         
-                        values.Add(field.Title, new List<Node>() { new() { TargetId = field.Text } });
                     }
                     else
                     {
-                        values.Add(field.Title, new List<Node>() { new() { Value = field.Text } });
+                        var valueText = field.Text;
+                        if(int.TryParse(valueText, out int value))
+                        {
+                            values.Add(field.Title, new List<Node>() { new() { Value = value } });
+                        }
+                        else
+                        {
+                            values.Add(field.Title, new List<Node>() { new() { Value = valueText } });
+                        }
                     }
                 }
                 

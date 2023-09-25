@@ -30,6 +30,17 @@ namespace ElectoralMonitoring
             return result;
         }
 
+        public async Task<List<VotingCenter>?> GetVotingCenters(CancellationToken cancellationToken)
+        {
+            var result = await AttemptAndRetry_Mobile(async () => {
+
+                return await _nodeApi.GetVotingCenters(_authService.IdUser).ConfigureAwait(false);
+
+            }, cancellationToken);
+
+            return result;
+        }
+
         public async Task<FormResponse?> GetMinutesForm(CancellationToken cancellationToken)
         {
             var result = await AttemptAndRetry_Mobile(async () => {

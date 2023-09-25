@@ -185,7 +185,7 @@ public partial class InputFieldControl : ContentView
         MyEntry.Text = GetNameValidate(MyEntry.Text);
         if (KeyboardExtensions.IsSoftKeyboardShowing(MyEntry))
         {
-            await MyEntry.HideKeyboardAsync(default);
+            //await MyEntry.HideKeyboardAsync(default);
         }
     }
 
