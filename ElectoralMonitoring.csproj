@@ -13,13 +13,6 @@
 		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
 		<Deterministic>False</Deterministic>
 		<ApplicationIdGuid>45dc844f-1a21-4361-a513-7fe4fa5701fc</ApplicationIdGuid>
-
-		<!-- Default values -->
-		<ApplicationTitle Condition="'$(ApplicationTitle)'==''">Electoral Monitoring</ApplicationTitle>
-		<ApplicationId Condition="'$(ApplicationId)'==''">com.nsystech.monitoreoelectoral</ApplicationId>
-		<ApplicationDisplayVersion Condition="'$(ApplicationDisplayVersion)'==''">1.0</ApplicationDisplayVersion>
-		<ApplicationVersion Condition="'$(ApplicationVersion)'==''">1</ApplicationVersion>
-
 		<!-- Display name -->
 		<ApplicationTitle>Monitoreo Electoral</ApplicationTitle>
 		<!-- App Identifier -->
