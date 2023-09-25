@@ -77,14 +77,19 @@ stages:
         script: |
           dotnet restore ElectoralMonitoring.sln
     
-    - task: Bash@3
-      displayName: Build Android App
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet publish (Release)'
       inputs:
-        targetType: 'inline'
-        script: |
-          dotnet publish "ElectoralMonitoring.csproj" -f:net7.0-android -c:$(BuildConfiguration) \
-          //p:ApplicationTitle="$(AppDisplayName)" //p:ApplicationId="$(AppId)" //p:ApplicationDisplayVersion="$(AppFullVersionNumber)" //p:ApplicationVersion="$(AppBuildNumber)" \
-          //p:AndroidSigningKeyStore="$(keystore.secureFilePath)" //p:AndroidSigningKeyPass="$(keystore_pass)" //p:AndroidSigningStorePass="$(keystore_pass)" //p:AndroidSigningKeyAlias="$(keystore_alias)"
+        command: 'publish'
+        publishWebProjects: false
+        projects: 'ElectoralMonitoring.csproj'
+        arguments: |
+          -f:net7.0-android -c:$(BuildConfiguration) 
+          /p:ApplicationDisplayVersion="$(AppFullVersionNumber)" /p:ApplicationVersion="$(AppBuildNumber)" /p:ApplicationTitle="$(AppDisplayName)" /p:ApplicationId="$(AppId)"
+          /p:AndroidSigningKeyStore="$(keystore.secureFilePath)" /p:AndroidSigningKeyPass="$(keystore_pass)" /p:AndroidSigningStorePass="$(keystore_pass)" /p:AndroidSigningKeyAlias="$(keystore_alias)"
+        zipAfterPublish: false
+        modifyOutputPath: false
+
     - task: CopyFiles@2
       inputs:
         Contents: |
