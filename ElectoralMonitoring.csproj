@@ -21,14 +21,14 @@
 		<ApplicationVersion Condition="'$(ApplicationVersion)'==''">1</ApplicationVersion>
 
 		<!-- Display name -->
-		<ApplicationTitle>$(ApplicationTitle)</ApplicationTitle>
+		<ApplicationTitle>Monitoreo Electoral</ApplicationTitle>
 		<!-- App Identifier -->
-		<ApplicationId>$(ApplicationId)</ApplicationId>
+		<ApplicationId>com.nsystech.monitoreoelectoral</ApplicationId>
 		<!-- Versions -->
 		<!-- major.minor.patch -->
-		<ApplicationDisplayVersion>$(ApplicationDisplayVersion)</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>0.1.1</ApplicationDisplayVersion>
 		<!-- major*10000 + minor * 100 + patch -->
-		<ApplicationVersion>$(ApplicationVersion)</ApplicationVersion>
+		<ApplicationVersion>101</ApplicationVersion>
 		
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
