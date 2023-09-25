@@ -12,17 +12,24 @@
 		<Nullable>enable</Nullable>
 		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
 		<Deterministic>False</Deterministic>
-		<!-- Display name -->
-		<ApplicationTitle>ElectoralMonitoring</ApplicationTitle>
-		<!-- App Identifier -->
-		<ApplicationId>com.nsystech.monitoreoelectoral</ApplicationId>
 		<ApplicationIdGuid>45dc844f-1a21-4361-a513-7fe4fa5701fc</ApplicationIdGuid>
-		<!-- Versions -->
+
+		<!-- Default values -->
+		<ApplicationTitle Condition="'$(ApplicationTitle)'==''">Electoral Monitoring</ApplicationTitle>
+		<ApplicationId Condition="'$(ApplicationId)'==''">com.nsystech.monitoreoelectoral</ApplicationId>
+		<ApplicationDisplayVersion Condition="'$(ApplicationDisplayVersion)'==''">1.0</ApplicationDisplayVersion>
+		<ApplicationVersion Condition="'$(ApplicationVersion)'==''">1</ApplicationVersion>
+
+		<!-- Display name -->
+		<ApplicationTitle>$(ApplicationTitle)</ApplicationTitle>
+		<!-- App Identifier -->
+		<ApplicationId>$(ApplicationId)</ApplicationId>
 		<!-- Versions -->
 		<!-- major.minor.patch -->
-		<ApplicationDisplayVersion>0.1</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>$(ApplicationDisplayVersion)</ApplicationDisplayVersion>
 		<!-- major*10000 + minor * 100 + patch -->
-		<ApplicationVersion>1</ApplicationVersion>
+		<ApplicationVersion>$(ApplicationVersion)</ApplicationVersion>
+		
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
 	</PropertyGroup>

@@ -7,7 +7,7 @@ variables:
     AppFullVersionNumber: 0.1.$(Build.BuildNumber)
     AppBuildNumber: $(Build.BuildNumber)
     BuildConfiguration: Release
-    DotNetVersion: 7.0.306
+    DotNetVersion: 7.0.307
     VSVERSION: 17/pre
     BuildAndroid: true
     BuildiOS: false
