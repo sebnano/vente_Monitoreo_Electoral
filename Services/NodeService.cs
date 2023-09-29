@@ -53,7 +53,7 @@ namespace ElectoralMonitoring
             return result;
         }
 
-        public async Task<ServerResponse?> UploadMinute(string fileName, FileStream file, CancellationToken cancellationToken)
+        public async Task<Dictionary<string,List<Node>>?> UploadMinute(string fileName, Stream file, CancellationToken cancellationToken)
         {
             var result = await AttemptAndRetry_Mobile(async () => {
                 

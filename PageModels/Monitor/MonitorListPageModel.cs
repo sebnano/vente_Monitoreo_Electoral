@@ -83,24 +83,34 @@ namespace ElectoralMonitoring
                     PhotoLibraryTitle = "Desde galería",
                     CropButtonTitle = "Recortar",
                     CancelButtonTitle = "Cancelar",
-                    Success = (imageFile) =>
+                    Success = async(imageFile) =>
                     {
-                        var rootRef = CrossFirebaseStorage.Current.GetRootReference();
+                        int fid = -1;
+                        var imageUri = string.Empty;
+                        
+                        var stream = File.OpenRead(imageFile);
                         var fileName = System.IO.Path.GetFileName(imageFile);
-                        var imageRef = rootRef.GetChild($"app/actas/{fileName}");
-                        var uploadTask = imageRef.PutFile(imageFile);
-                        uploadTask.AddObserver(StorageTaskStatus.Success, async (_) =>
+                        var result = await _nodeService.UploadMinute(fileName, stream, CancellationToken.None);
+                        if(result != null)
                         {
-                            var imageUri = $"gs://{_.Metadata.Bucket}/{_.Metadata.Path}";
-                            var navigationParameter = new Dictionary<string, object>
-                            {
-                                { "localFilePath", imageFile },
-                                { "image", imageUri },
-                                { "imageType", ImageType.URI }
-                            };
-                            IsAdding = false;
-                            await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter);
-                        });
+                            if(result.TryGetValue("fid", out List<Node> value) && value != null){
+                                var fidNode = value.FirstOrDefault();
+                                if(int.TryParse(fidNode?.Value?.ToString(), out fid));
+                            }
+                            if(result.TryGetValue("uri", out List<Node> valueUri) && value != null){
+                                imageUri = value.FirstOrDefault()?.Url ?? string.Empty;
+                            }
+                        }
+
+                        var navigationParameter = new Dictionary<string, object>
+                        {
+                            { "localFilePath", imageFile },
+                            { "image", imageUri },
+                            { "imageType", ImageType.URI },
+                            { "fileId", fid }
+                        };
+                        IsAdding = false;
+                        await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter);
 
                     },
                     Failure = () => {
@@ -120,24 +130,36 @@ namespace ElectoralMonitoring
 
                 if (photo != null)
                 {
-                    var localFilePath = await SaveFileInLocalStorage(photo);
+                    var imageFile = await SaveFileInLocalStorage(photo);
 
-                    var rootRef = CrossFirebaseStorage.Current.GetRootReference();
-                    var fileName = photo.FileName;
-                    var imageRef = rootRef.GetChild($"app/actas/{fileName}");
-                    var uploadTask = imageRef.PutFile(localFilePath);
-                    uploadTask.AddObserver(StorageTaskStatus.Success, async (_) =>
-                    {
-                        var imageUri = $"gs://{_.Metadata.Bucket}/{_.Metadata.Path}"; 
+
+                    
+                        int fid = -1;
+                        var imageUri = string.Empty;
+                        
+                        var stream = await photo.OpenReadAsync();
+                        var fileName = System.IO.Path.GetFileName(imageFile);
+                        var result = await _nodeService.UploadMinute(fileName, stream, CancellationToken.None);
+                        if(result != null)
+                        {
+                            if(result.TryGetValue("fid", out List<Node> value) && value != null){
+                                var fidNode = value.FirstOrDefault();
+                                if(int.TryParse(fidNode?.Value?.ToString(), out fid));
+                            }
+                            if(result.TryGetValue("uri", out List<Node> valueUri) && value != null){
+                                imageUri = value.FirstOrDefault()?.Url ?? string.Empty;
+                            }
+                        }
+
                         var navigationParameter = new Dictionary<string, object>
                         {
-                            { "localFilePath", localFilePath },
+                            { "localFilePath", imageFile },
                             { "image", imageUri },
-                            { "imageType", ImageType.URI }
+                            { "imageType", ImageType.URI },
+                            { "fileId", fid }
                         };
                         IsAdding = false;
                         await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter);
-                    });
                     
                 }
             }

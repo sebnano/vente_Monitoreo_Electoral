@@ -3,7 +3,7 @@ using Refit;
 
 namespace ElectoralMonitoring
 {
-    [Headers("Accept: application/json", "Content-Type: application/json", "Accept-Encoding: gzip, deflate, br", "User-Agent: " + nameof(ElectoralMonitoring) + "App", "")]
+    [Headers("Accept: application/json", "Content-Type: application/json", "User-Agent: " + nameof(ElectoralMonitoring) + "App", "")]
     public interface INodeApi
     {
         [Get("/api/registro-de-actas-por-usuarios/{userId}?_format=json")]
@@ -20,10 +20,11 @@ namespace ElectoralMonitoring
 
         [Get("/garantes-y-sus-centros/{userId}?_format=json")]
         Task<List<VotingCenter>> GetVotingCenters(string userId);
-
+        
+        [Multipart]
         [Post("/file/upload/node/registro_de_actas/field_image?_format=json")]
         [Headers("Content-Type: application/octet-stream", "Accept: application/vnd.api+json")]
-        Task<ServerResponse> UploadFile([Header("Content-Disposition")] string contentDisposition, StreamPart streamPart);
+        Task<Dictionary<string,List<Node>>> UploadFile([Header("Content-Disposition")] string contentDisposition, [AliasAs("file")] StreamPart streamPart);
     }
 }
 

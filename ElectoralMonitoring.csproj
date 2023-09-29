@@ -33,10 +33,6 @@
 		<CodesignProvision>MonitoreoElectoral_dev</CodesignProvision>
 		<CodesignEntitlements>Platforms\iOS\Entitlements.plist</CodesignEntitlements>
 	</PropertyGroup>
-	<!-- Debug Configuration Android -->
-	<PropertyGroup Condition="'$(TargetFramework)' == 'Debug|net7.0-android|AnyCPU'">
-		<EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
-	</PropertyGroup>
 	<!-- Debug Configuration All -->
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<WarningLevel>4</WarningLevel>

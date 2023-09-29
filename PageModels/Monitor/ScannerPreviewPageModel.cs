@@ -14,6 +14,7 @@ namespace ElectoralMonitoring
     {
         readonly NodeService _nodeService;
         List<VotingCenter> _votingCenters;
+        int _fid;
 
         [ObservableProperty]
         string imagePreview = string.Empty;
@@ -71,10 +72,13 @@ namespace ElectoralMonitoring
 
         public async void ApplyQueryAttributes(IDictionary<string, object> query)
         {
-            if (query.ContainsKey("localFilePath") && query.ContainsKey("image") && query.ContainsKey("imageType"))
+            if (query.ContainsKey("localFilePath") && query.ContainsKey("image") && query.ContainsKey("imageType")
+                && query.ContainsKey("fileId"))
             {
                 IsBusy = IsLoading = true;
                 ImagePreview = query["localFilePath"] as string ?? string.Empty;
+                
+                _fid = (int)query["fileId"];
 
                 var image = query["image"] as string ?? string.Empty;
                 var imageType = (ImageType)query["imageType"];
@@ -136,13 +140,6 @@ namespace ElectoralMonitoring
             }
         }
 
-        async Task UploadPhoto()
-        {
-            var stream = File.OpenRead(ImagePreview);
-            var fileName = System.IO.Path.GetFileName(ImagePreview);
-            await _nodeService.UploadMinute(fileName, stream, CancellationToken.None);
-        }
-
         [RelayCommand(AllowConcurrentExecutions = false)]
         public async Task SubmitForm()
         {
@@ -155,6 +152,7 @@ namespace ElectoralMonitoring
             Dictionary<string, List<Node>> values = new();
             values.Add("type", new List<Node>() { new() { TargetId = "registro_de_actas" } });
             values.Add("title", new List<Node>() { new() { Value = $"ACTA DE ESCRUTINIO {DateTime.Now}" } });
+            values.Add("field_image", new List<Node>() { new() { TargetId = _fid } });
             foreach (var item in Fields)
             {
                 var field = item as InputFieldControl;

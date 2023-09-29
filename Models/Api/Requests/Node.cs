@@ -13,6 +13,10 @@ namespace ElectoralMonitoring
         [JsonPropertyName("value")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public object? Value { get; set; }
+        
+        [JsonPropertyName("url")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? Url { get; set; }
     }
 }
 
