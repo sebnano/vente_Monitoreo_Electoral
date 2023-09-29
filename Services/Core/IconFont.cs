@@ -18,6 +18,5 @@ namespace ElectoralMonitoring
         public const string FileDocumentRefresh = "\uf112";
         public const string Upload = "\uf113";
     }
-
 }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using Refit;
 
 namespace ElectoralMonitoring
 {
@@ -46,6 +47,17 @@ namespace ElectoralMonitoring
             var result = await AttemptAndRetry_Mobile(async () => {
 
                 return await _nodeApi.GetMinutesForm().ConfigureAwait(false);
+
+            }, cancellationToken);
+
+            return result;
+        }
+
+        public async Task<ServerResponse?> UploadMinute(string fileName, FileStream file, CancellationToken cancellationToken)
+        {
+            var result = await AttemptAndRetry_Mobile(async () => {
+                
+                return await _nodeApi.UploadFile($"file; filename=\"{fileName}\"", new StreamPart(file, fileName)).ConfigureAwait(false);
 
             }, cancellationToken);
 

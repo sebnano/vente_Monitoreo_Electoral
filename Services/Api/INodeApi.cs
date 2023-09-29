@@ -20,6 +20,10 @@ namespace ElectoralMonitoring
 
         [Get("/garantes-y-sus-centros/{userId}?_format=json")]
         Task<List<VotingCenter>> GetVotingCenters(string userId);
+
+        [Post("/file/upload/node/registro_de_actas/field_image?_format=json")]
+        [Headers("Content-Type: application/octet-stream", "Accept: application/vnd.api+json")]
+        Task<ServerResponse> UploadFile([Header("Content-Disposition")] string contentDisposition, StreamPart streamPart);
     }
 }
 

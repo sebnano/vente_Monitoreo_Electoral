@@ -136,6 +136,13 @@ namespace ElectoralMonitoring
             }
         }
 
+        async Task UploadPhoto()
+        {
+            var stream = File.OpenRead(ImagePreview);
+            var fileName = System.IO.Path.GetFileName(ImagePreview);
+            await _nodeService.UploadMinute(fileName, stream, CancellationToken.None);
+        }
+
         [RelayCommand(AllowConcurrentExecutions = false)]
         public async Task SubmitForm()
         {
