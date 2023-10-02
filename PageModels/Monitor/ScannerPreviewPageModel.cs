@@ -124,11 +124,10 @@ namespace ElectoralMonitoring
                 var image = query["image"] as string ?? string.Empty;
                 var imageType = (ImageType)query["imageType"];
 
-                await RenderForm().ConfigureAwait(false);
                 _ = Task.Run(async () =>
                 {
 
-                    await Task.WhenAll(GetContent(imageType, image), LoadVotingCenters()).ContinueWith(async (t) =>
+                    await Task.WhenAll(RenderForm(), GetContent(imageType, image), LoadVotingCenters()).ContinueWith(async (t) =>
                     {
                         if (t.IsCompletedSuccessfully)
                         {
