@@ -109,7 +109,7 @@ namespace ElectoralMonitoring
             }
         }
 
-        public void ApplyQueryAttributes(IDictionary<string, object> query)
+        public async void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if (query.ContainsKey("localFilePath") && query.ContainsKey("image") && query.ContainsKey("imageType")
                 && query.ContainsKey("fileId") && query.ContainsKey("mesa") && query.ContainsKey("ccv"))
@@ -124,10 +124,11 @@ namespace ElectoralMonitoring
                 var image = query["image"] as string ?? string.Empty;
                 var imageType = (ImageType)query["imageType"];
 
+                await RenderForm().ConfigureAwait(false);
                 _ = Task.Run(async () =>
                 {
 
-                    await Task.WhenAll(RenderForm(), GetContent(imageType, image), LoadVotingCenters()).ContinueWith(async (t) =>
+                    await Task.WhenAll(GetContent(imageType, image), LoadVotingCenters()).ContinueWith(async (t) =>
                     {
                         if (t.IsCompletedSuccessfully)
                         {
