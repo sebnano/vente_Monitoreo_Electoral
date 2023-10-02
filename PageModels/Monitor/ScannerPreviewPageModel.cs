@@ -266,8 +266,8 @@ namespace ElectoralMonitoring
             {
                 var actions = new List<ActionButtonDTO>()
                 {
-                    new ActionButtonDTO("Guardar Offline", "ButtonPrimary", new Command(async () => await Shell.Current.Navigation.PopToRootAsync())),
-                    new ActionButtonDTO("Reintentar", "ButtonPrimary", new Command(async () =>
+                    new ActionButtonDTO("Guardar Offline", "ButtonPrimary", new RelayCommand(async () => await Shell.Current.Navigation.PopToRootAsync())),
+                    new ActionButtonDTO("Reintentar", "ButtonPrimary", new RelayCommand(async () =>
                     {
                         await SendRequest(values);
                     }))

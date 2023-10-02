@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace ElectoralMonitoring
 {
@@ -50,12 +51,12 @@ namespace ElectoralMonitoring
                 if (type == TYPE_SUCCESS) {
                     Icon = IconFont.CheckCircle;
                     Color = Color.FromArgb("#134077");
-                    Actions.Add(new ActionButtonDTO("Inicio", "ButtonPrimary", new Command(async () => await Shell.Current.Navigation.PopToRootAsync() )));
+                    Actions.Add(new ActionButtonDTO("Inicio", "ButtonPrimary", new RelayCommand(async () => await Shell.Current.Navigation.PopToRootAsync() )));
                 }
                 else if(type == TYPE_ERROR) {
                     Icon = IconFont.AlertComment;
                     Color = Color.FromArgb("#dc3623");
-                    Actions.Add(new ActionButtonDTO("Deshacer", "ButtonPrimary", new Command(async () => await Shell.Current.Navigation.PopToRootAsync())));
+                    Actions.Add(new ActionButtonDTO("Deshacer", "ButtonPrimary", new RelayCommand(async () => await Shell.Current.Navigation.PopToRootAsync())));
                 }
             }
         }
