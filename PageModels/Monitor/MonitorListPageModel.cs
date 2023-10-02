@@ -110,6 +110,10 @@ namespace ElectoralMonitoring
                 {
                     PageTitle = "Recorte la imagen",
                     AspectRatioX = 2,
+                    MediaPickerOptions = new MediaPickerOptions()
+                    {
+                        Title = "Seleccione"
+                    },
                     AspectRatioY = 3,
                     CropShape = ImageCropper.Maui.ImageCropper.CropShapeType.Rectangle,
                     SelectSourceTitle = "Seleccione",

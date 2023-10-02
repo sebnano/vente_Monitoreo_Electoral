@@ -145,9 +145,10 @@ namespace ElectoralMonitoring
             try
             {
                 //todo verificar que datos ingresados de ccv y mesa coincidan con la foto
-                SetFieldText("CÓD. CV:", "field_centro_de_votacion", 10);
-                SetFieldText("MESA: ", "field_mesa", 2);
-                SetFieldText("ESCRUTADAS ", "field_boletas_escrutadas", 2);
+                SetFieldTextAsc("CÓD. CV:", "CÓD. CV:".Length, "field_centro_de_votacion", 10);
+                SetFieldTextAsc("MESA: ", "MESA: ".Length, "field_mesa", 2);
+                SetFieldTextAsc("PARTICIPANTES ", "PARTICIPANTES ".Length, "field_participantes_segun_cuader", 2);
+                SetFieldTextDesc("VOTOS", 2, "field_votos_nulos", 1);
             }
             catch (Exception ex)
             {
@@ -158,12 +159,24 @@ namespace ElectoralMonitoring
             return Task.CompletedTask;
         }
 
-        public void SetFieldText(string searchText, string key, int lenght)
+        public void SetFieldTextDesc(string searchText, int marginLeft, string key, int lenght)
+        {
+            var indexcdv = TextScanned.IndexOf(searchText);
+            if (indexcdv > 0)
+            {
+                var cv = TextScanned.Substring(indexcdv - marginLeft, lenght).Trim();
+                var field = Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == key) as IFieldControl;
+                if (field != null)
+                    field.SetValue(cv);
+            }
+        }
+
+        public void SetFieldTextAsc(string searchText, int marginRight, string key, int lenght)
         {
             var indexcdv = TextScanned.IndexOf(searchText);
             if (indexcdv > 0 && indexcdv < TextScanned.Length - 1)
             {
-                var cv = TextScanned.Substring(indexcdv + searchText.Length, lenght).Trim();
+                var cv = TextScanned.Substring(indexcdv + marginRight, lenght).Trim();
                 var field = Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == key) as IFieldControl;
                 if (field != null)
                     field.SetValue(cv);
@@ -179,8 +192,11 @@ namespace ElectoralMonitoring
                 Console.WriteLine(docJsonString);
                 var function = CrossFirebaseFunctions.Current.GetHttpsCallable("imageTextRecognition");
                 var response = await function.CallAsync<List<OCRDocumentResponse>>(docJsonString);
-                Console.WriteLine(response.FirstOrDefault()?.FullTextAnnotation.Text);
+                var page = response.FirstOrDefault()?.FullTextAnnotation?.Pages.FirstOrDefault();
+                if (page is not null)
+                    ScanMinute(page);
                 TextScanned = response.FirstOrDefault()?.FullTextAnnotation.Text ?? string.Empty;
+                Console.WriteLine(TextScanned);
             }
             catch (Exception ex)
             {
@@ -188,6 +204,90 @@ namespace ElectoralMonitoring
                 Console.WriteLine(ex.StackTrace);
             }
         }
+        List<Word> Words = new();
+        void ScanMinute(Page page)
+        {
+            var pageText = "";
+            foreach (var block in page.Blocks)
+            {
+                var blockText = "";
+                foreach (var paragraph in block.Paragraphs)
+                {
+                    var paraText = "";
+                    foreach (var word in paragraph.Words)
+                    {
+                        var wordText = "";
+                        foreach (var symbol in word.Symbols)
+                        {
+                            wordText += symbol.Text;
+                        }
+                         Console.WriteLine(
+                             string.Format("\nWord text:\n {0}\nWord Confidence: {1})\n",
+                             wordText,
+                             word.Confidence)
+                         );
+
+                        Console.WriteLine(string.Format("Word bounding box: \n{0}", word.BoundingBox));
+                        paraText = string.Format("{0} {1}", paraText, wordText);
+                        word.Text = wordText;
+                        Words.Add(word);
+                    }
+
+                    // Console.WriteLine(string.Format("\nParagraph:\n {0}", paraText));
+                    // Console.WriteLine(string.Format("Paragraph Confidence: {0}\n", paragraph.Confidence));
+                    // Console.WriteLine(string.Format("Paragraph bounding box: \n{0}", paragraph.BoundingBox));
+                    blockText += paraText;
+                }
+
+                //Console.WriteLine(string.Format("\nBlock:\n {0}", blockText));
+                //Console.WriteLine(string.Format("nBlock Confidence: {0}\n", block.Confidence));
+                //Console.WriteLine(string.Format("nBlock bounding box: \n{0}", block.BoundingBox));
+                pageText += blockText;
+            }
+
+
+            Dictionary<string, string> candidates = new Dictionary<string, string>()
+            {
+                { "field_votos_candidato_1", "CALECA" },
+                { "field_votos_candidato_2", "VELASQUEZ" },
+                { "field_votos_candidato_3", "RADONSKI" },
+                { "field_votos_candidato_4", "PROSPERI" },
+                { "field_votos_candidato_5", "ALMEIDA" },
+                { "field_votos_candidato_6", "VIVAS" },
+                { "field_votos_candidato_7", "DELSA" },
+                { "field_votos_candidato_8", "FREDDY" },
+                { "field_votos_candidato_9", "GLORIA" },
+                { "field_votos_candidato_10", "FARIAS" },
+                { "field_votos_candidato_11", "CORINA" },
+                { "field_votos_candidato_12", "ROBERTO" },
+                { "field_votos_candidato_13", "TAMARA" },
+                { "field_boletas_escrutadas", "ESCRUTADAS" }
+            };
+
+            foreach (var cand in candidates)
+            {
+                var candidate = Words.FirstOrDefault(x => x.Text.ToUpper() == cand.Value.ToUpper());
+                if (candidate != null)
+                {
+
+                    var votesOfCandidate = Words.FirstOrDefault(x =>
+                    x.Text.ToUpper() != candidate.Text.ToUpper()
+
+                    && x.BoundingBox.Vertices[0].Y + 20 >= candidate.BoundingBox.Vertices[0].Y
+                    && x.BoundingBox.Vertices[0].Y <= candidate.BoundingBox.Vertices[0].Y + 10
+
+                    && x.BoundingBox.Vertices.Average(x => x.X) >= (candidate.BoundingBox.Vertices.Average(x => x.X) + 100)
+                    && x.BoundingBox.Vertices.Average(x => x.X) <= (candidate.BoundingBox.Vertices.Average(x => x.X) + 200)
+                    );
+
+
+                    var field = Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == cand.Key) as IFieldControl;
+                    if (field != null && votesOfCandidate != null)
+                        field.SetValue(votesOfCandidate.Text);
+                }
+            }
+        }
+
 
         [RelayCommand(AllowConcurrentExecutions = false)]
         public async Task SubmitForm()
