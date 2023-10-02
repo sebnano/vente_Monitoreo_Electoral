@@ -13,4 +13,10 @@
     <x:String x:Key="IconTextSearchVariant">&#xf107;</x:String>
     <x:String x:Key="IconEyeOff">&#xf108;</x:String>
     <x:String x:Key="IconEye">&#xf109;</x:String>
+    <x:String x:Key="IconDocumentAlert">&#xf110;</x:String>
+    <x:String x:Key="IconDocumentCheck">&#xf111;</x:String>
+    <x:String x:Key="IconDocumentRefresh">&#xf112;</x:String>
+    <x:String x:Key="IconUpload">&#xf113;</x:String>
+    <x:String x:Key="IconAlertComment">&#xf114;</x:String>
+    <x:String x:Key="IconCheckCircle">&#xf115;</x:String>
 </ResourceDictionary>

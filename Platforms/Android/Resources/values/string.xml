@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+	<string name="app_name">Monitoreo Electoral</string>
+	<string name="com.google.firebase.crashlytics.mapping_file_id">none</string>
+</resources>

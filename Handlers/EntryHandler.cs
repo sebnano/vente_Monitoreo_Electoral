@@ -10,12 +10,16 @@ namespace ElectoralMonitoring
 #if ANDROID
             handler.PlatformView.Background = null;
             handler.PlatformView.SetBackgroundColor(Android.Graphics.Color.Transparent);
-#elif IOS || MACCATALYST
+#elif IOS
             handler.PlatformView.BackgroundColor = UIKit.UIColor.Clear;
             handler.PlatformView.Layer.BorderWidth = 0;
             handler.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
-#if IOS15_0_OR_GREATER || MACCATALYST15_0_OR_GREATER
-                handler.PlatformView.FocusEffect = null;
+#if IOS15_0_OR_GREATER
+                var version = DeviceInfo.Current.Version.Major;
+                if(version >= 15)
+                {
+                    handler.PlatformView.FocusEffect = null;
+                }
 #endif
 #endif
             });
@@ -29,8 +33,12 @@ namespace ElectoralMonitoring
             handler.PlatformView.BackgroundColor = UIKit.UIColor.Clear;
             handler.PlatformView.Layer.BorderWidth = 0;
             handler.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
-#if IOS15_0_OR_GREATER || MACCATALYST15_0_OR_GREATER
-                handler.PlatformView.FocusEffect = null;
+#if IOS15_0_OR_GREATER
+                var version = DeviceInfo.Current.Version.Major;
+                if(version >= 15)
+                {
+                    handler.PlatformView.FocusEffect = null;
+                }
 #endif
 #endif
             });

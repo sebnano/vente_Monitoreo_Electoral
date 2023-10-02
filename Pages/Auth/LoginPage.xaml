@@ -8,13 +8,13 @@
              x:DataType="local:LoginPageModel"
              xmlns:local="clr-namespace:ElectoralMonitoring"
              xmlns:res="clr-namespace:ElectoralMonitoring.Resources.Lang">
-    <ScrollView>
+    <local:FixedScrollView>
         <StackLayout VerticalOptions="CenterAndExpand" Spacing="20" Style="{StaticResource PageLayoutBase}">
-            <Image Source="dotnet_bot" HeightRequest="140" Aspect="AspectFit"/>
+            <Image Source="app_logo" HeightRequest="140" Aspect="AspectFit"/>
             <Label FontSize="Title" Text="{x:Static res:AppRes.LoginPageTitle}"/>
             <local:InputFieldControl Icon="{StaticResource IconAccount}" MaxLenght="40" Text="{Binding Username}" FieldType="Username" Title="{x:Static res:AppRes.UsernameFieldTitle}" Placeholder="{x:Static res:AppRes.UsernameFieldPlaceholder}"></local:InputFieldControl>
             <local:InputFieldControl Icon="{StaticResource IconLockOutline}" MaxLenght="32" Text="{Binding Password}" FieldType="Password" Title="{x:Static res:AppRes.PasswordFieldTitle}" Placeholder="{x:Static res:AppRes.PasswordFieldPlaceholder}"></local:InputFieldControl>
             <Button Text="{x:Static res:AppRes.LoginBtn}" Command="{Binding LoginCommand}" />
         </StackLayout>
-    </ScrollView>
+    </local:FixedScrollView>
 </ContentPage>

@@ -157,6 +157,15 @@ namespace ElectoralMonitoring.Resources.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirme los datos y presione Aceptar.
+        /// </summary>
+        internal static string ConfirmDataAndSubmit {
+            get {
+                return ResourceManager.GetString("ConfirmDataAndSubmit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirme su contraseña.
         /// </summary>
         internal static string ConfirmPasswordFieldPlaceholder {
@@ -202,6 +211,15 @@ namespace ElectoralMonitoring.Resources.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No hay documentos cargados, presione Agregar para cargar uno..
+        /// </summary>
+        internal static string EmptyDocs {
+            get {
+                return ResourceManager.GetString("EmptyDocs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to aquí.
         /// </summary>
         internal static string HereLabel {
@@ -243,6 +261,15 @@ namespace ElectoralMonitoring.Resources.Lang {
         internal static string LogoutText {
             get {
                 return ResourceManager.GetString("LogoutText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Acta escaneada.
+        /// </summary>
+        internal static string MinutesScannedTitle {
+            get {
+                return ResourceManager.GetString("MinutesScannedTitle", resourceCulture);
             }
         }
         

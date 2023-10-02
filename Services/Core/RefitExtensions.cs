@@ -1,5 +1,7 @@
 ﻿using Refit;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+
 namespace ElectoralMonitoring
 {
     public static class RefitExtensions

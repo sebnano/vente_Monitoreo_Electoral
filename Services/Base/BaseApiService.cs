@@ -38,7 +38,7 @@ namespace ElectoralMonitoring
             get
             {
                 return new Lazy<HttpClient>(() => CreateHttpClient(
-              new RateLimitedHttpMessageHandler(new HttpLoggingHandler(), Priority.UserInitiated))).Value;
+              new RateLimitedHttpMessageHandler(new AuthHeaderHandler(), Priority.UserInitiated))).Value;
             }
         }
 
@@ -103,7 +103,8 @@ namespace ElectoralMonitoring
             static bool is400or404Or401or403(ApiException apiException) => apiException.StatusCode is System.Net.HttpStatusCode.BadRequest
                 || apiException.StatusCode is System.Net.HttpStatusCode.Forbidden
                 || apiException.StatusCode is System.Net.HttpStatusCode.Unauthorized
-                || apiException.StatusCode is System.Net.HttpStatusCode.NotFound;
+                || apiException.StatusCode is System.Net.HttpStatusCode.NotFound
+                || apiException.StatusCode is System.Net.HttpStatusCode.UnprocessableEntity;
         }
     }
 }

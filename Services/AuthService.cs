@@ -1,10 +1,14 @@
-﻿using System.Threading;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Threading;
+using ElectoralMonitoring.Helpers;
+using Plugin.Firebase.Auth;
 
 namespace ElectoralMonitoring
 {
 	public class AuthService : MobileBaseApiService
     {
         readonly static WeakEventManager _loggedOuteventManager = new();
+        readonly static WeakEventManager _nameChangedEventManager = new();
 
         readonly IAuthApi _authApi;
         readonly IPreferences _preferences;
@@ -19,6 +23,12 @@ namespace ElectoralMonitoring
         {
             add => _loggedOuteventManager.AddEventHandler(value);
             remove => _loggedOuteventManager.RemoveEventHandler(value);
+        }
+
+        public static event EventHandler NamedChanged
+        {
+            add => _nameChangedEventManager.AddEventHandler(value);
+            remove => _nameChangedEventManager.RemoveEventHandler(value);
         }
 
         public bool IsAuthenticated
@@ -39,36 +49,41 @@ namespace ElectoralMonitoring
             private set => _preferences.Set(nameof(NameUser), value);
         }
 
-        public string CsrfToken
+        public string AccessToken
         {
-            get => _preferences.Get(nameof(CsrfToken), string.Empty);
-            private set => _preferences.Set(nameof(CsrfToken), value);
+            get => _preferences.Get(nameof(AccessToken), string.Empty);
+            private set => _preferences.Set(nameof(AccessToken), value);
         }
 
-        public string LogoutToken
+        public string RefreshToken
         {
-            get => _preferences.Get(nameof(LogoutToken), string.Empty);
-            private set => _preferences.Set(nameof(LogoutToken), value);
+            get => _preferences.Get(nameof(RefreshToken), string.Empty);
+            private set => _preferences.Set(nameof(RefreshToken), value);
         }
 
-        public async Task<LoginResponse?> Login(string userName, string password, CancellationToken cancellationToken)
+        public async Task<TokenResponse?> Login(string userName, string password, CancellationToken cancellationToken)
         {
-            var loginResult = await AttemptAndRetry_Mobile(async () => {
+            var tokenResponse = await AttemptAndRetry_Mobile(async () => {
 
-                return await _authApi.Login(new UserCredentials(userName, password)).ConfigureAwait(false);
+                return await _authApi.OAuth2Token(new ClientCredentials("password", AppSettings.ClientId, AppSettings.ClientSecret, userName, password)).ConfigureAwait(false);
 
             }, cancellationToken);
 
-            if(loginResult != null) {
+            var firAuth = await CrossFirebaseAuth.Current.SignInAnonymouslyAsync();
 
-                CsrfToken = loginResult.CsrfToken;
-                LogoutToken = loginResult.LogoutToken;
-                IdUser = loginResult.CurrentUser.Uid;
-                NameUser = loginResult.CurrentUser.Name;
+            if (tokenResponse != null && firAuth != null) {
+
+                var token = new JwtSecurityToken(tokenResponse.AccessToken);
+                
+                AccessToken = tokenResponse.AccessToken;
+                RefreshToken = tokenResponse.RefreshToken;
+                IdUser = token.Subject;
+                NameUser = userName;
                 IsAuthenticated = true;
+                OnNameChanged();
             }
 
-            return loginResult;
+            return tokenResponse;
         }
 
         public async Task<User?> Register(string name, string email, string password, CancellationToken cancellationToken)
@@ -88,34 +103,58 @@ namespace ElectoralMonitoring
 
         public async Task<User?> GetCurrentUser(CancellationToken cancellationToken)
         {
-            var registerResult = await AttemptAndRetry_Mobile(async () => {
+            var currentUserResult = await AttemptAndRetry_Mobile(async () => {
 
-                return await _authApi.GetUser(CsrfToken, IdUser).ConfigureAwait(false);
+                return await _authApi.GetUser(IdUser).ConfigureAwait(false);
 
             }, cancellationToken);
 
-            return registerResult;
+            return currentUserResult;
         }
 
         void OnLoggedOut() => _loggedOuteventManager.HandleEvent(this, EventArgs.Empty, nameof(LoggedOut));
 
-        public async override Task LogOut()
+        void OnNameChanged() => _nameChangedEventManager.HandleEvent(this, EventArgs.Empty, nameof(NamedChanged));
+
+        public override Task LogOut()
         {
-            await AttemptAndRetry_Mobile(async () => {
-
-                await _authApi.Logout(CsrfToken, LogoutToken).ContinueWith((_) => {
-                    CsrfToken = string.Empty;
-                    LogoutToken = string.Empty;
-                    IdUser = string.Empty;
-                    NameUser = string.Empty;
-                    IsAuthenticated = false;
-                    OnLoggedOut();
-                }).ConfigureAwait(false);
-
-                return Task.CompletedTask;
-
-            }, CancellationToken.None).ConfigureAwait(false);
+            AccessToken = string.Empty;
+            RefreshToken = string.Empty;
+            IdUser = string.Empty;
+            NameUser = string.Empty;
+            IsAuthenticated = false;
+            OnLoggedOut();
+            OnNameChanged();
+            return Task.CompletedTask;
         }
+
+        public async Task<string> GetAccessToken()
+        {
+            if (!string.IsNullOrEmpty(AccessToken))
+            {
+                var token = new JwtSecurityToken(AccessToken);
+                if (token.ValidTo < DateTime.UtcNow)
+                {
+                    var tokenResponse = await AttemptAndRetry_Mobile(async () => {
+
+                        return await _authApi.OAuth2TokenRefresh(new RefreshTokenCredentials("refresh_token", AppSettings.ClientId, AppSettings.ClientSecret, RefreshToken)).ConfigureAwait(false);
+
+                    }, CancellationToken.None);
+
+                    if (tokenResponse != null)
+                    {
+                        AccessToken = tokenResponse.AccessToken;
+                        RefreshToken = tokenResponse.RefreshToken;
+                        IsAuthenticated = true;
+                    }
+
+                }
+            }
+            
+
+            return AccessToken;
+        }
+
     }
 }
 

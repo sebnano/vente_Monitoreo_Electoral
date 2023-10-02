@@ -1,5 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
+using Plugin.Firebase.Bundled.Shared;
+using Microsoft.Maui.LifecycleEvents;
+using Plugin.Firebase.Functions;
+using Plugin.Firebase.Storage;
+using System.Diagnostics;
 
 namespace ElectoralMonitoring;
 
@@ -17,6 +22,7 @@ public static class MauiProgram
                 fonts.AddFont("icons.ttf", "AppIcons");
             })
 
+            .RegisterFirebaseServices()
             .RegisterServices()
             .RegisterPageModels()
             .RegisterPages()
@@ -32,15 +38,20 @@ public static class MauiProgram
     private static MauiAppBuilder RegisterServices(this MauiAppBuilder builder)
     {
         builder.Services.AddSingleton<AuthService>();
+        builder.Services.AddSingleton<NodeService>();
         builder.Services.AddSingleton<AnalyticsService>();
         builder.Services.AddSingleton<IFirebaseAnalytics, LoggerAnalytics>();
 
         builder.Services.AddSingleton(Preferences.Default);
-        //builder.Services.AddSingleton(CrossFirebaseAnalytics.Current);
+        builder.Services.AddSingleton(Connectivity.Current);
+        builder.Services.AddSingleton(CrossFirebaseFunctions.Current);
+        //builder.Services.AddSingleton(CrossFirebaseStorage.Current);
 
         //Refit services
         IAuthApi authApi = RefitExtensions.For<IAuthApi>(BaseApiService.GetApi(Fusillade.Priority.Explicit));
+        INodeApi nodeApi = RefitExtensions.For<INodeApi>(BaseApiService.GetApi(Fusillade.Priority.Explicit));
         builder.Services.AddSingleton(authApi);
+        builder.Services.AddSingleton(nodeApi);
 
         return builder;
     }
@@ -51,6 +62,7 @@ public static class MauiProgram
         builder.Services.AddTransient<RegisterPageModel>();
         builder.Services.AddTransient<MonitorListPageModel>();
         builder.Services.AddTransient<ScannerPreviewPageModel>();
+        builder.Services.AddTransient<SummaryPageModel>();
         return builder;
     }
 
@@ -60,6 +72,7 @@ public static class MauiProgram
         builder.Services.AddTransient<RegisterPage>();
         builder.Services.AddTransient<MonitorListPage>();
         builder.Services.AddTransient<ScannerPreviewPage>();
+        builder.Services.AddTransient<SummaryPage>();
         return builder;
     }
 
@@ -69,7 +82,48 @@ public static class MauiProgram
         Routing.RegisterRoute(nameof(RegisterPageModel), typeof(RegisterPage));
         Routing.RegisterRoute(nameof(MonitorListPageModel), typeof(MonitorListPage));
         Routing.RegisterRoute(nameof(ScannerPreviewPageModel), typeof(ScannerPreviewPage));
+        Routing.RegisterRoute(nameof(SummaryPageModel), typeof(SummaryPage));
         return builder;
+    }
+
+    private static MauiAppBuilder RegisterFirebaseServices(this MauiAppBuilder builder)
+    {
+        builder.ConfigureLifecycleEvents(events => {
+#if IOS
+            events.AddiOS(iOS => iOS.FinishedLaunching((app, launchOptions) => {
+                Plugin.Firebase.Bundled.Platforms.iOS.CrossFirebase.Initialize(CreateCrossFirebaseSettings());
+                Firebase.Crashlytics.Crashlytics.SharedInstance.Init();
+                Firebase.Crashlytics.Crashlytics.SharedInstance.SetCrashlyticsCollectionEnabled(true);
+                Firebase.Crashlytics.Crashlytics.SharedInstance.SendUnsentReports();
+                new ImageCropper.Maui.Platform().Init();
+                return false;
+            }));
+#else
+
+            events.AddAndroid(android => android.OnCreate((activity, state) =>
+            {
+                Plugin.Firebase.Crashlytics.CrossFirebaseCrashlytics.Current.SetCrashlyticsCollectionEnabled(true);
+                Plugin.Firebase.Bundled.Platforms.Android.CrossFirebase.Initialize(activity, CreateCrossFirebaseSettings());
+            }));
+#endif
+
+        }); ;
+        return builder;
+    }
+
+    private static CrossFirebaseSettings CreateCrossFirebaseSettings()
+    {
+        return new CrossFirebaseSettings(
+            isAnalyticsEnabled: true,
+            isAuthEnabled: true,
+            isCloudMessagingEnabled: false,
+            isDynamicLinksEnabled: false,
+            isFirestoreEnabled: false,
+            isCrashlyticsEnabled: true,
+            isFunctionsEnabled: true,
+            isRemoteConfigEnabled: false,
+            isStorageEnabled: true,
+            googleRequestIdToken: Helpers.AppSettings.GoogleRequestIdToken);
     }
 }
 
