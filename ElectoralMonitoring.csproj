@@ -109,6 +109,14 @@
 			<DependentUpon>AppRes.en.resx</DependentUpon>
 		</Compile>
 	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="Pages\Common\" />
+	  <None Remove="PageModels\Common\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Pages\Common\" />
+	  <Folder Include="PageModels\Common\" />
+	</ItemGroup>
 	<PropertyGroup>
 		<!-- Properties used to strip bitcode from frameworks when using Visual Studio for Mac -->
 		<_StripBitcodeFromFrameworksMasterAfterTargets Condition="'$(OS)'=='Unix'">_ExpandNativeReferences</_StripBitcodeFromFrameworksMasterAfterTargets>

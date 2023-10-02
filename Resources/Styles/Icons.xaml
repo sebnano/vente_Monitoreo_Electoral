@@ -17,4 +17,6 @@
     <x:String x:Key="IconDocumentCheck">&#xf111;</x:String>
     <x:String x:Key="IconDocumentRefresh">&#xf112;</x:String>
     <x:String x:Key="IconUpload">&#xf113;</x:String>
+    <x:String x:Key="IconAlertComment">&#xf114;</x:String>
+    <x:String x:Key="IconCheckCircle">&#xf115;</x:String>
 </ResourceDictionary>

@@ -31,6 +31,17 @@ namespace ElectoralMonitoring
             return result;
         }
 
+        public async Task<List<Minute>?> GetMinutesByCcvAndTable(string ccv, string table, CancellationToken cancellationToken)
+        {
+            var result = await AttemptAndRetry_Mobile(async () => {
+
+                return await _nodeApi.GetMinutesByCcvAndTable(ccv, table).ConfigureAwait(false);
+
+            }, cancellationToken);
+
+            return result;
+        }
+
         public async Task<List<VotingCenter>?> GetVotingCenters(CancellationToken cancellationToken)
         {
             var result = await AttemptAndRetry_Mobile(async () => {
@@ -53,11 +64,22 @@ namespace ElectoralMonitoring
             return result;
         }
 
-        public async Task<Dictionary<string,List<Node>>?> UploadMinute(string fileName, Stream file, CancellationToken cancellationToken)
+        public async Task<List<FieldForm>?> GetMinutesFormFields(CancellationToken cancellationToken)
+        {
+            var result = await AttemptAndRetry_Mobile(async () => {
+
+                return await _nodeApi.GetMinutesFormFields().ConfigureAwait(false);
+
+            }, cancellationToken);
+
+            return result;
+        }
+
+        public async Task<Dictionary<string,List<Node>>?> UploadMinute(string fileName, FileStream file, CancellationToken cancellationToken)
         {
             var result = await AttemptAndRetry_Mobile(async () => {
                 
-                return await _nodeApi.UploadFile($"file; filename=\"{fileName}\"", new StreamPart(file, fileName)).ConfigureAwait(false);
+                return await _nodeApi.UploadFile($"file; filename=\"{fileName}\"", file).ConfigureAwait(false);
 
             }, cancellationToken);
 

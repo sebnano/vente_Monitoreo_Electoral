@@ -1,8 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace ElectoralMonitoring
 {
+    public class FieldForm
+    {
+        [JsonPropertyName("numero_candidato")]
+        public string NumeroCandidato { get; set; }
+
+        [JsonPropertyName("campo")]
+        public string Key { get; set; }
+
+        [JsonPropertyName("field_mapeo_texto")]
+        public string FieldMapeoTexto { get; set; }
+
+        [JsonPropertyName("field_content_type")]
+        public string FieldContentType { get; set; }
+
+        [JsonPropertyName("weight")]
+        public string Weight { get; set; }
+
+        [JsonPropertyName("grupo")]
+        public string Grupo { get; set; }
+
+        [JsonPropertyName("Field_type")]
+        public string Type { get; set; }
+
+        public const string NUMBER = "number"; 
+        public const string TEXT = "string_textfield";
+        public const string TEXTAREA = "string_textarea";
+        public const string REFERENCE = "entity_reference_autocomplete";
+        public const string IMAGE = "image_image";
+        public const string OPTIONS = "options_select";
+    }
+
+
     public class Content
     {
         public FormField body { get; set; }
@@ -52,10 +85,6 @@ namespace ElectoralMonitoring
     {
         public string type { get; set; }
         public int weight { get; set; }
-        public string region { get; set; }
-        //todo, agrear jsonconverter custom para manejar settings: []
-        //public Settings settings { get; set; }
-        public List<object> third_party_settings { get; set; }
     }
 
     public class FormResponse

@@ -17,6 +17,8 @@ namespace ElectoralMonitoring
         public const string FileDocumentCheck = "\uf111";
         public const string FileDocumentRefresh = "\uf112";
         public const string Upload = "\uf113";
+        public const string AlertComment = "\uf114";
+        public const string CheckCircle = "\uf115";
     }
 }
 

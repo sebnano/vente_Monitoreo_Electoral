@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ElectoralMonitoring.Resources.Lang;
 using Microsoft.Maui.Graphics.Platform;
 using Plugin.Firebase.Storage;
 
@@ -8,6 +9,9 @@ namespace ElectoralMonitoring
 {
     public partial class MonitorListPageModel : BasePageModel
     {
+        string ccv;
+        string mesa;
+
         readonly NodeService _nodeService;
 
         [ObservableProperty]
@@ -33,7 +37,7 @@ namespace ElectoralMonitoring
                 IsBusy = true;
                 Minutes ??= new();
                 var list = await _nodeService.GetMinutesByUser(CancellationToken.None);
-                if(list != null && list.Count > 0)
+                if (list != null && list.Count > 0)
                 {
                     Minutes = new(list.Select(x => new Minute()
                     {
@@ -55,17 +59,47 @@ namespace ElectoralMonitoring
 
         public Microsoft.Maui.Controls.Page? ContextPage { get; set; }
 
-        [RelayCommand(AllowConcurrentExecutions = false)]
-        public Task TakePhoto()
+        async Task<bool> CheckCanContinue()
         {
-            IsAdding = true;
-#if IOS
-            return TakePhotoCropAndUpload();
-#endif
-#if ANDROID
-            return TakePhotoCropAndUpload();
-#endif
+            var cvs = await _nodeService.GetVotingCenters(CancellationToken.None);
+            if(cvs != null && cvs.Count > 0)
+            {
+                var hasAccess = cvs.Any(x => x.CodCNECentroVotacion == ccv || x.CodCNECentroVotacion == ccv.TrimStart('0'));
+                if (!hasAccess) {
+                    await Shell.Current.DisplayAlert("Mensaje", $"¡El centro de votación {ccv} no existe o no tiene permisos!", "OK");
+                    return false;
+                }
+            }
+            var list = await _nodeService.GetMinutesByCcvAndTable(ccv, mesa, CancellationToken.None);
+            if (list != null && list.Count > 0)
+            {
+                await Shell.Current.DisplayAlert("Mensaje", $"¡El acta del centro de votación {ccv} en la mesa {mesa} ya ha sido cargada!", "OK");
+                return false;
+            }
 
+            return list is not null;
+        }
+
+        [RelayCommand(AllowConcurrentExecutions = false)]
+        public async Task TakePhoto()
+        {
+            ccv = await Shell.Current.DisplayPromptAsync("Código del centro de votación", "Ingrese el código para continuar", AppRes.AlertAccept, AppRes.AlertCancel, "010101001", 9, Keyboard.Numeric);
+            if (string.IsNullOrWhiteSpace(ccv)) return;
+
+            mesa = await Shell.Current.DisplayPromptAsync("Mesa", "Ingrese el número de mesa para continuar", AppRes.AlertAccept, AppRes.AlertCancel, "01", 2, Keyboard.Numeric);
+            if (string.IsNullOrWhiteSpace(mesa)) return;
+
+            IsAdding = true;
+            var can = await CheckCanContinue();
+            if (!can)
+            {
+                IsAdding = false;
+                return;
+            }
+
+            await Shell.Current.DisplayAlert("Mensaje", "A continuación debe agregar la foto del acta", "OK");
+
+            await TakePhotoCropAndUpload().ConfigureAwait(false);
         }
 
         public Task TakePhotoCropAndUpload()
@@ -83,37 +117,43 @@ namespace ElectoralMonitoring
                     PhotoLibraryTitle = "Desde galería",
                     CropButtonTitle = "Recortar",
                     CancelButtonTitle = "Cancelar",
-                    Success = async(imageFile) =>
+                    Success = async (imageFile) =>
                     {
                         int fid = -1;
                         var imageUri = string.Empty;
-                        
+
                         var stream = File.OpenRead(imageFile);
                         var fileName = System.IO.Path.GetFileName(imageFile);
                         var result = await _nodeService.UploadMinute(fileName, stream, CancellationToken.None);
-                        if(result != null)
+                        if (result != null)
                         {
-                            if(result.TryGetValue("fid", out List<Node> value) && value != null){
+                            if (result.TryGetValue("fid", out List<Node> value) && value != null)
+                            {
                                 var fidNode = value.FirstOrDefault();
-                                if(int.TryParse(fidNode?.Value?.ToString(), out fid));
+                                if (int.TryParse(fidNode?.Value?.ToString(), out fid)) ;
                             }
-                            if(result.TryGetValue("uri", out List<Node> valueUri) && value != null){
-                                imageUri = value.FirstOrDefault()?.Url ?? string.Empty;
+                            if (result.TryGetValue("uri", out List<Node> valueUri) && value != null)
+                            {
+                                imageUri = valueUri.FirstOrDefault()?.Url ?? string.Empty;
+                                Console.WriteLine($"ImageURI: {Helpers.AppSettings.BackendUrl+imageUri}");
                             }
                         }
 
                         var navigationParameter = new Dictionary<string, object>
                         {
                             { "localFilePath", imageFile },
-                            { "image", imageUri },
+                            { "image", Helpers.AppSettings.BackendUrl+imageUri },
                             { "imageType", ImageType.URI },
-                            { "fileId", fid }
+                            { "fileId", fid },
+                            { "ccv", ccv },
+                            { "mesa", mesa },
                         };
                         IsAdding = false;
                         await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter);
 
                     },
-                    Failure = () => {
+                    Failure = () =>
+                    {
                         IsAdding = false;
                     }
                 }.Show(ContextPage);
@@ -132,35 +172,36 @@ namespace ElectoralMonitoring
                 {
                     var imageFile = await SaveFileInLocalStorage(photo);
 
+                    int fid = -1;
+                    var imageUri = string.Empty;
 
-                    
-                        int fid = -1;
-                        var imageUri = string.Empty;
-                        
-                        var stream = await photo.OpenReadAsync();
-                        var fileName = System.IO.Path.GetFileName(imageFile);
-                        var result = await _nodeService.UploadMinute(fileName, stream, CancellationToken.None);
-                        if(result != null)
+                    var stream = File.OpenRead(imageFile);
+
+                    var fileName = System.IO.Path.GetFileName(imageFile);
+                    var result = await _nodeService.UploadMinute(fileName, stream, CancellationToken.None);
+                    if (result != null)
+                    {
+                        if (result.TryGetValue("fid", out List<Node> value) && value != null)
                         {
-                            if(result.TryGetValue("fid", out List<Node> value) && value != null){
-                                var fidNode = value.FirstOrDefault();
-                                if(int.TryParse(fidNode?.Value?.ToString(), out fid));
-                            }
-                            if(result.TryGetValue("uri", out List<Node> valueUri) && value != null){
-                                imageUri = value.FirstOrDefault()?.Url ?? string.Empty;
-                            }
+                            var fidNode = value.FirstOrDefault();
+                            if (int.TryParse(fidNode?.Value?.ToString(), out fid)) ;
                         }
+                        if (result.TryGetValue("uri", out List<Node> valueUri) && value != null)
+                        {
+                            imageUri = valueUri.FirstOrDefault()?.Url ?? string.Empty;
+                        }
+                    }
 
-                        var navigationParameter = new Dictionary<string, object>
+                    var navigationParameter = new Dictionary<string, object>
                         {
                             { "localFilePath", imageFile },
-                            { "image", imageUri },
+                            { "image", Helpers.AppSettings.BackendUrl+imageUri },
                             { "imageType", ImageType.URI },
                             { "fileId", fid }
                         };
-                        IsAdding = false;
-                        await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter);
-                    
+                    IsAdding = false;
+                    await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter);
+
                 }
             }
         }

@@ -62,6 +62,7 @@ public static class MauiProgram
         builder.Services.AddTransient<RegisterPageModel>();
         builder.Services.AddTransient<MonitorListPageModel>();
         builder.Services.AddTransient<ScannerPreviewPageModel>();
+        builder.Services.AddTransient<SummaryPageModel>();
         return builder;
     }
 
@@ -71,6 +72,7 @@ public static class MauiProgram
         builder.Services.AddTransient<RegisterPage>();
         builder.Services.AddTransient<MonitorListPage>();
         builder.Services.AddTransient<ScannerPreviewPage>();
+        builder.Services.AddTransient<SummaryPage>();
         return builder;
     }
 
@@ -80,6 +82,7 @@ public static class MauiProgram
         Routing.RegisterRoute(nameof(RegisterPageModel), typeof(RegisterPage));
         Routing.RegisterRoute(nameof(MonitorListPageModel), typeof(MonitorListPage));
         Routing.RegisterRoute(nameof(ScannerPreviewPageModel), typeof(ScannerPreviewPage));
+        Routing.RegisterRoute(nameof(SummaryPageModel), typeof(SummaryPage));
         return builder;
     }
 

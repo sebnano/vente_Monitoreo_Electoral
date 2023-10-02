@@ -53,7 +53,7 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="local:Minute">
                         <Border Margin="10,5">
-                            <Grid ColumnSpacing="10" Padding="10" RowDefinitions="2*,*" ColumnDefinitions="Auto,*,Auto">
+                            <Grid ColumnSpacing="10" Padding="10" RowDefinitions="*,*" ColumnDefinitions="Auto,*,Auto">
                                 <Label Style="{StaticResource LabelIcon}"
                                        Text="{Binding Icon}"
                                        FontSize="32" HorizontalOptions="Start"
