@@ -77,6 +77,9 @@ namespace ElectoralMonitoring
 
         async Task<bool> CheckCanContinue()
         {
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+                return true;
+
             var mesa = (Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == "field_mesa") as IFieldControl)?.GetValue().ToString();
             var ccv = (Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == "field_centro_de_votacion")as IFieldControl)?.GetValue().ToString();
             if (mesa is null || ccv is null) return false;

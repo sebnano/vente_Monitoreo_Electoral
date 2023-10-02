@@ -54,7 +54,7 @@ namespace ElectoralMonitoring
             catch (Exception ex)
             {
                 AnalyticsService.Report(ex);
-                MainThread.BeginInvokeOnMainThread(async () => await Shell.Current.DisplayAlert(AppRes.AlertTitle, AppRes.AlertErrorGeneral, AppRes.AlertAccept));
+                //MainThread.BeginInvokeOnMainThread(async () => await Shell.Current.DisplayAlert(AppRes.AlertTitle, AppRes.AlertErrorGeneral, AppRes.AlertAccept));
                 return default(T);
             }
             finally { }
