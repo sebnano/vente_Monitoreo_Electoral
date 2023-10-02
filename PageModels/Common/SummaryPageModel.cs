@@ -7,7 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 namespace ElectoralMonitoring
 {
     public record ActionButtonDTO(
-        string Text, string Style, ICommand ActionCommand
+        string Text, string Style, IAsyncRelayCommand ActionCommand
     );
 
     public partial class SummaryPageModel : BasePageModel, IQueryAttributable
@@ -31,6 +31,17 @@ namespace ElectoralMonitoring
         {
         }
 
+        [RelayCommand(AllowConcurrentExecutions = false)]
+        public async Task ActionButton(ActionButtonDTO btn)
+        {
+            IsBusy = true;
+
+            await (btn.ActionCommand as AsyncRelayCommand)?.ExecuteAsync(null);
+
+            IsBusy = false;
+
+        }
+
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
 
@@ -51,12 +62,12 @@ namespace ElectoralMonitoring
                 if (type == TYPE_SUCCESS) {
                     Icon = IconFont.CheckCircle;
                     Color = Color.FromArgb("#134077");
-                    Actions.Add(new ActionButtonDTO("Inicio", "ButtonPrimary", new RelayCommand(async () => await Shell.Current.Navigation.PopToRootAsync() )));
+                    Actions.Add(new ActionButtonDTO("Inicio", "ButtonPrimary", new AsyncRelayCommand(async () => await Shell.Current.Navigation.PopToRootAsync() )));
                 }
                 else if(type == TYPE_ERROR) {
                     Icon = IconFont.AlertComment;
                     Color = Color.FromArgb("#dc3623");
-                    Actions.Add(new ActionButtonDTO("Deshacer", "ButtonPrimary", new RelayCommand(async () => await Shell.Current.Navigation.PopToRootAsync())));
+                    Actions.Add(new ActionButtonDTO("Deshacer", "ButtonPrimary", new AsyncRelayCommand(async () => await Shell.Current.Navigation.PopToRootAsync())));
                 }
             }
         }

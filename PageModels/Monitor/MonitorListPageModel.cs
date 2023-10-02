@@ -149,7 +149,7 @@ namespace ElectoralMonitoring
                             { "mesa", mesa },
                         };
                         IsAdding = false;
-                        await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter);
+                        await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter).ConfigureAwait(false);
 
                     },
                     Failure = () =>

@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using Android.Renderscripts;
+﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Plugin.Firebase.Functions;
 
 namespace ElectoralMonitoring
 {
-	public partial class ScannerPreviewPageModel : BasePageModel, IQueryAttributable
+    public partial class ScannerPreviewPageModel : BasePageModel, IQueryAttributable
     {
         readonly NodeService _nodeService;
         List<VotingCenter> _votingCenters;
@@ -30,7 +24,7 @@ namespace ElectoralMonitoring
 
         [ObservableProperty]
         bool isLoading;
-    
+
         public ScannerPreviewPageModel(NodeService nodeService, AuthService authService) : base(authService)
         {
             _nodeService = nodeService;
@@ -47,30 +41,34 @@ namespace ElectoralMonitoring
             && x.Key != "field_votacion_a_observar"
             && x.Key != "field_image").ToList();
 
-            if(fieldsObjsToView != null)
+            if (fieldsObjsToView != null)
             {
-                var grouped = fieldsObjsToView.GroupBy(x => x.Grupo);
-                
-                foreach (var group in grouped)
+                await Shell.Current.Dispatcher.DispatchAsync(() =>
                 {
-                    Label groupTitle = new Label() { Text = group.Key, FontAttributes = FontAttributes.Bold, Margin = new Thickness(0,20,0,0), FontSize = 16 };
-                    Fields.Add(groupTitle);
-                    foreach (var item in group.OrderBy(x => x.Weight))
+                    var grouped = fieldsObjsToView.GroupBy(x => x.Grupo);
+
+                    foreach (var group in grouped)
                     {
-                        if (InputFieldControl.TypesAvailable.Any(x => x == item.Type))
+                        Label groupTitle = new Label() { Text = group.Key, FontAttributes = FontAttributes.Bold, Margin = new Thickness(0, 20, 0, 0), FontSize = 16 };
+                        Fields.Add(groupTitle);
+                        foreach (var item in group.OrderBy(x => x.Weight))
                         {
-                            // Faltaria campo de picker de centros de votacion, mesa
-                            var field = new InputFieldControl()
+                            if (InputFieldControl.TypesAvailable.Any(x => x == item.Type))
                             {
-                                Title = item.FieldMapeoTexto,
-                                Key = item.Key,
-                                FieldType = item.Type == FieldForm.NUMBER ? FieldType.Number : FieldType.Text
-                            };
-                            Fields.Add(field);
+                                // Faltaria campo de picker de centros de votacion, mesa
+                                var field = new InputFieldControl()
+                                {
+                                    Title = item.FieldMapeoTexto,
+                                    Key = item.Key,
+                                    FieldType = item.Type == FieldForm.NUMBER ? FieldType.Number : FieldType.Text
+                                };
+                                Fields.Add(field);
+                            }
                         }
+
                     }
-                    
-                }
+                }).ConfigureAwait(false);
+
             }
         }
 
@@ -81,7 +79,7 @@ namespace ElectoralMonitoring
                 return true;
 
             var mesa = (Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == "field_mesa") as IFieldControl)?.GetValue().ToString();
-            var ccv = (Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == "field_centro_de_votacion")as IFieldControl)?.GetValue().ToString();
+            var ccv = (Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == "field_centro_de_votacion") as IFieldControl)?.GetValue().ToString();
             if (mesa is null || ccv is null) return false;
             if (_votingCenters != null && _votingCenters.Count > 0)
             {
@@ -105,33 +103,40 @@ namespace ElectoralMonitoring
         async Task LoadVotingCenters()
         {
             var request = await _nodeService.GetVotingCenters(CancellationToken.None);
-            if(request != null)
+            if (request != null)
             {
                 _votingCenters = request;
             }
         }
 
-        public async void ApplyQueryAttributes(IDictionary<string, object> query)
+        public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if (query.ContainsKey("localFilePath") && query.ContainsKey("image") && query.ContainsKey("imageType")
                 && query.ContainsKey("fileId") && query.ContainsKey("mesa") && query.ContainsKey("ccv"))
             {
                 IsBusy = IsLoading = true;
                 ImagePreview = query["localFilePath"] as string ?? string.Empty;
-                
+
                 _fid = (int)query["fileId"];
                 _ccv = (string)query["ccv"];
                 _mesa = (string)query["mesa"];
 
                 var image = query["image"] as string ?? string.Empty;
                 var imageType = (ImageType)query["imageType"];
-                await Task.WhenAll(RenderForm(), GetContent(imageType, image), LoadVotingCenters()).ContinueWith(async(t) => {
-                    if (t.IsCompletedSuccessfully) {
-                        await SetFields();
 
-                        IsBusy = IsLoading = false;
-                    }
-                }).ConfigureAwait(false);
+                _ = Task.Run(async () =>
+                {
+
+                    await Task.WhenAll(RenderForm(), GetContent(imageType, image), LoadVotingCenters()).ContinueWith(async (t) =>
+                    {
+                        if (t.IsCompletedSuccessfully)
+                        {
+                            await SetFields();
+
+                            IsBusy = IsLoading = false;
+                        }
+                    }).ConfigureAwait(false);
+                });
             }
         }
 
@@ -266,8 +271,8 @@ namespace ElectoralMonitoring
             {
                 var actions = new List<ActionButtonDTO>()
                 {
-                    new ActionButtonDTO("Guardar Offline", "ButtonPrimary", new RelayCommand(async () => await Shell.Current.Navigation.PopToRootAsync())),
-                    new ActionButtonDTO("Reintentar", "ButtonPrimary", new RelayCommand(async () =>
+                    new ActionButtonDTO("Guardar Offline", "ButtonPrimary", new AsyncRelayCommand(async () => await Shell.Current.Navigation.PopToRootAsync())),
+                    new ActionButtonDTO("Reintentar", "ButtonPrimary", new AsyncRelayCommand(async () =>
                     {
                         await SendRequest(values);
                     }))
