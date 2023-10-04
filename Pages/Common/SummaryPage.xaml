@@ -9,7 +9,7 @@
              Title="SummaryPage" Shell.NavBarIsVisible="False" BackgroundColor="{Binding Color}">
     <VerticalStackLayout VerticalOptions="CenterAndExpand" Spacing="20">
         <Label Style="{StaticResource LabelIcon}" TextColor="White" Text="{Binding Icon}" FontSize="60"/>
-        <Label Text="{Binding Message}" TextColor="White"  Margin="0,30,0,0" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="18"/>
+        <Label Text="{Binding Message}" TextColor="White"  Margin="10,30,10,0" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="18"/>
         <StackLayout BindableLayout.ItemsSource="{Binding Actions}" Padding="20" Spacing="10">
             <BindableLayout.ItemTemplate>
                 <DataTemplate x:DataType="local:ActionButtonDTO">

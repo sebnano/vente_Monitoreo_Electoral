@@ -1,9 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
-using Plugin.Firebase.Bundled.Shared;
 using Microsoft.Maui.LifecycleEvents;
-using Plugin.Firebase.Functions;
-using Plugin.Firebase.Auth;
+using Plugin.Firebase.Shared;
 
 namespace ElectoralMonitoring;
 
@@ -43,8 +41,6 @@ public static class MauiProgram
 
         builder.Services.AddSingleton(Preferences.Default);
         builder.Services.AddSingleton(Connectivity.Current);
-        builder.Services.AddSingleton(CrossFirebaseFunctions.Current);
-        //builder.Services.AddSingleton(CrossFirebaseStorage.Current);
 
         //Refit services
         IAuthApi authApi = RefitExtensions.For<IAuthApi>(BaseApiService.GetApi(Fusillade.Priority.Explicit));
@@ -79,7 +75,7 @@ public static class MauiProgram
     {
         Routing.RegisterRoute(nameof(LoginPageModel), typeof(LoginPage));
         Routing.RegisterRoute(nameof(RegisterPageModel), typeof(RegisterPage));
-        Routing.RegisterRoute(nameof(MonitorListPageModel), typeof(MonitorListPage));
+        //Routing.RegisterRoute(nameof(MonitorListPageModel), typeof(MonitorListPage));
         Routing.RegisterRoute(nameof(ScannerPreviewPageModel), typeof(ScannerPreviewPage));
         Routing.RegisterRoute(nameof(SummaryPageModel), typeof(SummaryPage));
         return builder;
@@ -90,17 +86,9 @@ public static class MauiProgram
         builder.ConfigureLifecycleEvents(events => {
 #if IOS
             events.AddiOS(iOS => iOS.FinishedLaunching((app, launchOptions) => {
-                Plugin.Firebase.Bundled.Platforms.iOS.CrossFirebase.Initialize(CreateCrossFirebaseSettings());
+                Plugin.Firebase.iOS.CrossFirebase.Initialize(app, launchOptions, CreateCrossFirebaseSettings());
                 Firebase.Crashlytics.Crashlytics.SharedInstance.Init();
                 Firebase.Crashlytics.Crashlytics.SharedInstance.SendUnsentReports();
-                try {
-
-                    var f = CrossFirebaseFunctions.Current.GetHttpsCallable("imageTextRecognition");
-                }
-                catch(Exception e) {
-                    Console.WriteLine("Funcions is supported: ");
-                    Console.WriteLine(CrossFirebaseFunctions.IsSupported);
-                }
                 new ImageCropper.Maui.Platform().Init();
                 return false;
             }));
@@ -109,7 +97,7 @@ public static class MauiProgram
             events.AddAndroid(android => android.OnCreate((activity, state) =>
             {
                 Plugin.Firebase.Crashlytics.CrossFirebaseCrashlytics.Current.SetCrashlyticsCollectionEnabled(true);
-                Plugin.Firebase.Bundled.Platforms.Android.CrossFirebase.Initialize(activity, CreateCrossFirebaseSettings());
+                Plugin.Firebase.Android.CrossFirebase.Initialize(activity, state, CreateCrossFirebaseSettings());
             }));
 #endif
 
@@ -129,7 +117,8 @@ public static class MauiProgram
             isFunctionsEnabled: true,
             isRemoteConfigEnabled: false,
             isStorageEnabled: true,
-            googleRequestIdToken: Helpers.AppSettings.GoogleRequestIdToken);
+            googleRequestIdToken: Helpers.AppSettings.GoogleRequestIdToken
+            );
     }
 }
 

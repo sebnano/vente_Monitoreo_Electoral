@@ -67,8 +67,8 @@ namespace ElectoralMonitoring
                 else if(type == TYPE_ERROR) {
                     Icon = IconFont.AlertComment;
                     Color = Color.FromArgb("#dc3623");
-                    Actions.Add(new ActionButtonDTO("Deshacer", "ButtonPrimary", new AsyncRelayCommand(async () => await Shell.Current.Navigation.PopToRootAsync())));
-                    Actions.Add(new ActionButtonDTO("Atrás", "ButtonPrimary", new AsyncRelayCommand(async () => await Shell.Current.GoToAsync(".."))));
+                    Actions.Add(new ActionButtonDTO("Inicio", "ButtonPrimary", new AsyncRelayCommand(async () => await Shell.Current.Navigation.PopToRootAsync())));
+                    Actions.Add(new ActionButtonDTO("Atrás", "ButtonPrimary", new AsyncRelayCommand(async () => await Shell.Current.GoToAsync("..?fromsummary=true"))));
                 }
             }
         }
