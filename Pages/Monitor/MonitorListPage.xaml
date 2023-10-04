@@ -14,7 +14,7 @@
         </ToolbarItem>
     </ContentPage.ToolbarItems>
         <Grid
-            RowSpacing="10" RowDefinitions="Auto,*,Auto>
+            RowSpacing="10" RowDefinitions="Auto,*,Auto">
             <Border Grid.Row="0" Margin="10">
                 <StackLayout Padding="12" Orientation="Horizontal" HeightRequest="100">
                     <StackLayout Spacing="10" HorizontalOptions="StartAndExpand">
