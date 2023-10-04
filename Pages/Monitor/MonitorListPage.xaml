@@ -41,8 +41,8 @@
                 </StackLayout>
             </Border>
 
-            <ActivityIndicator  Grid.Row="1" IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"></ActivityIndicator>
-            <CollectionView  Grid.Row="1" VerticalOptions="StartAndExpand" ItemsSource="{Binding Minutes}">
+            <ActivityIndicator VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Grid.Row="1" IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"></ActivityIndicator>
+            <CollectionView Grid.Row="1" ItemsSource="{Binding Minutes}">
                 <CollectionView.EmptyView>
                     <ContentView>
                         <StackLayout Spacing="12">
@@ -53,7 +53,7 @@
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="local:Minute">
-                        <Border Margin="10,5">
+                        <Border Margin="10,5" HorizontalOptions="Center" VerticalOptions="Center">
                             <Grid ColumnSpacing="10" Padding="10" RowDefinitions="*,*" ColumnDefinitions="Auto,*,Auto">
                                 <Label Style="{StaticResource LabelIcon}"
                                        Text="{Binding Icon}"
