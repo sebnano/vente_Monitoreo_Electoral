@@ -21,28 +21,6 @@ public partial class InputFieldControl : ContentView, IFieldControl
     { "number", "string_textfield", "string_textarea", "entity_reference_autocomplete", "options_select"
     };
 
-    public static Dictionary<string,string> LabelsPredefined = new()
-    {
-        {"field_boletas_escrutadas", "Boletas escrutadas"},
-        {"field_cargo_del_portador_del_act","Cargo del portador del acta"},
-        {"field_cedula_miembro_de_mesa","Cédula del miembro de mesa"},
-        {"field_cedula_portador_del_acta","Cédula del portador del acta"},
-        {"field_cedula_presidente_de_mesa","Cédula del presidente de mesa"},
-        {"field_cedula_secretario_de_mesa","Cédula del Secretario de mesa"},
-        {"field_centro_de_votacion","Centro de votación"},
-        {"field_hora_cierre_de_mesa","Hora cierre de mesa"},
-        {"field_hora_fin_del_escrutinio","Hora fin del escrutinio"},
-        {"field_mesa","Mesa"},
-        {"field_nombre_portador_acta","Nombre portador del acta"},
-        {"field_nombre_presidente_de_mesa","Presidente de mesa"},
-        {"field_nombre_secretario_miembro_","Secretario"},
-        {"field_observaciones","Observaciones"},
-        {"field_participantes_segun_cuader","Participantes según cuaderno"},
-        {"field_votos_nulos","Votos nulos"},
-        {"field_votacion_a_observar","Votación a observar"},
-        {"field_votos_por_candidatos","Votos por candidatos"},
-        {"field_nombre_miembro_de_mesa", "Nombre miembro de mesa" }
-    };
     public static readonly BindableProperty MaxLenghtProperty = BindableProperty.Create(nameof(MaxLenght), typeof(int), typeof(InputFieldControl), 100);
     public static readonly BindableProperty DateProperty = BindableProperty.Create(nameof(Date), typeof(DateTime), typeof(InputFieldControl), DateTime.Now, BindingMode.TwoWay);
     public static readonly BindableProperty TextProperty = BindableProperty.Create(nameof(Text), typeof(string), typeof(InputFieldControl), string.Empty, BindingMode.TwoWay);

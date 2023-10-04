@@ -60,7 +60,8 @@ namespace ElectoralMonitoring
                                 {
                                     Title = item.FieldMapeoTexto,
                                     Key = item.Key,
-                                    FieldType = item.Type == FieldForm.NUMBER ? FieldType.Number : FieldType.Text
+                                    FieldType = item.Type == FieldForm.NUMBER ? FieldType.Number : FieldType.Text,
+                                    MaxLenght = item.Key == "field_observaciones" ? -1 : 100
                                 };
                                 Fields.Add(field);
                             }
@@ -109,7 +110,7 @@ namespace ElectoralMonitoring
             }
         }
 
-        public async void ApplyQueryAttributes(IDictionary<string, object> query)
+        public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if (query.ContainsKey("localFilePath") && query.ContainsKey("image") && query.ContainsKey("imageType")
                 && query.ContainsKey("fileId") && query.ContainsKey("mesa") && query.ContainsKey("ccv"))
@@ -362,7 +363,7 @@ namespace ElectoralMonitoring
             {
                 await Shell.Current.GoToAsync(nameof(SummaryPageModel), new Dictionary<string, object>()
                 {
-                    { "message", "Your document is upload success" },
+                    { "message", "Su documento se ha cargado correctamente" },
                     { "type", SummaryPageModel.TYPE_SUCCESS },
                     { "actions", null }
                 });
@@ -379,7 +380,7 @@ namespace ElectoralMonitoring
                 };
                 await Shell.Current.GoToAsync(nameof(SummaryPageModel), new Dictionary<string, object>()
                 {
-                    { "message", "Your document isn't upload, choice an option" },
+                    { "message", "Su documento no se pudo cargar, elija una opción" },
                     { "type", SummaryPageModel.TYPE_ERROR },
                     { "actions", actions }
                 });

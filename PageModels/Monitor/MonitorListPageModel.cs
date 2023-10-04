@@ -28,6 +28,7 @@ namespace ElectoralMonitoring
             _nodeService = nodeService;
             Username = _authService.NameUser;
             AuthService.NamedChanged += AuthService_NamedChanged;
+            Minutes ??= new();
         }
 
         public async Task Init()
@@ -46,6 +47,9 @@ namespace ElectoralMonitoring
                         nid = x.nid,
                         Icon = IconFont.FileDocumentCheck
                     }));
+                }
+                else {
+                    Minutes = null;
                 }
                 IsBusy = false;
             }
@@ -121,11 +125,12 @@ namespace ElectoralMonitoring
                     PhotoLibraryTitle = "Desde galería",
                     CropButtonTitle = "Recortar",
                     CancelButtonTitle = "Cancelar",
-                    Success = async (imageFile) =>
+                    Success = async (sourceUri) =>
                     {
+                        //verificar el tama;o de la foto
                         int fid = -1;
                         var imageUri = string.Empty;
-
+                        var imageFile = await SaveFileInLocalStorage(sourceUri);
                         var stream = File.OpenRead(imageFile);
                         var fileName = System.IO.Path.GetFileName(imageFile);
                         var result = await _nodeService.UploadMinute(fileName, stream, CancellationToken.None);
@@ -215,6 +220,26 @@ namespace ElectoralMonitoring
             string localFilePath = System.IO.Path.Combine(FileSystem.CacheDirectory, photo.FileName);
 
             using (var sourceStream = await photo.OpenReadAsync())
+            {
+                using (var localFileStream = File.OpenWrite(localFilePath))
+                {
+                    var image = PlatformImage.FromStream(sourceStream);
+                    if (image != null)
+                    {
+                        var newImage = image.Downsize(1000, 2000, true);
+                        await newImage.SaveAsync(localFileStream);
+                    }
+                }
+            }
+
+            return localFilePath;
+        }
+        static async Task<string> SaveFileInLocalStorage(string photoUri)
+        {
+            string name = System.IO.Path.GetFileNameWithoutExtension(photoUri)+"2"+ System.IO.Path.GetExtension(photoUri);
+            string localFilePath = System.IO.Path.Combine(FileSystem.CacheDirectory, name);
+
+            using (var sourceStream = File.OpenRead(photoUri))
             {
                 using (var localFileStream = File.OpenWrite(localFilePath))
                 {

@@ -41,7 +41,7 @@
                 </StackLayout>
             </Border>
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"></ActivityIndicator>
-            <CollectionView VerticalOptions="StartAndExpand" ItemsSource="{Binding Minutes}">
+            <CollectionView HeightRequest="380" VerticalOptions="StartAndExpand" ItemsSource="{Binding Minutes}">
                 <CollectionView.EmptyView>
                     <ContentView>
                         <StackLayout Spacing="12">
