@@ -113,7 +113,7 @@ namespace ElectoralMonitoring
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if (query.ContainsKey("localFilePath") && query.ContainsKey("image") && query.ContainsKey("imageType")
-                && query.ContainsKey("fileId") && query.ContainsKey("mesa") && query.ContainsKey("ccv"))
+                && query.ContainsKey("fileId") && query.ContainsKey("mesa") && query.ContainsKey("ccv") && !query.ContainsKey("fromsummary"))
             {
                 IsBusy = IsLoading = true;
                 ImagePreview = query["localFilePath"] as string ?? string.Empty;
@@ -138,6 +138,10 @@ namespace ElectoralMonitoring
                         }
                     }).ConfigureAwait(false);
                 });
+            }
+            else if (query.ContainsKey("fromsummary"))
+            {
+
             }
         }
 
@@ -352,15 +356,18 @@ namespace ElectoralMonitoring
 
         private async Task SendRequest(Dictionary<string, List<Node>> values)
         {
+            IsLoading = true;
             var can = await CheckCanContinue();
             if (!can)
             {
+                IsLoading = false;
                 return;
             }
 
             var result = await _nodeService.CreateNode(values, CancellationToken.None);
             if (result != null)
             {
+                IsLoading = false;
                 await Shell.Current.GoToAsync(nameof(SummaryPageModel), new Dictionary<string, object>()
                 {
                     { "message", "Su documento se ha cargado correctamente" },
@@ -375,9 +382,11 @@ namespace ElectoralMonitoring
                     new ActionButtonDTO("Guardar Offline", "ButtonPrimary", new AsyncRelayCommand(async () => await Shell.Current.Navigation.PopToRootAsync())),
                     new ActionButtonDTO("Reintentar", "ButtonPrimary", new AsyncRelayCommand(async () =>
                     {
+                        await Shell.Current.GoToAsync("..?fromsummary=true");
                         await SendRequest(values);
                     }))
                 };
+                IsLoading = false;
                 await Shell.Current.GoToAsync(nameof(SummaryPageModel), new Dictionary<string, object>()
                 {
                     { "message", "Su documento no se pudo cargar, elija una opción" },
