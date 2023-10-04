@@ -18,7 +18,7 @@
                         <Image Source="{Binding ImagePreview}"
                                HeightRequest="155"
                                WidthRequest="100" Margin="0"
-                               Aspect="AspectFit"/>
+                               Aspect="AspectFill"/>
                     </Frame>
                     <StackLayout Grid.Column="1" Grid.Row="0" Spacing="6">
                         <Label Text="{x:Static res:AppRes.MinutesScannedTitle}" FontSize="Title" FontAttributes="Bold"/>
