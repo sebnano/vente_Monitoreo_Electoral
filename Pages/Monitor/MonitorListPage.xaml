@@ -13,9 +13,9 @@
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
     </ContentPage.ToolbarItems>
-        <StackLayout
-            Spacing="10">
-            <Border Margin="10">
+        <Grid
+            RowSpacing="10" RowDefinitions="Auto,*,Auto>
+            <Border Grid.Row="0" Margin="10">
                 <StackLayout Padding="12" Orientation="Horizontal" HeightRequest="100">
                     <StackLayout Spacing="10" HorizontalOptions="StartAndExpand">
                         <Label
@@ -40,8 +40,9 @@
                            HorizontalOptions="End"/>
                 </StackLayout>
             </Border>
-            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"></ActivityIndicator>
-            <CollectionView VerticalOptions="StartAndExpand" ItemsSource="{Binding Minutes}">
+
+            <ActivityIndicator  Grid.Row="1" IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"></ActivityIndicator>
+            <CollectionView  Grid.Row="1" VerticalOptions="StartAndExpand" ItemsSource="{Binding Minutes}">
                 <CollectionView.EmptyView>
                     <ContentView>
                         <StackLayout Spacing="12">
@@ -79,12 +80,12 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <Border VerticalOptions="End" HeightRequest="80" Padding="0" StrokeThickness="0" Background="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" StrokeShape="RoundRectangle 20,20,0,0">
+            <Border Grid.Row="2" VerticalOptions="End" HeightRequest="80" Padding="0" StrokeThickness="0" Background="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" StrokeShape="RoundRectangle 20,20,0,0">
                 <StackLayout>
                     <ActivityIndicator Color="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Primary}}" VerticalOptions="CenterAndExpand"  IsRunning="{Binding IsAdding}" IsVisible="{Binding IsAdding}"></ActivityIndicator>
                     <Button Text="{x:Static res:AppRes.AddButton}" IsVisible="{Binding IsAdding, Converter={toolkit:InvertedBoolConverter}}" HeightRequest="{StaticResource BottomButtonHeight}" FontSize="Title" FontAttributes="Bold"
                         Command="{Binding TakePhotoCommand}"/>
                 </StackLayout>
             </Border>
-        </StackLayout>
+        </Grid>
 </ContentPage>
