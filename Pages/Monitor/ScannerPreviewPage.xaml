@@ -8,7 +8,7 @@
              xmlns:res="clr-namespace:ElectoralMonitoring.Resources.Lang"
              xmlns:local="clr-namespace:ElectoralMonitoring">
     <StackLayout>
-        <local:FixedScrollView VerticalOptions="FillAndExpand">
+        <ScrollView VerticalOptions="FillAndExpand">
             <StackLayout Spacing="0">
                 <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto" Margin="10" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" ColumnSpacing="10">
 
@@ -47,7 +47,7 @@
                 </StackLayout>
 
             </StackLayout>
-        </local:FixedScrollView>
+        </ScrollView>
         <Border VerticalOptions="End" HeightRequest="80" Padding="0" StrokeThickness="0" Background="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" StrokeShape="RoundRectangle 20,20,0,0">
             <StackLayout>
                 <ActivityIndicator Color="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Primary}}" VerticalOptions="CenterAndExpand"  IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}"></ActivityIndicator>

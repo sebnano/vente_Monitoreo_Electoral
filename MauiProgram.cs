@@ -98,6 +98,8 @@ public static class MauiProgram
                     var f = CrossFirebaseFunctions.Current.GetHttpsCallable("imageTextRecognition");
                 }
                 catch(Exception e) {
+                    Console.WriteLine("Funcions is supported: ");
+                    Console.WriteLine(CrossFirebaseFunctions.IsSupported);
                 }
                 new ImageCropper.Maui.Platform().Init();
                 return false;
