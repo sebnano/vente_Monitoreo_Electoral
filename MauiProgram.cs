@@ -3,8 +3,7 @@ using CommunityToolkit.Maui;
 using Plugin.Firebase.Bundled.Shared;
 using Microsoft.Maui.LifecycleEvents;
 using Plugin.Firebase.Functions;
-using Plugin.Firebase.Storage;
-using System.Diagnostics;
+using Plugin.Firebase.Auth;
 
 namespace ElectoralMonitoring;
 
@@ -93,8 +92,15 @@ public static class MauiProgram
             events.AddiOS(iOS => iOS.FinishedLaunching((app, launchOptions) => {
                 Plugin.Firebase.Bundled.Platforms.iOS.CrossFirebase.Initialize(CreateCrossFirebaseSettings());
                 Firebase.Crashlytics.Crashlytics.SharedInstance.Init();
-                Firebase.Crashlytics.Crashlytics.SharedInstance.SetCrashlyticsCollectionEnabled(true);
                 Firebase.Crashlytics.Crashlytics.SharedInstance.SendUnsentReports();
+                try {
+
+                    var f = CrossFirebaseFunctions.Current.GetHttpsCallable("imageTextRecognition");
+                }
+                catch(Exception e) {
+                    Console.WriteLine("Funcions is supported: ");
+                    Console.WriteLine(CrossFirebaseFunctions.IsSupported);
+                }
                 new ImageCropper.Maui.Platform().Init();
                 return false;
             }));
@@ -107,7 +113,7 @@ public static class MauiProgram
             }));
 #endif
 
-        }); ;
+        });
         return builder;
     }
 

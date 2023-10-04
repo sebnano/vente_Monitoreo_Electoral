@@ -20,17 +20,29 @@ namespace ElectoralMonitoring
 #if IOS
         private async void OnKeyboardShowing(object sender, UIKeyboardEventArgs args)
         {
-            if (Shell.Current.CurrentPage is ContentPage page)
+            try
             {
-                UIView control = this.ToPlatform(Handler.MauiContext).FindFirstResponder();
-                UIView rootUiView = page.Content.ToPlatform(Handler.MauiContext);
-                CGRect kbFrame = UIKeyboard.FrameEndFromNotification(args.Notification);
-                double distance = control.GetOverlapDistance(rootUiView, kbFrame) + 10;
-                if (distance > 0)
+
+                if (Shell.Current.CurrentPage is ContentPage page)
                 {
-                    Margin = new Thickness(Margin.Left, -distance, Margin.Right, distance);
+                    UIView control = this.ToPlatform(Handler.MauiContext).FindFirstResponder();
+                    UIView rootUiView = page.Content.ToPlatform(Handler.MauiContext);
+                    CGRect kbFrame = UIKeyboard.FrameEndFromNotification(args.Notification);
+#if IOS13_0_OR_GREATER
+                    double distance = control.GetOverlapDistance(rootUiView, kbFrame) + 10;
+#else
+                    double distance = 10;
+#endif
+                    if (distance > 0)
+                    {
+                        Margin = new Thickness(Margin.Left, -distance, Margin.Right, distance);
+                    }
+                    await this.ScrollToAsync(0, distance, true);
                 }
-                await this.ScrollToAsync(0, distance, true);
+            }
+            catch
+            {
+
             }
         }
         private async void OnKeyboardHiding(object sender, UIKeyboardEventArgs args)

@@ -10,13 +10,17 @@
     <StackLayout>
         <ScrollView VerticalOptions="FillAndExpand">
             <StackLayout Spacing="0">
-                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto" Margin="10" ColumnSpacing="10">
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto" Margin="10" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" ColumnSpacing="10">
 
-                    <Border Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Start" WidthRequest="116">
+                    <Frame Grid.Column="0" Grid.Row="0" BorderColor="Transparent"
+                           BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                           VerticalOptions="Start" HorizontalOptions="Start" CornerRadius="8" Padding="0" HeightRequest="155" WidthRequest="100">
                         <Image Source="{Binding ImagePreview}"
-                       Aspect="AspectFit"/>
-                    </Border>
-                    <StackLayout Grid.Column="1" Spacing="6">
+                               HeightRequest="155"
+                               WidthRequest="100" Margin="0"
+                               Aspect="AspectFit"/>
+                    </Frame>
+                    <StackLayout Grid.Column="1" Grid.Row="0" Spacing="6">
                         <Label Text="{x:Static res:AppRes.MinutesScannedTitle}" FontSize="Title" FontAttributes="Bold"/>
                         <Label Text="{x:Static res:AppRes.ConfirmDataAndSubmit}" FontSize="Subtitle"/>
                         <Label Text="{Binding TextScanned}" FontSize="Caption" MaxLines="6" LineBreakMode="CharacterWrap"/>
