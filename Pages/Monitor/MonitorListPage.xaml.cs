@@ -6,8 +6,8 @@ public partial class MonitorListPage : ContentPage
 	public MonitorListPage(MonitorListPageModel vm)
 	{
 		InitializeComponent();
-		vm.ContextPage = this;
         BindingContext = _vm = vm;
+        vm.ContextPage = this;
     }
 
     protected override async void OnAppearing()

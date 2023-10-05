@@ -5,28 +5,17 @@
              x:Class="ElectoralMonitoring.MonitorListPage"
              x:DataType="local:MonitorListPageModel"
              xmlns:res="clr-namespace:ElectoralMonitoring.Resources.Lang"
-             xmlns:local="clr-namespace:ElectoralMonitoring">
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding LogoutCommand}" Text="{x:Static res:AppRes.LogoutText}">
-            <ToolbarItem.IconImageSource>
-                <FontImageSource FontFamily="AppIcons" Color="White" Glyph="&#xf106;" Size="20"/>
-            </ToolbarItem.IconImageSource>
-        </ToolbarItem>
-    </ContentPage.ToolbarItems>
+             xmlns:local="clr-namespace:ElectoralMonitoring"
+             Title="{x:Static res:AppRes.HomePageTitle}">
         <Grid
             RowSpacing="10" RowDefinitions="Auto,*,Auto">
             <Border Grid.Row="0" Margin="10">
                 <StackLayout Padding="12" Orientation="Horizontal" HeightRequest="100">
                     <StackLayout Spacing="10" HorizontalOptions="StartAndExpand">
                         <Label
-                        Text="{Binding Username, StringFormat={x:Static res:AppRes.WelcomeUser}}"
-                        SemanticProperties.HeadingLevel="Level1"
-                        FontSize="22"
-                        HorizontalOptions="Start" />
-                        <Label
                         Text="{x:Static res:AppRes.MonitorListSubtitle}"
                         SemanticProperties.HeadingLevel="Level1"
-                        FontSize="18"
+                        FontSize="22"
                         HorizontalOptions="Start" />
 
                     </StackLayout>

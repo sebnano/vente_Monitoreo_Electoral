@@ -16,9 +16,6 @@ namespace ElectoralMonitoring
         readonly NodeService _nodeService;
 
         [ObservableProperty]
-        string username;
-
-        [ObservableProperty]
         bool isAdding;
 
         [ObservableProperty]
@@ -27,8 +24,6 @@ namespace ElectoralMonitoring
         public MonitorListPageModel(NodeService nodeService, AuthService authService) : base(authService)
         {
             _nodeService = nodeService;
-            Username = _authService.NameUser;
-            AuthService.NamedChanged += AuthService_NamedChanged;
             Minutes ??= new();
         }
 
@@ -54,12 +49,6 @@ namespace ElectoralMonitoring
                 }
                 IsBusy = false;
             }
-        }
-
-        private void AuthService_NamedChanged(object? sender, EventArgs e)
-        {
-            Username = _authService.NameUser;
-            _ = Init();
         }
 
         public Microsoft.Maui.Controls.Page? ContextPage { get; set; }
@@ -107,8 +96,22 @@ namespace ElectoralMonitoring
             await TakePhotoCropAndUpload().ConfigureAwait(false);
         }
 
-        public Task TakePhotoCropAndUpload()
+        public async Task TakePhotoCropAndUpload()
         {
+            //to work on simulator uncomment this.
+
+            //var navigationParameter = new Dictionary<string, object>
+            //            {
+            //                { "localFilePath", "https://devscevente.nsystech.it/sites/default/files/2023-10/filetest.png" },
+            //                { "image", "https://devscevente.nsystech.it/sites/default/files/2023-10/filetest.png" },
+            //                { "imageType", ImageType.URI },
+            //                { "fileId", 110 },
+            //                { "ccv", ccv },
+            //                { "mesa", mesa },
+            //            };
+            //IsAdding = false;
+            //await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter).ConfigureAwait(false);
+            //return;
             if (MediaPicker.Default.IsCaptureSupported)
             {
                 new ImageCropper.Maui.ImageCropper()
@@ -128,7 +131,6 @@ namespace ElectoralMonitoring
                     CancelButtonTitle = "Cancelar",
                     Success = async (sourceUri) =>
                     {
-                        //verificar el tama;o de la foto
                         int fid = -1;
                         var imageUri = string.Empty;
                         var imageFile = await SaveFileInLocalStorage(sourceUri);
@@ -137,15 +139,15 @@ namespace ElectoralMonitoring
                         var result = await _nodeService.UploadMinute(fileName, stream, CancellationToken.None);
                         if (result != null)
                         {
-                            if (result.TryGetValue("fid", out List<Node> value) && value != null)
+                            if (result.TryGetValue("fid", out List<Node>? value) && value != null)
                             {
                                 var fidNode = value.FirstOrDefault();
-                                if (int.TryParse(fidNode?.Value?.ToString(), out fid)) ;
+                                int.TryParse(fidNode?.Value?.ToString(), out fid);
                             }
-                            if (result.TryGetValue("uri", out List<Node> valueUri) && value != null)
+                            if (result.TryGetValue("uri", out List<Node>? valueUri) && valueUri != null)
                             {
                                 imageUri = valueUri.FirstOrDefault()?.Url ?? string.Empty;
-                                Console.WriteLine($"ImageURI: {Helpers.AppSettings.BackendUrl+imageUri}");
+                                Console.WriteLine($"ImageURI: {Helpers.AppSettings.BackendUrl + imageUri}");
                             }
                         }
 
@@ -168,8 +170,6 @@ namespace ElectoralMonitoring
                     }
                 }.Show(ContextPage);
             }
-
-            return Task.CompletedTask;
         }
 
         public async Task TakePhotoAndUpload()

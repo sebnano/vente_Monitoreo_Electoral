@@ -229,6 +229,15 @@ namespace ElectoralMonitoring.Resources.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Inicio.
+        /// </summary>
+        internal static string HomePageTitle {
+            get {
+                return ResourceManager.GetString("HomePageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ingresar.
         /// </summary>
         internal static string LoginBtn {
@@ -261,6 +270,15 @@ namespace ElectoralMonitoring.Resources.Lang {
         internal static string LogoutText {
             get {
                 return ResourceManager.GetString("LogoutText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Actas.
+        /// </summary>
+        internal static string MinutesPageTitle {
+            get {
+                return ResourceManager.GetString("MinutesPageTitle", resourceCulture);
             }
         }
         

@@ -29,6 +29,8 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
 	<key>NSCameraUsageDescription</key>
-	<string>This app needs access to the camera to take photos.</string>
+	<string>Esta aplicación necesita acceso a la cámara para tomar la foto del documento.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Esta aplicación necesita acceso a la galería de fotos para seleccionar la foto del documento.</string>
 </dict>
 </plist>
