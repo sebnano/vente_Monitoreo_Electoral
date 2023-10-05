@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="ElectoralMonitoring.HomePage"
+             Title="{x:Static res:AppRes.HomePageTitle}"
+             x:DataType="local:HomePageModel"
+             xmlns:res="clr-namespace:ElectoralMonitoring.Resources.Lang"
+             xmlns:local="clr-namespace:ElectoralMonitoring">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding LogoutCommand}" Text="{x:Static res:AppRes.LogoutText}">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource FontFamily="AppIcons" Color="White" Glyph="&#xf106;" Size="20"/>
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <VerticalStackLayout>
+        <Border Grid.Row="0" Margin="10">
+            <StackLayout Padding="12" Orientation="Horizontal" HeightRequest="100">
+                <StackLayout Spacing="10" HorizontalOptions="StartAndExpand">
+                    <Label
+                        Text="{Binding Username, StringFormat={x:Static res:AppRes.WelcomeUser}}"
+                        SemanticProperties.HeadingLevel="Level1"
+                        FontSize="22"
+                        HorizontalOptions="Start" />
+                </StackLayout>
+                <Label Style="{StaticResource LabelIcon}"
+                           Text="{StaticResource IconAccount}"
+                           FontSize="32" VerticalTextAlignment="Center"
+                           HeightRequest="50"
+                           WidthRequest="50"
+                           VerticalOptions="FillAndExpand"
+                           Margin="0,20"
+                           HorizontalOptions="End"/>
+            </StackLayout>
+        </Border>
+        
+        <Border Grid.Row="0" Margin="10">
+            <StackLayout Padding="12" Orientation="Horizontal" HeightRequest="60">
+                <StackLayout Spacing="10" HorizontalOptions="StartAndExpand">
+                    <Label
+                        Text="{x:Static res:AppRes.MonitorListSubtitle}"
+                        SemanticProperties.HeadingLevel="Level1"
+                        FontSize="18" VerticalOptions="CenterAndExpand" VerticalTextAlignment="Center"
+                        HorizontalOptions="Start" />
+                </StackLayout>
+                <Label Style="{StaticResource LabelIcon}"
+                           Text="{StaticResource IconLibrary}"
+                           FontSize="32" VerticalTextAlignment="Center"
+                           HeightRequest="50"
+                           WidthRequest="50"
+                           VerticalOptions="FillAndExpand"
+                           Margin="0,20"
+                           HorizontalOptions="End"/>
+            </StackLayout>
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding OpenMonitorListCommand}"/>
+
+            </Border.GestureRecognizers>
+        </Border>
+
+    </VerticalStackLayout>
+</ContentPage>

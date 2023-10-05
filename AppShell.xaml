@@ -8,11 +8,11 @@
     xmlns:res="clr-namespace:ElectoralMonitoring.Resources.Lang">
     <TabBar>
         <ShellContent
-            Title="{x:Static res:AppRes.MonitorListPageTitle}"
-            ContentTemplate="{DataTemplate local:MonitorListPage}"
-            Route="MonitorListPageModel">
+            Title="{x:Static res:AppRes.HomePageTitle}"
+            ContentTemplate="{DataTemplate local:HomePage}"
+            Route="HomePage">
             <ShellContent.Icon>
-                <FontImageSource Color="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" FontFamily="AppIcons" Glyph="&#xf103;"/>
+                <FontImageSource Color="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" FontFamily="AppIcons" Glyph="&#xf100;"/>
             </ShellContent.Icon>
         </ShellContent>
     </TabBar>

@@ -123,5 +123,11 @@
 	<data name="ConfirmDataAndSubmit" xml:space="preserve">
 		<value>Confirme los datos y presione Aceptar</value>
 	</data>
+	<data name="HomePageTitle" xml:space="preserve">
+		<value>Inicio</value>
+	</data>
+	<data name="MinutesPageTitle" xml:space="preserve">
+		<value>Actas</value>
+	</data>
 </root>
 
