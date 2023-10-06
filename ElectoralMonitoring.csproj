@@ -38,6 +38,10 @@
 		<WarningLevel>4</WarningLevel>
 		<NoWarn>1701;1702;CS1573;CS1591;C1614</NoWarn>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-android|AnyCPU'">
+		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+	</PropertyGroup>
+	
 	<!-- Global Configuration iOS -->
 	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-ios'">
 		<BundleResource Include="GoogleService-Info.plist">

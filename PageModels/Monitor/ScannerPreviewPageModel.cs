@@ -61,7 +61,8 @@ namespace ElectoralMonitoring
                                     Title = item.FieldMapeoTexto,
                                     Key = item.Key,
                                     FieldType = item.Type == FieldForm.NUMBER ? FieldType.Number : FieldType.Text,
-                                    MaxLenght = item.Key == "field_observaciones" ? -1 : 100
+                                    MaxLenght = item.Key == "field_observaciones" ? -1 : 100,
+                                    IsRequiredField = item.Required
                                 };
                                 Fields.Add(field);
                             }
@@ -139,10 +140,6 @@ namespace ElectoralMonitoring
                     }).ConfigureAwait(false);
                 });
             }
-            else if (query.ContainsKey("fromsummary"))
-            {
-
-            }
         }
 
         public Task SetFields()
@@ -150,10 +147,10 @@ namespace ElectoralMonitoring
             try
             {
                 //todo verificar que datos ingresados de ccv y mesa coincidan con la foto
-                SetFieldTextAsc("CÓD. CV:", "CÓD. CV:".Length, "field_centro_de_votacion", 10);
-                SetFieldTextAsc("MESA: ", "MESA: ".Length, "field_mesa", 2);
+                SetFieldTextDirect(_ccv, "field_centro_de_votacion");
+                SetFieldTextDirect(_mesa, "field_mesa");
                 SetFieldTextAsc("PARTICIPANTES ", "PARTICIPANTES ".Length, "field_participantes_segun_cuader", 2);
-                SetFieldTextDesc("VOTOS", 2, "field_votos_nulos", 1);
+                SetFieldTextDesc("NULOS", 2, "field_votos_nulos", 1);
             }
             catch (Exception ex)
             {
@@ -162,6 +159,15 @@ namespace ElectoralMonitoring
             }
 
             return Task.CompletedTask;
+        }
+
+
+        public void SetFieldTextDirect(string text, string key)
+        {
+            var field = Fields.SingleOrDefault(x => (x as IFieldControl)?.Key == key) as IFieldControl;
+            if (field != null)
+                field.SetValue(text);
+
         }
 
         public void SetFieldTextDesc(string searchText, int marginLeft, string key, int lenght)
@@ -226,11 +232,11 @@ namespace ElectoralMonitoring
                         {
                             wordText += symbol.Text;
                         }
-                         Console.WriteLine(
-                             string.Format("\nWord text:\n {0}\nWord Confidence: {1})\n",
-                             wordText,
-                             word.Confidence)
-                         );
+                        Console.WriteLine(
+                            string.Format("\nWord text:\n {0}\nWord Confidence: {1})\n",
+                            wordText,
+                            word.Confidence)
+                        );
 
                         Console.WriteLine(string.Format("Word bounding box: \n{0}", word.BoundingBox));
                         paraText = string.Format("{0} {1}", paraText, wordText);
@@ -297,9 +303,14 @@ namespace ElectoralMonitoring
         [RelayCommand(AllowConcurrentExecutions = false)]
         public async Task SubmitForm()
         {
-            var fieldsEmpty = Fields.Any(x => (x as IFieldControl)?.HasValue() == false);
-            if (fieldsEmpty)
+            var fieldsEmpty = Fields.Where(x => (x as IFieldControl)?.HasValue() == false && (x as IFieldControl)?.IsRequired() == true);
+            if (fieldsEmpty.Count() > 0)
             {
+                foreach (var item in fieldsEmpty)
+                {
+                    var field = item as IFieldControl;
+                    field?.SetRequiredStatus();
+                }
                 await Shell.Current.DisplayAlert("Advertencia", "Debe completar los campos", "Aceptar");
                 return;
             }

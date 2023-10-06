@@ -33,6 +33,7 @@
                     x:Name="MyDatePicker" IsVisible="False" HorizontalOptions="FillAndExpand" Date="{Binding Date}"/>
             </StackLayout>
         </Border>
+        <Label Text="Este campo es requerido" TextColor="{StaticResource Red}" IsVisible="False" x:Name="RequiredLabel"/>
     </StackLayout>
 </ContentView>
 

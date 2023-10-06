@@ -31,6 +31,8 @@ public partial class InputFieldControl : ContentView, IFieldControl
     public static readonly BindableProperty KeyboardTypeProperty = BindableProperty.Create(nameof(KeyboardType), typeof(Keyboard), typeof(InputFieldControl), Keyboard.Text);
     public static readonly BindableProperty IconProperty = BindableProperty.Create(nameof(Icon), typeof(string), typeof(InputFieldControl), null);
 
+    public static readonly BindableProperty IsRequiredFieldProperty = BindableProperty.Create(nameof(IsRequiredField), typeof(bool), typeof(InputFieldControl), null);
+
     static void OnFieldTypePropertyChanged(BindableObject bindable, object oldValue, object newValue)
     {
         if (bindable is InputFieldControl control)
@@ -93,6 +95,12 @@ public partial class InputFieldControl : ContentView, IFieldControl
     {
         get => (int)GetValue(MaxLenghtProperty);
         set => SetValue(MaxLenghtProperty, value);
+    }
+
+    public bool IsRequiredField
+    {
+        get => (bool)GetValue(IsRequiredFieldProperty);
+        set => SetValue(IsRequiredFieldProperty, value);
     }
 
     public DateTime Date
@@ -189,6 +197,7 @@ public partial class InputFieldControl : ContentView, IFieldControl
         {
             MyEntry.TextColor = App.Current?.RequestedTheme == AppTheme.Dark ? Colors.White : Colors.Black;
         }
+        ClearStatusRequired();
     }
 
     async void MyEntry_Completed(object? sender, EventArgs e)
@@ -241,6 +250,21 @@ public partial class InputFieldControl : ContentView, IFieldControl
         }
     }
 
+    public void SetRequiredStatus()
+    {
+        MyBorder.SetDynamicResource(Border.StrokeProperty, "Red");
+        RequiredLabel.IsVisible = true;
+    }
+
+    public void ClearStatusRequired()
+    {
+        if (!RequiredLabel.IsVisible) return;
+        RequiredLabel.IsVisible = false;
+        var dark = Color.FromArgb("#404040");
+        var light = Color.FromArgb("#ACACAC");
+        MyBorder.SetAppTheme(Border.StrokeProperty, light, dark);
+    }
+
     public object GetValue()
     {
         if (FieldType.DateTime == this.FieldType) return Date;
@@ -267,6 +291,11 @@ public partial class InputFieldControl : ContentView, IFieldControl
         }
 
         return !string.IsNullOrWhiteSpace(Text);
+    }
+
+    public bool IsRequired()
+    {
+        return IsRequiredField;
     }
 
     public string GetKey()

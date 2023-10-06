@@ -12,6 +12,7 @@ namespace ElectoralMonitoring
     {
         string ccv;
         string mesa;
+        List<VotingCenter> votingCenters;
 
         readonly NodeService _nodeService;
 
@@ -47,6 +48,7 @@ namespace ElectoralMonitoring
                 else {
                     Minutes = null;
                 }
+                votingCenters = await _nodeService.GetVotingCenters(CancellationToken.None) ?? new();
                 IsBusy = false;
             }
         }
@@ -55,10 +57,9 @@ namespace ElectoralMonitoring
 
         async Task<bool> CheckCanContinue()
         {
-            var cvs = await _nodeService.GetVotingCenters(CancellationToken.None);
-            if(cvs != null && cvs.Count > 0)
+            if(votingCenters != null && votingCenters.Count > 0)
             {
-                var hasAccess = cvs.Any(x => x.CodCNECentroVotacion == ccv || x.CodCNECentroVotacion == ccv.TrimStart('0'));
+                var hasAccess = votingCenters.Any(x => x.CodCNECentroVotacion == ccv || x.CodCNECentroVotacion == ccv.TrimStart('0'));
                 if (!hasAccess) {
                     await Shell.Current.DisplayAlert("Mensaje", $"¡El centro de votación {ccv} no existe o no tiene permisos!", "OK");
                     return false;
@@ -77,10 +78,20 @@ namespace ElectoralMonitoring
         [RelayCommand(AllowConcurrentExecutions = false)]
         public async Task TakePhoto()
         {
-            ccv = await Shell.Current.DisplayPromptAsync("Código del centro de votación", "Ingrese el código para continuar", AppRes.AlertAccept, AppRes.AlertCancel, "010101001", 9, Keyboard.Numeric);
+            if(votingCenters.Count > 1)
+            {
+                ccv = await Shell.Current.DisplayPromptAsync("Código del centro de votación", "Ingrese el código para continuar", AppRes.AlertAccept, AppRes.AlertCancel, "Ejemplo: 010101001", 9, Keyboard.Numeric);
+                
+            }
+            else
+            {
+                var ccvAssigned = votingCenters.SingleOrDefault()?.CodCNECentroVotacion;
+                ccv = ccvAssigned ?? string.Empty;
+            }
+
             if (string.IsNullOrWhiteSpace(ccv)) return;
 
-            mesa = await Shell.Current.DisplayPromptAsync("Mesa", "Ingrese el número de mesa para continuar", AppRes.AlertAccept, AppRes.AlertCancel, "01", 2, Keyboard.Numeric);
+            mesa = await Shell.Current.DisplayPromptAsync("Mesa", "Ingrese el número de mesa para continuar", AppRes.AlertAccept, AppRes.AlertCancel, "Ejemplo: 01", 2, Keyboard.Numeric);
             if (string.IsNullOrWhiteSpace(mesa)) return;
 
             IsAdding = true;
@@ -100,18 +111,18 @@ namespace ElectoralMonitoring
         {
             //to work on simulator uncomment this.
 
-            //var navigationParameter = new Dictionary<string, object>
-            //            {
-            //                { "localFilePath", "https://devscevente.nsystech.it/sites/default/files/2023-10/filetest.png" },
-            //                { "image", "https://devscevente.nsystech.it/sites/default/files/2023-10/filetest.png" },
-            //                { "imageType", ImageType.URI },
-            //                { "fileId", 110 },
-            //                { "ccv", ccv },
-            //                { "mesa", mesa },
-            //            };
-            //IsAdding = false;
-            //await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter).ConfigureAwait(false);
-            //return;
+            var navigationParameter = new Dictionary<string, object>
+                        {
+                            { "localFilePath", "https://devscevente.nsystech.it/sites/default/files/2023-10/filetest.png" },
+                            { "image", "https://devscevente.nsystech.it/sites/default/files/2023-10/filetest.png" },
+                            { "imageType", ImageType.URI },
+                            { "fileId", 110 },
+                            { "ccv", ccv },
+                            { "mesa", mesa },
+                        };
+            IsAdding = false;
+            await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter).ConfigureAwait(false);
+            return;
             if (MediaPicker.Default.IsCaptureSupported)
             {
                 new ImageCropper.Maui.ImageCropper()

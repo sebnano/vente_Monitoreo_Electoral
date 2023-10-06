@@ -1,9 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace ElectoralMonitoring
 {
+    public class BooleanConverter : JsonConverter<bool>
+    {
+        public override bool Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            switch (reader.TokenType)
+            {
+                case JsonTokenType.True:
+                    return true;
+                case JsonTokenType.False:
+                    return false;
+                case JsonTokenType.String:
+                    return reader.GetString() switch
+                    {
+                        "1" => true,
+                        "0" => false,
+                        _ => throw new JsonException()
+                    };
+                default:
+                    throw new JsonException();
+            }
+        }
+
+        public override void Write(Utf8JsonWriter writer, bool value, JsonSerializerOptions options)
+        {
+            writer.WriteBooleanValue(value);
+        }
+    }
+
     public class FieldForm
     {
         [JsonPropertyName("numero_candidato")]
@@ -19,13 +48,22 @@ namespace ElectoralMonitoring
         public string FieldContentType { get; set; }
 
         [JsonPropertyName("weight")]
-        public string Weight { get; set; }
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
+        public int Weight { get; set; }
 
         [JsonPropertyName("grupo")]
         public string Grupo { get; set; }
 
         [JsonPropertyName("Field_type")]
         public string Type { get; set; }
+
+        [JsonConverter(typeof(BooleanConverter))]
+        [JsonPropertyName("campo_obligatorio")]
+        public bool Required { get; set; }
+
+        [JsonConverter(typeof(BooleanConverter))]
+        [JsonPropertyName("campo_para_escanear")]
+        public bool NeedScan { get; set; }
 
         public const string NUMBER = "number"; 
         public const string TEXT = "string_textfield";

@@ -34,9 +34,11 @@
                            HorizontalOptions="End"/>
             </StackLayout>
         </Border>
-        
-        <Border Grid.Row="0" Margin="10">
-            <StackLayout Padding="12" Orientation="Horizontal" HeightRequest="60">
+
+        <Label Text="Menu" Margin="10,0"/>
+
+        <Border Grid.Row="0" Margin="10" Padding="0">
+            <StackLayout Padding="10" Orientation="Horizontal" HeightRequest="60">
                 <StackLayout Spacing="10" HorizontalOptions="StartAndExpand">
                     <Label
                         Text="{x:Static res:AppRes.MonitorListSubtitle}"
@@ -47,10 +49,9 @@
                 <Label Style="{StaticResource LabelIcon}"
                            Text="{StaticResource IconLibrary}"
                            FontSize="32" VerticalTextAlignment="Center"
-                           HeightRequest="50"
-                           WidthRequest="50"
+                           HeightRequest="40"
+                           WidthRequest="40"
                            VerticalOptions="FillAndExpand"
-                           Margin="0,20"
                            HorizontalOptions="End"/>
             </StackLayout>
             <Border.GestureRecognizers>

@@ -6,7 +6,9 @@ namespace ElectoralMonitoring
 		object GetValue();
         void SetValue(object value);
 		bool HasValue();
-		string GetKey();
+        bool IsRequired();
+        string GetKey();
+        void SetRequiredStatus();
         string Key { get; set; }
     }
 }
