@@ -109,8 +109,8 @@ namespace ElectoralMonitoring
 
         public async Task TakePhotoCropAndUpload()
         {
-            //to work on simulator uncomment this.
-
+            //to work on simulator in debug mode, don't request a photo
+#if DEBUG
             var navigationParameter = new Dictionary<string, object>
                         {
                             { "localFilePath", "https://devscevente.nsystech.it/sites/default/files/2023-10/filetest.png" },
@@ -123,6 +123,7 @@ namespace ElectoralMonitoring
             IsAdding = false;
             await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter).ConfigureAwait(false);
             return;
+#endif
             if (MediaPicker.Default.IsCaptureSupported)
             {
                 new ImageCropper.Maui.ImageCropper()
