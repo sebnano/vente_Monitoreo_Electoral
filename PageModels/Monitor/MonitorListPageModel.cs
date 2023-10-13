@@ -20,7 +20,7 @@ namespace ElectoralMonitoring
         bool isAdding;
 
         [ObservableProperty]
-        ObservableCollection<Minute>? minutes;
+        ObservableCollection<DocumentDTO>? minutes;
 
         public MonitorListPageModel(NodeService nodeService, AuthService authService) : base(authService)
         {
@@ -37,11 +37,11 @@ namespace ElectoralMonitoring
                 var list = await _nodeService.GetMinutesByUser(CancellationToken.None);
                 if (list != null && list.Count > 0)
                 {
-                    Minutes = new(list.Select(x => new Minute()
+                    Minutes = new(list.Select(x => new DocumentDTO()
                     {
-                        field_centro_de_votacion = x.field_centro_de_votacion,
-                        field_mesa = x.field_mesa,
-                        nid = x.nid,
+                        Title = x.field_centro_de_votacion,
+                        SubTitle = x.field_mesa,
+                        Id = x.nid,
                         Icon = IconFont.FileDocumentCheck
                     }));
                 }

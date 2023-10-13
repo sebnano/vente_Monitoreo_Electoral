@@ -11,5 +11,13 @@ namespace ElectoralMonitoring
         [JsonIgnore]
         public string Icon { get; set; }
     }
+
+    public class DocumentDTO
+    {
+        public string Id { get; set; }
+        public string Title { get; set; }
+        public string SubTitle { get; set; }
+        public string Icon { get; set; }
+    }
 }
 

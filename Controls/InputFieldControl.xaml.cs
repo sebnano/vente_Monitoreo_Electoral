@@ -18,7 +18,7 @@ public enum FieldType
 public partial class InputFieldControl : ContentView, IFieldControl
 {
     public static List<string> TypesAvailable = new()
-    { "number", "string_textfield", "string_textarea", "entity_reference_autocomplete", "options_select"
+    { "number", "string_textfield", "string_textarea", "entity_reference_autocomplete"
     };
 
     public static readonly BindableProperty MaxLenghtProperty = BindableProperty.Create(nameof(MaxLenght), typeof(int), typeof(InputFieldControl), 100);
@@ -97,16 +97,16 @@ public partial class InputFieldControl : ContentView, IFieldControl
         set => SetValue(MaxLenghtProperty, value);
     }
 
-    public bool IsRequiredField
-    {
-        get => (bool)GetValue(IsRequiredFieldProperty);
-        set => SetValue(IsRequiredFieldProperty, value);
-    }
-
     public DateTime Date
     {
         get => (DateTime)GetValue(DateProperty);
         set => SetValue(DateProperty, value);
+    }
+
+    public bool IsRequiredField
+    {
+        get => (bool)GetValue(IsRequiredFieldProperty);
+        set => SetValue(IsRequiredFieldProperty, value);
     }
 
     public string Icon
@@ -159,6 +159,15 @@ public partial class InputFieldControl : ContentView, IFieldControl
         MyEntry.Completed += MyEntry_Completed;
 
         PropertyChanged += InputFieldControl_PropertyChanged;
+
+        MessagingCenter.Subscribe<CheckBoxFieldControl>(this, "CheckBoxFieldControlChanged", (sender) =>
+        {
+            Debug.WriteLine("Receive message CheckBoxFieldControlChanged " + sender.GetKey());
+            if(sender.GetKey() == "field_report_todas_las_mesas" && sender.GetValue() is bool value)
+            {
+                this.IsVisible = !value;
+            }
+        });
     }
 
     private void InputFieldControl_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)

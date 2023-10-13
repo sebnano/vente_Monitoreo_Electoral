@@ -155,6 +155,33 @@ namespace ElectoralMonitoring
             return AccessToken;
         }
 
+        public Task<List<AppOptions>?> GetUserOptions() => AttemptAndRetry_Mobile(async() =>
+        {
+            var rolesUser = await _authApi.GetUserRoles(IdUser);
+            var roles = rolesUser.Select(x => x.Role);
+            var options = await _authApi.GetHomeOptions();
+
+            var filtered = options.Where(option =>
+            {
+                var rolOpts = option.Rol.Split(",");
+                foreach (var roleOpt in rolOpts)
+                {
+                    var roleScape = roleOpt.TrimStart().TrimEnd();
+                    if (roles.Contains(roleScape))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                return false;
+            });
+
+            return filtered.ToList();
+        }, CancellationToken.None);
+
     }
 }
 

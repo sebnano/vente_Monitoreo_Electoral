@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Refit;
 
 namespace ElectoralMonitoring
@@ -53,6 +54,17 @@ namespace ElectoralMonitoring
             return result;
         }
 
+        public async Task<List<Report>?> GetUserReports(string reportId, CancellationToken cancellationToken)
+        {
+            var result = await AttemptAndRetry_Mobile(async () => {
+
+                return await _nodeApi.GetUserReports(_authService.IdUser, reportId).ConfigureAwait(false);
+
+            }, cancellationToken);
+
+            return result;
+        }
+
         public async Task<FormResponse?> GetMinutesForm(CancellationToken cancellationToken)
         {
             var result = await AttemptAndRetry_Mobile(async () => {
@@ -91,6 +103,20 @@ namespace ElectoralMonitoring
             var result = await AttemptAndRetry_Mobile(async () => {
 
                 return await _nodeApi.CreateNode(values).ConfigureAwait(false);
+
+            }, cancellationToken);
+
+            return result;
+        }
+
+        public async Task<List<FieldForm>?> GetReportForm(string contentType, CancellationToken cancellationToken)
+        {
+            var result = await AttemptAndRetry_Mobile(async () => {
+                var parts = contentType.Split("/");
+                string parent = parts[0];
+                string report = parts[1];
+
+                return await _nodeApi.GetReportForm(parent, report).ConfigureAwait(false);
 
             }, cancellationToken);
 

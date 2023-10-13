@@ -47,6 +47,9 @@ namespace ElectoralMonitoring
         [JsonPropertyName("field_content_type")]
         public string FieldContentType { get; set; }
 
+        [JsonPropertyName("parent")]
+        public string ContentTypeParent { get; set; }
+
         [JsonPropertyName("weight")]
         [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
         public int Weight { get; set; }
@@ -57,6 +60,12 @@ namespace ElectoralMonitoring
         [JsonPropertyName("Field_type")]
         public string Type { get; set; }
 
+        [JsonPropertyName("form_default_value")]
+        public string DefaultValue { get; set; }
+
+        [JsonPropertyName("form_value_available")]
+        public string ValuesAvailable { get; set; }
+
         [JsonConverter(typeof(BooleanConverter))]
         [JsonPropertyName("campo_obligatorio")]
         public bool Required { get; set; }
@@ -64,6 +73,14 @@ namespace ElectoralMonitoring
         [JsonConverter(typeof(BooleanConverter))]
         [JsonPropertyName("campo_para_escanear")]
         public bool NeedScan { get; set; }
+
+        [JsonConverter(typeof(BooleanConverter))]
+        [JsonPropertyName("campo_activo")]
+        public bool Active { get; set; }
+
+        [JsonConverter(typeof(BooleanConverter))]
+        [JsonPropertyName("campo_oculto")]
+        public bool Hidden { get; set; }
 
         public const string NUMBER = "number"; 
         public const string TEXT = "string_textfield";

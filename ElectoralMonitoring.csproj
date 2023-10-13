@@ -116,10 +116,14 @@
 	<ItemGroup>
 	  <None Remove="Pages\Common\" />
 	  <None Remove="PageModels\Common\" />
+	  <None Remove="Pages\Reports\" />
+	  <None Remove="PageModels\Reports\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Pages\Common\" />
 	  <Folder Include="PageModels\Common\" />
+	  <Folder Include="Pages\Reports\" />
+	  <Folder Include="PageModels\Reports\" />
 	</ItemGroup>
 	<PropertyGroup>
 		<!-- Properties used to strip bitcode from frameworks when using Visual Studio for Mac -->

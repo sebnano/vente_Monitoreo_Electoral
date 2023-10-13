@@ -23,6 +23,12 @@ namespace ElectoralMonitoring
 
         [Get("/user/{userId}?_format=json")]
         Task<User> GetUser([AliasAs("userId")] string userId);
+
+        [Get("/role-by-user/{userId}?_format=json")]
+        Task<List<UserRoles>> GetUserRoles([AliasAs("userId")] string userId);
+
+        [Get("/api-opciones-paginas/page_option_home_page?_format=json")]
+        Task<List<AppOptions>> GetHomeOptions();
     }
 }
 
