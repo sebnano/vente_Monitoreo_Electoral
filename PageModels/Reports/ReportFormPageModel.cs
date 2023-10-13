@@ -73,6 +73,17 @@ namespace ElectoralMonitoring
                     MaxLenght = item.Key == "field_observaciones" ? -1 : 100,
                     IsRequiredField = item.Required
                 };
+                if(field.GetKey() == "field_reporte_mesa")
+                {
+                    MessagingCenter.Subscribe<CheckBoxFieldControl>(field, "CheckBoxFieldControlChanged", (sender) =>
+                    {
+                        Debug.WriteLine("Receive message CheckBoxFieldControlChanged " + sender.GetKey());
+                        if (sender.GetKey() == "field_report_todas_las_mesas" && field.GetKey() == "field_reporte_mesa")
+                        {
+                            field.IsVisible = sender.GetValue().ToString() == "1" ? false : true;
+                        }
+                    });
+                }
                 Fields.Add(field);
             }
             else if (CheckBoxFieldControl.TypesAvailable.Any(x => x == item.Type))

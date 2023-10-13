@@ -44,7 +44,7 @@ public partial class TimeFieldControl : ContentView, IFieldControl
 
     public object GetValue()
     {
-        return Time.ToString();
+        return Time.Ticks.ToString();
     }
 
     public void SetValue(object value)

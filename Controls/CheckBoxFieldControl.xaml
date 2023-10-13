@@ -8,7 +8,7 @@
     <StackLayout BindingContext="{x:Reference this}" Spacing="6">
         <Label 
             Text="{Binding Title,FallbackValue='Field Title'}" FontAttributes="Bold"/>
-        <StackLayout HorizontalOptions="Start" Padding="6" >
+        <StackLayout HorizontalOptions="Start" Padding="2" >
             <CheckBox x:Name="FieldControl" Scale="1.5" CheckedChanged="FieldControl_CheckedChanged"/>
         </StackLayout>
     </StackLayout>

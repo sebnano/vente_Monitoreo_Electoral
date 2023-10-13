@@ -159,15 +159,6 @@ public partial class InputFieldControl : ContentView, IFieldControl
         MyEntry.Completed += MyEntry_Completed;
 
         PropertyChanged += InputFieldControl_PropertyChanged;
-
-        MessagingCenter.Subscribe<CheckBoxFieldControl>(this, "CheckBoxFieldControlChanged", (sender) =>
-        {
-            Debug.WriteLine("Receive message CheckBoxFieldControlChanged " + sender.GetKey());
-            if(sender.GetKey() == "field_report_todas_las_mesas" && sender.GetValue() is bool value)
-            {
-                this.IsVisible = !value;
-            }
-        });
     }
 
     private void InputFieldControl_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
