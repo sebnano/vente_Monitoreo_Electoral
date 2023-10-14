@@ -73,7 +73,7 @@
                 <StackLayout>
                     <ActivityIndicator Color="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Primary}}" VerticalOptions="CenterAndExpand"  IsRunning="{Binding IsAdding}" IsVisible="{Binding IsAdding}"></ActivityIndicator>
                     <Button Text="{x:Static res:AppRes.AddButton}" IsVisible="{Binding IsAdding, Converter={toolkit:InvertedBoolConverter}}" HeightRequest="{StaticResource BottomButtonHeight}" FontSize="Title" FontAttributes="Bold"
-                        Command="{Binding TakePhotoCommand}" IsEnabled="{Binding IsBusy, Converter={toolkit:InvertedBoolConverter}}"/>
+                        Command="{Binding AddDocCommand}" IsEnabled="{Binding IsBusy, Converter={toolkit:InvertedBoolConverter}}"/>
                 </StackLayout>
             </Border>
         </Grid>

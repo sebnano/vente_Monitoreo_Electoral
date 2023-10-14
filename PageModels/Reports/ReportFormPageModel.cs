@@ -114,6 +114,26 @@ namespace ElectoralMonitoring
                 };
                 Fields.Add(field);
             }
+            else if (OptionsButtonsFieldControl.TypesAvailable.Any(x => x == item.Type))
+            {
+                var field = new OptionsButtonsFieldControl()
+                {
+                    Title = item.FieldMapeoTexto,
+                    Key = item.Key,
+                    IsRequiredField = item.Required
+                };
+                field.InitControl(item.ValuesAvailable);
+                Fields.Add(field);
+            }else if (ImageFieldControl.TypesAvailable.Any(x => x == item.Type))
+            {
+                var field = new ImageFieldControl(_nodeService)
+                {
+                    Title = item.FieldMapeoTexto,
+                    Key = item.Key,
+                    IsRequiredField = item.Required
+                };
+                Fields.Add(field);
+            }
         }
 
         public async void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -164,14 +184,18 @@ namespace ElectoralMonitoring
                 {
                     if (values.ContainsKey(field.Key))
                         continue;
-                    var valueText = field.GetValue().ToString();
-                    if (int.TryParse(valueText, out int value))
+                    var value = field.GetValue();
+                    if (int.TryParse(value.ToString(), out int valueInteger))
                     {
-                        values.Add(field.Key, new List<Node>() { new() { Value = value } });
+                        values.Add(field.Key, new List<Node>() { new() { Value = valueInteger } });
+                    }
+                    else if(value is List<Node> list)
+                    {
+                        values.Add(field.Key, list);
                     }
                     else
                     {
-                        values.Add(field.Key, new List<Node>() { new() { Value = valueText } });
+                        values.Add(field.Key, new List<Node>() { new() { Value = value } });
                     }
 
                 }

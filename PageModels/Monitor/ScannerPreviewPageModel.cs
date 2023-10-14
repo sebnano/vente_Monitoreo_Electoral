@@ -35,11 +35,8 @@ namespace ElectoralMonitoring
             var form = await _nodeService.GetMinutesFormFields(CancellationToken.None);
             Fields ??= new();
             var fieldsObjsToView = form?.Where(x =>
-            //campos que se omiten en la creacion del acta
-            x.Key != "body" && x.Key != "created" && x.Key != "langcode" && x.Key != "path" && x.Key != "promote" && x.Key != "status" && x.Key != "sticky" && x.Key != "title" && x.Key != "uid"
             //campos que se deben enviar por debajo
-            && x.Key != "field_votacion_a_observar"
-            && x.Key != "field_image").ToList();
+            x.Key != "field_votacion_a_observar").ToList();
 
             if (fieldsObjsToView != null)
             {
@@ -53,24 +50,95 @@ namespace ElectoralMonitoring
                         Fields.Add(groupTitle);
                         foreach (var item in group.OrderBy(x => x.Weight))
                         {
-                            if (InputFieldControl.TypesAvailable.Any(x => x == item.Type))
-                            {
-                                // Faltaria campo de picker de centros de votacion, mesa
-                                var field = new InputFieldControl()
-                                {
-                                    Title = item.FieldMapeoTexto,
-                                    Key = item.Key,
-                                    FieldType = item.Type == FieldForm.NUMBER ? FieldType.Number : FieldType.Text,
-                                    MaxLenght = item.Key == "field_observaciones" ? -1 : 100,
-                                    IsRequiredField = item.Required
-                                };
-                                Fields.Add(field);
-                            }
+                            AddFormControlToView(item);
                         }
 
                     }
                 }).ConfigureAwait(false);
 
+            }
+        }
+
+
+        private void AddFormControlToView(FieldForm? item)
+        {
+            if (item is null) return;
+            if (InputFieldControl.TypesAvailable.Any(x => x == item.Type))
+            {
+                var field = new InputFieldControl()
+                {
+                    Title = item.FieldMapeoTexto,
+                    Key = item.Key,
+                    FieldType = item.Type == FieldForm.NUMBER ? FieldType.Number : FieldType.Text,
+                    MaxLenght = item.Key == "field_observaciones" ? -1 : 100,
+                    IsRequiredField = item.Required
+                };
+                Fields.Add(field);
+            }
+            else if (CheckBoxFieldControl.TypesAvailable.Any(x => x == item.Type))
+            {
+                var field = new CheckBoxFieldControl()
+                {
+                    Title = item.FieldMapeoTexto,
+                    Key = item.Key
+                };
+                Fields.Add(field);
+            }
+            else if (OptionsSelectFieldControl.TypesAvailable.Any(x => x == item.Type))
+            {
+                var field = new OptionsSelectFieldControl()
+                {
+                    Title = item.FieldMapeoTexto,
+                    Key = item.Key,
+                    IsRequiredField = item.Required
+                };
+                field.InitControl(item.ValuesAvailable);
+                Fields.Add(field);
+            }
+            else if (TimeFieldControl.TypesAvailable.Any(x => x == item.Type))
+            {
+                var field = new TimeFieldControl()
+                {
+                    Title = item.FieldMapeoTexto,
+                    Key = item.Key,
+                };
+                Fields.Add(field);
+            }
+            else if (OptionsButtonsFieldControl.TypesAvailable.Any(x => x == item.Type))
+            {
+                var field = new OptionsButtonsFieldControl()
+                {
+                    Title = item.FieldMapeoTexto,
+                    Key = item.Key,
+                    IsRequiredField = item.Required
+                };
+                field.InitControl(item.ValuesAvailable);
+                Fields.Add(field);
+            }
+            else if (ImageFieldControl.TypesAvailable.Any(x => x == item.Type))
+            {
+                var field = new ImageFieldControl(_nodeService)
+                {
+                    Title = item.FieldMapeoTexto,
+                    Key = item.Key,
+                    IsRequiredField = item.Required
+                };
+                //when upload a photo
+                //GetContent(imageType, image)
+                //_ = Task.Run(async () =>
+                //{
+                //    IsBusy = IsLoading = true;
+                //    await GetContent(imageType, image).ContinueWith(async (t) =>
+                //    {
+                //        if (t.IsCompletedSuccessfully)
+                //        {
+                //            await SetFields();
+
+                //            IsBusy = IsLoading = false;
+                //        }
+                //    }).ConfigureAwait(false);
+                //});
+                Fields.Add(field);
             }
         }
 
@@ -113,35 +181,21 @@ namespace ElectoralMonitoring
 
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
-            if (query.ContainsKey("localFilePath") && query.ContainsKey("image") && query.ContainsKey("imageType")
-                && query.ContainsKey("fileId") && query.ContainsKey("mesa") && query.ContainsKey("ccv") && !query.ContainsKey("fromsummary"))
+            if (query.ContainsKey("mesa") && query.ContainsKey("ccv") && !query.ContainsKey("fromsummary"))
             {
                 IsBusy = IsLoading = true;
-                ImagePreview = query["localFilePath"] as string ?? string.Empty;
 
-                _fid = (int)query["fileId"];
                 _ccv = (string)query["ccv"];
                 _mesa = (string)query["mesa"];
 
-                var image = query["image"] as string ?? string.Empty;
-                var imageType = (ImageType)query["imageType"];
-
                 _ = Task.Run(async () =>
                 {
-
-                    await Task.WhenAll(RenderForm(), GetContent(imageType, image), LoadVotingCenters()).ContinueWith(async (t) =>
-                    {
-                        if (t.IsCompletedSuccessfully)
-                        {
-                            await SetFields();
-
-                            IsBusy = IsLoading = false;
-                        }
-                    }).ConfigureAwait(false);
+                    await Task.WhenAll(RenderForm(), LoadVotingCenters()).ConfigureAwait(false);
                 });
             }
         }
 
+        #region Scanner
         public Task SetFields()
         {
             try
@@ -298,7 +352,7 @@ namespace ElectoralMonitoring
                 }
             }
         }
-
+        #endregion
 
         [RelayCommand(AllowConcurrentExecutions = false)]
         public async Task SubmitForm()
@@ -318,7 +372,6 @@ namespace ElectoralMonitoring
             Dictionary<string, List<Node>> values = new();
             values.Add("type", new List<Node>() { new() { TargetId = "registro_de_actas" } });
             values.Add("title", new List<Node>() { new() { Value = $"ACTA DE ESCRUTINIO {DateTime.Now}" } });
-            values.Add("field_image", new List<Node>() { new() { TargetId = _fid } });
             foreach (var item in Fields)
             {
                 var field = item as IFieldControl;
@@ -346,14 +399,25 @@ namespace ElectoralMonitoring
                     }
                     else
                     {
-                        var valueText = field.GetValue().ToString();
-                        if (int.TryParse(valueText, out int value))
+                        var value = field.GetValue();
+                        if (int.TryParse(value.ToString(), out int valueInteger))
                         {
-                            values.Add(field.Key, new List<Node>() { new() { Value = value } });
+                            if (field.Key == "field_image")
+                            {
+                                values.Add("field_image", new List<Node>() { new() { TargetId = valueInteger } });
+                            }
+                            else
+                            {
+                                values.Add(field.Key, new List<Node>() { new() { Value = valueInteger } });
+                            }
+                        }
+                        else if (value is List<Node> list)
+                        {
+                            values.Add(field.Key, list);
                         }
                         else
                         {
-                            values.Add(field.Key, new List<Node>() { new() { Value = valueText } });
+                            values.Add(field.Key, new List<Node>() { new() { Value = value } });
                         }
                     }
                 }
