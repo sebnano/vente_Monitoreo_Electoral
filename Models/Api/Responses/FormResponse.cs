@@ -61,10 +61,10 @@ namespace ElectoralMonitoring
         public string Type { get; set; }
 
         [JsonPropertyName("form_default_value")]
-        public string DefaultValue { get; set; }
+        public string? DefaultValue { get; set; }
 
         [JsonPropertyName("form_value_available")]
-        public string ValuesAvailable { get; set; }
+        public string? ValuesAvailable { get; set; }
 
         [JsonConverter(typeof(BooleanConverter))]
         [JsonPropertyName("campo_obligatorio")]

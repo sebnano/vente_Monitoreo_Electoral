@@ -99,6 +99,7 @@ public partial class OptionsSelectFieldControl : ContentView, IFieldControl
     /// <param name="value">The string values</param>
     public void InitControl(string value)
     {
+        if (string.IsNullOrEmpty(value)) return;
         Options = new();
         var splited = value.Split(",");
         foreach (var item in splited)

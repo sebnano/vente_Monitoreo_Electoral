@@ -30,119 +30,6 @@ namespace ElectoralMonitoring
             _nodeService = nodeService;
         }
 
-        private async Task RenderForm()
-        {
-            var form = await _nodeService.GetMinutesFormFields(CancellationToken.None);
-            Fields ??= new();
-            var fieldsObjsToView = form?.Where(x =>
-            //campos que se deben enviar por debajo
-            x.Key != "field_votacion_a_observar").ToList();
-
-            if (fieldsObjsToView != null)
-            {
-                await Shell.Current.Dispatcher.DispatchAsync(() =>
-                {
-                    var grouped = fieldsObjsToView.GroupBy(x => x.Grupo);
-
-                    foreach (var group in grouped)
-                    {
-                        Label groupTitle = new Label() { Text = group.Key, FontAttributes = FontAttributes.Bold, Margin = new Thickness(0, 20, 0, 0), FontSize = 16 };
-                        Fields.Add(groupTitle);
-                        foreach (var item in group.OrderBy(x => x.Weight))
-                        {
-                            AddFormControlToView(item);
-                        }
-
-                    }
-                }).ConfigureAwait(false);
-
-            }
-        }
-
-
-        private void AddFormControlToView(FieldForm? item)
-        {
-            if (item is null) return;
-            if (InputFieldControl.TypesAvailable.Any(x => x == item.Type))
-            {
-                var field = new InputFieldControl()
-                {
-                    Title = item.FieldMapeoTexto,
-                    Key = item.Key,
-                    FieldType = item.Type == FieldForm.NUMBER ? FieldType.Number : FieldType.Text,
-                    MaxLenght = item.Key == "field_observaciones" ? -1 : 100,
-                    IsRequiredField = item.Required
-                };
-                Fields.Add(field);
-            }
-            else if (CheckBoxFieldControl.TypesAvailable.Any(x => x == item.Type))
-            {
-                var field = new CheckBoxFieldControl()
-                {
-                    Title = item.FieldMapeoTexto,
-                    Key = item.Key
-                };
-                Fields.Add(field);
-            }
-            else if (OptionsSelectFieldControl.TypesAvailable.Any(x => x == item.Type))
-            {
-                var field = new OptionsSelectFieldControl()
-                {
-                    Title = item.FieldMapeoTexto,
-                    Key = item.Key,
-                    IsRequiredField = item.Required
-                };
-                field.InitControl(item.ValuesAvailable);
-                Fields.Add(field);
-            }
-            else if (TimeFieldControl.TypesAvailable.Any(x => x == item.Type))
-            {
-                var field = new TimeFieldControl()
-                {
-                    Title = item.FieldMapeoTexto,
-                    Key = item.Key,
-                };
-                Fields.Add(field);
-            }
-            else if (OptionsButtonsFieldControl.TypesAvailable.Any(x => x == item.Type))
-            {
-                var field = new OptionsButtonsFieldControl()
-                {
-                    Title = item.FieldMapeoTexto,
-                    Key = item.Key,
-                    IsRequiredField = item.Required
-                };
-                field.InitControl(item.ValuesAvailable);
-                Fields.Add(field);
-            }
-            else if (ImageFieldControl.TypesAvailable.Any(x => x == item.Type))
-            {
-                var field = new ImageFieldControl(_nodeService)
-                {
-                    Title = item.FieldMapeoTexto,
-                    Key = item.Key,
-                    IsRequiredField = item.Required
-                };
-                //when upload a photo
-                //GetContent(imageType, image)
-                //_ = Task.Run(async () =>
-                //{
-                //    IsBusy = IsLoading = true;
-                //    await GetContent(imageType, image).ContinueWith(async (t) =>
-                //    {
-                //        if (t.IsCompletedSuccessfully)
-                //        {
-                //            await SetFields();
-
-                //            IsBusy = IsLoading = false;
-                //        }
-                //    }).ConfigureAwait(false);
-                //});
-                Fields.Add(field);
-            }
-        }
-
-
         async Task<bool> CheckCanContinue()
         {
             if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
@@ -190,7 +77,12 @@ namespace ElectoralMonitoring
 
                 _ = Task.Run(async () =>
                 {
-                    await Task.WhenAll(RenderForm(), LoadVotingCenters()).ConfigureAwait(false);
+                    await Task.WhenAll(RenderForm(), LoadVotingCenters()).ContinueWith((_) =>
+                    {
+                        IsLoading = IsBusy = false;
+                        SetFieldTextDirect(_ccv, "field_centro_de_votacion");
+                        SetFieldTextDirect(_mesa, "field_mesa");
+                    }).ConfigureAwait(false);
                 });
             }
         }
@@ -201,8 +93,6 @@ namespace ElectoralMonitoring
             try
             {
                 //todo verificar que datos ingresados de ccv y mesa coincidan con la foto
-                SetFieldTextDirect(_ccv, "field_centro_de_votacion");
-                SetFieldTextDirect(_mesa, "field_mesa");
                 SetFieldTextAsc("PARTICIPANTES ", "PARTICIPANTES ".Length, "field_participantes_segun_cuader", 2);
                 SetFieldTextDesc("NULOS", 2, "field_votos_nulos", 1);
             }
@@ -354,6 +244,122 @@ namespace ElectoralMonitoring
         }
         #endregion
 
+        #region Form
+        private async Task RenderForm()
+        {
+            var form = await _nodeService.GetMinutesFormFields(CancellationToken.None);
+            Fields ??= new();
+            var fieldsObjsToView = form?.Where(x =>
+            //campos que se deben enviar por debajo
+            x.Key != "field_votacion_a_observar").ToList();
+
+            if (fieldsObjsToView != null)
+            {
+                await Shell.Current.Dispatcher.DispatchAsync(() =>
+                {
+                    var grouped = fieldsObjsToView.GroupBy(x => x.Grupo);
+
+                    foreach (var group in grouped)
+                    {
+                        Label groupTitle = new Label() { Text = group.Key, FontAttributes = FontAttributes.Bold, Margin = new Thickness(0, 20, 0, 0), FontSize = 16 };
+                        Fields.Add(groupTitle);
+                        foreach (var item in group.OrderBy(x => x.Weight))
+                        {
+                            AddFormControlToView(item);
+                        }
+
+                    }
+                }).ConfigureAwait(false);
+
+            }
+        }
+
+        private void AddFormControlToView(FieldForm? item)
+        {
+            if (item is null) return;
+            if (InputFieldControl.TypesAvailable.Any(x => x == item.Type))
+            {
+                var field = new InputFieldControl()
+                {
+                    Title = item.FieldMapeoTexto,
+                    Key = item.Key,
+                    FieldType = item.Type == FieldForm.NUMBER ? FieldType.Number : FieldType.Text,
+                    MaxLenght = item.Key == "field_observaciones" ? -1 : 100,
+                    IsRequiredField = item.Required
+                };
+                Fields.Add(field);
+            }
+            else if (CheckBoxFieldControl.TypesAvailable.Any(x => x == item.Type))
+            {
+                var field = new CheckBoxFieldControl()
+                {
+                    Title = item.FieldMapeoTexto,
+                    Key = item.Key
+                };
+                Fields.Add(field);
+            }
+            else if (OptionsSelectFieldControl.TypesAvailable.Any(x => x == item.Type))
+            {
+                if (item.Key == "field_mesa" && string.IsNullOrEmpty(item.ValuesAvailable))
+                {
+                    item.ValuesAvailable = "1|1,2|2,3|3,4|4,5|5,6|6,7|7,8|8,9|9,10|10,11|11,12|12,13|13,14|14,15|15,16|16,17|17,18|18,19|19,20|20";
+                }
+                var field = new OptionsSelectFieldControl()
+                {
+                    Title = item.FieldMapeoTexto,
+                    Key = item.Key,
+                    IsRequiredField = item.Required
+                };
+                field.InitControl(item.ValuesAvailable ?? string.Empty);
+                Fields.Add(field);
+            }
+            else if (TimeFieldControl.TypesAvailable.Any(x => x == item.Type))
+            {
+                var field = new TimeFieldControl()
+                {
+                    Title = item.FieldMapeoTexto,
+                    Key = item.Key,
+                };
+                Fields.Add(field);
+            }
+            else if (OptionsButtonsFieldControl.TypesAvailable.Any(x => x == item.Type))
+            {
+                var field = new OptionsButtonsFieldControl()
+                {
+                    Title = item.FieldMapeoTexto,
+                    Key = item.Key,
+                    IsRequiredField = item.Required
+                };
+                field.InitControl(item.ValuesAvailable ?? string.Empty);
+                Fields.Add(field);
+            }
+            else if (ImageFieldControl.TypesAvailable.Any(x => x == item.Type))
+            {
+                var field = new ImageFieldControl(_nodeService)
+                {
+                    Title = item.FieldMapeoTexto,
+                    Key = item.Key,
+                    IsRequiredField = item.Required
+                };
+                //when upload a photo
+                //GetContent(imageType, image)
+                //_ = Task.Run(async () =>
+                //{
+                //    IsBusy = IsLoading = true;
+                //    await GetContent(imageType, image).ContinueWith(async (t) =>
+                //    {
+                //        if (t.IsCompletedSuccessfully)
+                //        {
+                //            await SetFields();
+
+                //            IsBusy = IsLoading = false;
+                //        }
+                //    }).ConfigureAwait(false);
+                //});
+                Fields.Add(field);
+            }
+        }
+
         [RelayCommand(AllowConcurrentExecutions = false)]
         public async Task SubmitForm()
         {
@@ -470,6 +476,7 @@ namespace ElectoralMonitoring
                 });
             }
         }
+        #endregion
     }
 }
 

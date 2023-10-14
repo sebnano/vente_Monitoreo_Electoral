@@ -11,7 +11,14 @@ public partial class ImageFieldControl : ContentView, IFieldControl
 
     public static readonly BindableProperty KeyProperty = BindableProperty.Create(nameof(Key), typeof(string), typeof(InputFieldControl), string.Empty, BindingMode.OneTime);
     public static readonly BindableProperty TitleProperty = BindableProperty.Create(nameof(Title), typeof(string), typeof(InputFieldControl), string.Empty);
-    public static readonly BindableProperty IsRequiredFieldProperty = BindableProperty.Create(nameof(IsRequiredField), typeof(bool), typeof(InputFieldControl), null);
+    public static readonly BindableProperty IsRequiredFieldProperty = BindableProperty.Create(nameof(IsRequiredField), typeof(bool), typeof(InputFieldControl));
+    public static readonly BindableProperty IsLoadingProperty = BindableProperty.Create(nameof(IsLoading), typeof(bool), typeof(InputFieldControl));
+
+    public bool IsLoading
+    {
+        get => (bool)GetValue(IsLoadingProperty);
+        set => SetValue(IsLoadingProperty, value);
+    }
 
     public bool IsRequiredField
     {
@@ -82,7 +89,9 @@ public partial class ImageFieldControl : ContentView, IFieldControl
 
     void TapGestureRecognizer_Tapped(System.Object sender, Microsoft.Maui.Controls.TappedEventArgs e)
     {
+        IsLoading = true;
         TakePhotoCropAndUpload();
+        IsLoading = false;
     }
 
     public void TakePhotoCropAndUpload()
@@ -106,6 +115,7 @@ public partial class ImageFieldControl : ContentView, IFieldControl
                 CancelButtonTitle = "Cancelar",
                 Success = async (sourceUri) =>
                 {
+                    IsLoading = true;
                     int fid = -1;
                     var imageUri = string.Empty;
                     var imageFile = await SaveFileInLocalStorage(sourceUri);
@@ -128,12 +138,13 @@ public partial class ImageFieldControl : ContentView, IFieldControl
 
                     // result imageFile and fid, imageUri
                     FieldImage.Source = Helpers.AppSettings.BackendUrl + imageUri;
+                    FieldLabel.Text = fileName;
                     _fid = fid; ClearStatusRequired();
-
+                    IsLoading = false;
                 },
                 Failure = () =>
                 {
-                    
+                    IsLoading = false;
                 }
             }.Show(Shell.Current.CurrentPage);
         }

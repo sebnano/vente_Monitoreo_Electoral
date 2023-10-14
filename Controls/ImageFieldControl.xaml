@@ -10,17 +10,19 @@
     <StackLayout BindingContext="{x:Reference this}" Spacing="6">
         <Label 
             Text="{Binding Title,FallbackValue='Field Title'}" FontAttributes="Bold"/>
-        <Grid>
+        <Grid ColumnDefinitions="*,Auto">
             <Grid.GestureRecognizers>
                 <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
             </Grid.GestureRecognizers>
-            <StackLayout Padding="5" HorizontalOptions="FillAndExpand" >
-                <Label x:Name="FieldLabel" Text="Seleccione un archivo"/>
+            <StackLayout Grid.Column="0" Padding="5" HorizontalOptions="FillAndExpand" VerticalOptions="Center">
+                <Label x:Name="FieldLabel" Text="Seleccione un archivo" IsVisible="{Binding IsLoading, Converter={toolkit:InvertedBoolConverter}}" VerticalOptions="Center" VerticalTextAlignment="Center" />
+                <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="True" Scale="0.5" VerticalOptions="Center" HorizontalOptions="Start"></ActivityIndicator>
             </StackLayout>
-            <Border 
-            Padding="5" 
-            HorizontalOptions="FillAndExpand" x:Name="MyBorder" StrokeThickness="1" StrokeShape="Rectangle">
+            <Border  Grid.Column="1"
+                Padding="5" 
+                HorizontalOptions="FillAndExpand" x:Name="MyBorder" StrokeThickness="1" StrokeShape="Rectangle">
                 <Image x:Name="FieldImage" HeightRequest="40" WidthRequest="40" Aspect="AspectFit" Source="image_placeholder"/>
+                
             </Border>
         </Grid>
         <Label Text="Este campo es requerido" TextColor="{StaticResource Red}" IsVisible="False" x:Name="RequiredLabel"/>
