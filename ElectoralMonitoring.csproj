@@ -57,7 +57,7 @@
 	<!-- Release Configuration Android -->
 	<PropertyGroup Condition="$(TargetFramework.Contains('-android')) and '$(Configuration)' == 'Release'">
 		<EnableLLVM>False</EnableLLVM>
-		<RunAOTCompilation>True</RunAOTCompilation>
+		<RunAOTCompilation>False</RunAOTCompilation>
 		<PublishTrimmed>True</PublishTrimmed>
 		<DebugSymbols>True</DebugSymbols>
 		<AndroidKeyStore>True</AndroidKeyStore>
