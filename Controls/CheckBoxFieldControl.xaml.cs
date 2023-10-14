@@ -1,8 +1,4 @@
-﻿using Android.Graphics.Drawables;
-using static Android.Icu.Text.CaseMap;
-using static System.Net.Mime.MediaTypeNames;
-
-namespace ElectoralMonitoring;
+﻿namespace ElectoralMonitoring;
 
 public partial class CheckBoxFieldControl : ContentView, IFieldControl
 {
@@ -61,7 +57,7 @@ public partial class CheckBoxFieldControl : ContentView, IFieldControl
         
     }
 
-    void FieldControl_CheckedChanged(System.Object sender, Microsoft.Maui.Controls.CheckedChangedEventArgs e)
+    void FieldControl_CheckedChanged(object sender, CheckedChangedEventArgs e)
     {
         MessagingCenter.Send(this, "CheckBoxFieldControlChanged");
     }
