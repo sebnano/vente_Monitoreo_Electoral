@@ -85,6 +85,12 @@ namespace ElectoralMonitoring
                     }).ConfigureAwait(false);
                 });
             }
+            else if(query.ContainsKey("mesa") && query.ContainsKey("ccv") && query.ContainsKey("nodeId") && !query.ContainsKey("fromsummary"))
+            {
+                var nodeId = (string)query["nodeId"];
+                _nodeService.GetNode(nodeId,CancellationToken.None)
+                //node data for edition, todo set fields
+            }
         }
 
         #region Scanner

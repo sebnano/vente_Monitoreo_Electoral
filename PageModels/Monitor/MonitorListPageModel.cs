@@ -26,6 +26,7 @@ namespace ElectoralMonitoring
         {
             _nodeService = nodeService;
             Minutes ??= new();
+            _ = Init();
         }
 
         public async Task Init()
@@ -49,6 +50,9 @@ namespace ElectoralMonitoring
                     Minutes = null;
                 }
                 votingCenters = await _nodeService.GetVotingCenters(CancellationToken.None) ?? new();
+
+                await Task.Yield();
+
                 IsBusy = false;
             }
         }

@@ -2,19 +2,22 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ElectoralMonitoring.Resources.Lang;
 
 namespace ElectoralMonitoring
 {
     public partial class HomePageModel : BasePageModel
     {
+        readonly NodeService _nodeService;
         [ObservableProperty]
         string username;
 
         [ObservableProperty]
         ObservableCollection<AppOptions> options;
 
-        public HomePageModel(AuthService authService) : base(authService)
+        public HomePageModel(NodeService nodeService, AuthService authService) : base(authService)
         {
+            _nodeService = nodeService;
             Username = _authService.NameUser;
             AuthService.NamedChanged += AuthService_NamedChanged;
             _=Init();
@@ -47,7 +50,7 @@ namespace ElectoralMonitoring
             }
             else if(opt.OptionKey == AppOptions.MINUTES_EDIT)
             {
-                //todo pide ccv y mesa a editar, luego navega al formulario del acta
+                await EditDoc();
             }
             else
             {
@@ -57,6 +60,32 @@ namespace ElectoralMonitoring
                 });
             }
             
+        }
+
+        public async Task EditDoc()
+        {
+            var ccv = await Shell.Current.DisplayPromptAsync("Código del centro de votación", "Ingrese el código para continuar", AppRes.AlertAccept, AppRes.AlertCancel, "Ejemplo: 010101001", 9, Keyboard.Numeric);
+
+            if (string.IsNullOrWhiteSpace(ccv)) return;
+
+            var mesa = await Shell.Current.DisplayPromptAsync("Mesa", "Ingrese el número de mesa para continuar", AppRes.AlertAccept, AppRes.AlertCancel, "Ejemplo: 01", 2, Keyboard.Numeric);
+            if (string.IsNullOrWhiteSpace(mesa)) return;
+
+            IsBusy = true;
+
+            var list = await _nodeService.GetMinutesByCcvAndTable(ccv, mesa, CancellationToken.None);
+            if (list != null && list.Count > 0)
+            {
+
+                var navigationParameter = new Dictionary<string, object>
+                {
+                    { "ccv", ccv },
+                    { "mesa", mesa },
+                    { "nodeId", list.FirstOrDefault().nid }
+                };
+                await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter).ConfigureAwait(false);
+            }
+            IsBusy = false;
         }
     }
 }

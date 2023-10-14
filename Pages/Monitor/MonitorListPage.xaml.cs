@@ -9,11 +9,4 @@ public partial class MonitorListPage : ContentPage
         BindingContext = _vm = vm;
         vm.ContextPage = this;
     }
-
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-
-        await _vm.Init().ConfigureAwait(false);
-    }
 }
