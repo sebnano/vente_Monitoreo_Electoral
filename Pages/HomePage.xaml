@@ -40,21 +40,21 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="local:AppOptions">
                     <Border Grid.Row="0" Margin="10" Padding="0">
-                        <StackLayout Padding="10" Orientation="Horizontal" HeightRequest="60">
-                            <StackLayout Spacing="10" HorizontalOptions="StartAndExpand">
+                        <Grid ColumnDefinitions="*,Auto" Padding="10" HeightRequest="60">
+                            <StackLayout Grid.Column="0" Spacing="10" HorizontalOptions="StartAndExpand">
                                 <Label
                                     Text="{Binding OptionTitle}"
                                     FontSize="18" VerticalOptions="CenterAndExpand" VerticalTextAlignment="Center"
                                     HorizontalOptions="Start" />
                             </StackLayout>
-                            <Label Style="{StaticResource LabelIcon}"
+                            <Label  Grid.Column="1" Style="{StaticResource LabelIcon}"
                                        Text="{StaticResource IconChevronRightCircle}"
                                        FontSize="32" VerticalTextAlignment="Center"
-                                       HeightRequest="40"
-                                       WidthRequest="40"
+                                       HeightRequest="50"
+                                       WidthRequest="50"
                                        VerticalOptions="FillAndExpand"
                                        HorizontalOptions="End"/>
-                        </StackLayout>
+                        </Grid>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding OpenOptionCommand, Source={RelativeSource AncestorType={x:Type local:HomePageModel}}}"
                                                   CommandParameter="{Binding .}"/>
