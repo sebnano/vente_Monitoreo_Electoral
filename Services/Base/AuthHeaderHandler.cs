@@ -22,7 +22,7 @@ namespace ElectoralMonitoring
                 _authService = App.Current?.Handler?.MauiContext?.Services.GetService<AuthService>();
             }
 
-            if(_authService is not null)
+            if(_authService is not null && request?.RequestUri?.PathAndQuery.Contains("refresh") == false)
             {
                 string token = await _authService?.GetAccessToken();
 

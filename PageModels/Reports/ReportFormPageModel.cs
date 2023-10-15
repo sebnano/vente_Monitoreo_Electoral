@@ -10,7 +10,6 @@ namespace ElectoralMonitoring
     {
         readonly NodeService _nodeService;
         List<FieldForm>? _form;
-        List<VotingCentersAttrs> _votingCenters;
         [ObservableProperty]
         AppOptions appOption;
 
@@ -142,7 +141,8 @@ namespace ElectoralMonitoring
             {
                 IsBusy = true;
                 AppOption = query["option"] as AppOptions;
-                await Task.WhenAll(LoadVotingCenters(), RenderForm()).ContinueWith((t) =>
+
+                await RenderForm().ContinueWith((t) =>
                 {
                     if (t.IsCompletedSuccessfully)
                     {
@@ -151,15 +151,6 @@ namespace ElectoralMonitoring
                     }
                 }).ConfigureAwait(false);
 
-            }
-        }
-
-        async Task LoadVotingCenters()
-        {
-            var request = await _nodeService.GetAllVotingCenters(CancellationToken.None);
-            if (request != null)
-            {
-                _votingCenters = request.data.Select(x => x.attributes).ToList();
             }
         }
 
@@ -195,16 +186,25 @@ namespace ElectoralMonitoring
                         continue;
                     if (field.Key == "field_centro_de_votacion")
                     {
-                        var targetCdv = _votingCenters.FirstOrDefault(x => x.field_codigo_centro_votacion.ToString() == field.GetValue().ToString() || x.field_codigo_centro_votacion.ToString() == field.GetValue()?.ToString()?.TrimStart('0'));
-                        if (targetCdv != null)
+                        var val = field.GetValue().ToString();
+                        if(val != null)
                         {
-                            values.Add("field_centro_de_votacion", new List<Node>() { new() { TargetId = targetCdv.field_codigo_centro_votacion.ToString() } });
-                        }
-                        else
-                        {
-                            await Shell.Current.DisplayAlert("Advertencia", $"No se encontró el centro de votación con el código {field.GetValue()}.", "Aceptar");
-                            IsBusy = false;
-                            return;
+                            var request = await _nodeService.GetAllVotingCentersByCode(val, CancellationToken.None);
+                            if (request != null)
+                            {
+                                var _votingCenters = request.data.Select(x => x.attributes).ToList();
+                                var targetCdv = _votingCenters.FirstOrDefault(x => x.field_codigo_centro_votacion.ToString() == field.GetValue().ToString() || x.field_codigo_centro_votacion.ToString() == field.GetValue()?.ToString()?.TrimStart('0'));
+                                if (targetCdv != null)
+                                {
+                                    values.Add("field_centro_de_votacion", new List<Node>() { new() { TargetId = targetCdv.drupal_internal__nid } });
+                                }
+                                else
+                                {
+                                    await Shell.Current.DisplayAlert("Advertencia", $"No se encontró el centro de votación con el código {field.GetValue()}.", "Aceptar");
+                                    IsBusy = false;
+                                    return;
+                                }
+                            }
                         }
                     }
                     else

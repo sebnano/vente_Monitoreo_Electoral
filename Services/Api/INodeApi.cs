@@ -15,8 +15,8 @@ namespace ElectoralMonitoring
         [Get("/jsonapi/node/registro_de_actas")]
         Task<NodeResponse<MinuteAttributes, MinuteRelationships>> GetMinutes();
 
-        [Get("/jsonapi/node/centro_de_votacion")]
-        Task<NodeResponse<VotingCentersAttrs, NodeRelationships>> GetVotingCenters();
+        [Get("/jsonapi/node/centro_de_votacion?filter[field_codigo_centro_votacion][value]={ccv}")]
+        Task<NodeResponse<VotingCentersAttrs, NodeRelationships>> GetVotingCentersByCode(string ccv);
 
         [Get("/entity/entity_form_display/node.registro_de_actas.default?_format=json")]
         Task<FormResponse> GetMinutesForm();

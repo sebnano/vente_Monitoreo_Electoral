@@ -21,9 +21,9 @@ namespace ElectoralMonitoring
             return result;
         }
 
-        public async Task<NodeResponse<VotingCentersAttrs, NodeRelationships>?> GetAllVotingCenters(CancellationToken cancellationToken)
+        public async Task<NodeResponse<VotingCentersAttrs, NodeRelationships>?> GetAllVotingCentersByCode(string ccv, CancellationToken cancellationToken)
         {
-            var result = await AttemptAndRetry_Mobile(_nodeApi.GetVotingCenters, cancellationToken);
+            var result = await AttemptAndRetry_Mobile(async () => await _nodeApi.GetVotingCentersByCode(ccv), cancellationToken);
 
             return result;
         }

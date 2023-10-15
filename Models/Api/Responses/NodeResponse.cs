@@ -7,7 +7,7 @@ namespace ElectoralMonitoring
     public class VotingCentersAttrs : NodeAttributes
     {
         public long field_codigo_centro_votacion { get; set; }
-        public long field_direccion_centro_votacion { get; set; }
+        public string field_direccion_centro_votacion { get; set; }
     }
 
     public class MinuteAttributes : NodeAttributes
@@ -104,7 +104,7 @@ namespace ElectoralMonitoring
         public string langcode { get; set; }
     }
 
-    public abstract class NodeRelationships
+    public class NodeRelationships
     {
         public NodeType node_type { get; set; }
         public NodeType revision_uid { get; set; }

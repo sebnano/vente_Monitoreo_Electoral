@@ -11,7 +11,7 @@ namespace ElectoralMonitoring
         [Headers("Content-Type: application/x-www-form-urlencoded")]
         Task<TokenResponse> OAuth2Token([Body(BodySerializationMethod.UrlEncoded)] ClientCredentials credentials);
 
-        [Post("/oauth/token?refresh")]
+        [Post("/oauth/token?refresh=true")]
         [Headers("Content-Type: application/x-www-form-urlencoded")]
         Task<TokenResponse> OAuth2TokenRefresh([Body(BodySerializationMethod.UrlEncoded)] RefreshTokenCredentials credentials);
 

@@ -129,25 +129,32 @@ namespace ElectoralMonitoring
 
         public async Task<string> GetAccessToken()
         {
-            if (!string.IsNullOrEmpty(AccessToken))
+            try
             {
-                var token = new JwtSecurityToken(AccessToken);
-                if (token.ValidTo < DateTime.UtcNow)
+                if (!string.IsNullOrEmpty(AccessToken))
                 {
-                    var tokenResponse = await AttemptAndRetry_Mobile(async () => {
-
-                        return await _authApi.OAuth2TokenRefresh(new RefreshTokenCredentials("refresh_token", AppSettings.ClientId, AppSettings.ClientSecret, RefreshToken)).ConfigureAwait(false);
-
-                    }, CancellationToken.None);
-
-                    if (tokenResponse != null)
+                    var token = new JwtSecurityToken(AccessToken);
+                    if (token.ValidTo < DateTime.UtcNow)
                     {
-                        AccessToken = tokenResponse.AccessToken;
-                        RefreshToken = tokenResponse.RefreshToken;
-                        IsAuthenticated = true;
-                    }
+                        var tokenResponse = await AttemptAndRetry_Mobile(async () => {
 
+                            return await _authApi.OAuth2TokenRefresh(new RefreshTokenCredentials("refresh_token", AppSettings.ClientId, AppSettings.ClientSecret, RefreshToken)).ConfigureAwait(false);
+
+                        }, CancellationToken.None);
+
+                        if (tokenResponse != null)
+                        {
+                            AccessToken = tokenResponse.AccessToken;
+                            RefreshToken = tokenResponse.RefreshToken;
+                            IsAuthenticated = true;
+                        }
+
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                AnalyticsService.Report(ex);
             }
             
 
