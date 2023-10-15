@@ -30,6 +30,9 @@ namespace ElectoralMonitoring
         [Patch("/node/{nodeId}?_format=json")]
         Task<Dictionary<string, List<Node>>> EditNode(string nodeId, [Body] object body);
 
+        [Get("/node/{nodeId}?_format=json")]
+        Task<Dictionary<string, List<Node>>> GetNode(string nodeId);
+
         [Get("/garantes-y-sus-centros/{userId}?_format=json")]
         Task<List<VotingCenter>> GetVotingCenters(string userId);
 

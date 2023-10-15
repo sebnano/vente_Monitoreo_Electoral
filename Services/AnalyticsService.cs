@@ -1,19 +1,9 @@
 ﻿using System.Runtime.CompilerServices;
+using Plugin.Firebase.Analytics;
+using Plugin.Firebase.Crashlytics;
 
 namespace ElectoralMonitoring
 {
-    public class LoggerAnalytics : IFirebaseAnalytics
-    {
-        public void LogEvent(string eventName, IDictionary<string, object>? parameters)
-        {
-            
-        }
-    }
-    public interface IFirebaseAnalytics
-    {
-        void LogEvent(string eventName, IDictionary<string, object>? parameters);
-    }
-
     public class AnalyticsService
     {
         readonly IFirebaseAnalytics _analyticsProvider;
@@ -22,6 +12,7 @@ namespace ElectoralMonitoring
         {
             _analyticsProvider = firebaseAnalytics;
         }
+
         public void Track(string eventId, IDictionary<string, object>? parameters = null,
                                 [CallerMemberName] string callerMemberName = "",
                                 [CallerLineNumber] int lineNumber = 0,
@@ -73,8 +64,8 @@ namespace ElectoralMonitoring
             properties.Add("callerMemberName: ", callerMemberName);
             properties.Add("fileName: ", fileName);
 
-            //CrossFirebaseCrashlytics.Current.SetCustomKeys(properties);
-            //CrossFirebaseCrashlytics.Current.RecordException(ex);
+            CrossFirebaseCrashlytics.Current.SetCustomKeys(properties);
+            CrossFirebaseCrashlytics.Current.RecordException(ex);
         }
 
         [Conditional("DEBUG")]

@@ -2,6 +2,7 @@
 using CommunityToolkit.Maui;
 using Microsoft.Maui.LifecycleEvents;
 using Plugin.Firebase.Shared;
+using Plugin.Firebase.Analytics;
 
 namespace ElectoralMonitoring;
 
@@ -37,10 +38,12 @@ public static class MauiProgram
         builder.Services.AddSingleton<AuthService>();
         builder.Services.AddSingleton<NodeService>();
         builder.Services.AddSingleton<AnalyticsService>();
-        builder.Services.AddSingleton<IFirebaseAnalytics, LoggerAnalytics>();
 
         builder.Services.AddSingleton(Preferences.Default);
         builder.Services.AddSingleton(Connectivity.Current);
+
+        //Firebase services
+        builder.Services.AddSingleton(CrossFirebaseAnalytics.Current);
 
         //Refit services
         IAuthApi authApi = RefitExtensions.For<IAuthApi>(BaseApiService.GetApi(Fusillade.Priority.Explicit));
@@ -104,8 +107,8 @@ public static class MauiProgram
 
             events.AddAndroid(android => android.OnCreate((activity, state) =>
             {
-                Plugin.Firebase.Crashlytics.CrossFirebaseCrashlytics.Current.SetCrashlyticsCollectionEnabled(true);
                 Plugin.Firebase.Android.CrossFirebase.Initialize(activity, state, CreateCrossFirebaseSettings());
+                Plugin.Firebase.Crashlytics.CrossFirebaseCrashlytics.Current.SetCrashlyticsCollectionEnabled(true);
             }));
 #endif
 
@@ -124,7 +127,7 @@ public static class MauiProgram
             isCrashlyticsEnabled: true,
             isFunctionsEnabled: true,
             isRemoteConfigEnabled: false,
-            isStorageEnabled: true,
+            isStorageEnabled: false,
             googleRequestIdToken: Helpers.AppSettings.GoogleRequestIdToken
             );
     }

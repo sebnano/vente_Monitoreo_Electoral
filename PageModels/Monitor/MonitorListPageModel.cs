@@ -2,9 +2,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ElectoralMonitoring.Resources.Lang;
-using Microsoft.Maui.Graphics.Platform;
-using Plugin.Firebase.Functions;
-using Plugin.Firebase.Storage;
 
 namespace ElectoralMonitoring
 {

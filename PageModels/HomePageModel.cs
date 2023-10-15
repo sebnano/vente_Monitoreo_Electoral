@@ -18,32 +18,31 @@ namespace ElectoralMonitoring
         public HomePageModel(NodeService nodeService, AuthService authService) : base(authService)
         {
             _nodeService = nodeService;
-            Username = _authService.NameUser;
             AuthService.NamedChanged += AuthService_NamedChanged;
-            _=Init();
+            Task.Run(Init);
         }
 
         async Task Init()
         {
             if (_authService.IsAuthenticated)
             {
-                IsBusy = true;
+                Shell.Current.Dispatcher.Dispatch(() => Username = _authService.NameUser);
+                Shell.Current.Dispatcher.Dispatch(()=> IsBusy = true);
                 var opts = await _authService.GetUserOptions();
-                Options = new(opts);
-                IsBusy = false;
+                if(opts != null)
+                    Options = new(opts);
+                Shell.Current.Dispatcher.Dispatch(() => IsBusy = false);
             }
         }
 
         private void AuthService_NamedChanged(object? sender, EventArgs e)
         {
-            Username = _authService.NameUser;
             _ = Init();
         }
 
         [RelayCommand]
         async Task OpenOption(AppOptions opt)
         {
-            //todo define opts navigation
             if(opt.OptionKey == AppOptions.MINUTES_ADD)
             {
                 await Shell.Current.GoToAsync(nameof(MonitorListPageModel));
@@ -81,9 +80,13 @@ namespace ElectoralMonitoring
                 {
                     { "ccv", ccv },
                     { "mesa", mesa },
-                    { "nodeId", list.FirstOrDefault().nid }
+                    { "nodeId", list.FirstOrDefault()?.nid ?? string.Empty }
                 };
                 await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter).ConfigureAwait(false);
+            }
+            else
+            {
+                await Shell.Current.DisplayAlert(AppRes.AlertTitle, "No se encontró el acta que desea editar, verifique los datos e intente nuevamente.", AppRes.AlertCancel);
             }
             IsBusy = false;
         }

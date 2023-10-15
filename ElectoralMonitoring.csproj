@@ -38,9 +38,6 @@
 		<WarningLevel>4</WarningLevel>
 		<NoWarn>1701;1702;CS1573;CS1591;C1614</NoWarn>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-android|AnyCPU'">
-		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
-	</PropertyGroup>
 	
 	<!-- Global Configuration iOS -->
 	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-ios'">
@@ -54,13 +51,31 @@
 		<PackageReference Include="Xamarin.Kotlin.StdLib.Jdk7" Version="1.8.21.1" ExcludeAssets="build;buildTransitive" />
 		<PackageReference Include="Xamarin.Kotlin.StdLib.Jdk8" Version="1.8.21.1" ExcludeAssets="build;buildTransitive" />
 	</ItemGroup>
+	<PropertyGroup Condition="$(TargetFramework.Contains('-android')) and '$(Configuration)' == 'Debug'">
+		<DebugSymbols>True</DebugSymbols>
+		<DebugType>portable</DebugType>
+		<Optimize>false</Optimize>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+    </PropertyGroup>
 	<!-- Release Configuration Android -->
 	<PropertyGroup Condition="$(TargetFramework.Contains('-android')) and '$(Configuration)' == 'Release'">
 		<EnableLLVM>False</EnableLLVM>
-		<RunAOTCompilation>False</RunAOTCompilation>
+		<RunAOTCompilation>True</RunAOTCompilation>
 		<PublishTrimmed>True</PublishTrimmed>
+		<Optimize>true</Optimize>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+		<AndroidManagedSymbols>true</AndroidManagedSymbols>
+		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+		<AndroidEnableProfiledAot>true</AndroidEnableProfiledAot>
+		<AndroidUseAapt2>true</AndroidUseAapt2>
+		<AndroidTlsProvider>btls</AndroidTlsProvider>
+		<AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
 		<DebugSymbols>True</DebugSymbols>
+		<DebugType>pdbonly</DebugType>
 		<AndroidKeyStore>True</AndroidKeyStore>
+		<JavaMaximumHeapSize>2G</JavaMaximumHeapSize>
 	</PropertyGroup>
 	<!-- Release Configuration iOS -->
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
@@ -112,18 +127,6 @@
 		<Compile Update="Resources\Lang\AppRes.en.Designer.cs">
 			<DependentUpon>AppRes.en.resx</DependentUpon>
 		</Compile>
-	</ItemGroup>
-	<ItemGroup>
-	  <None Remove="Pages\Common\" />
-	  <None Remove="PageModels\Common\" />
-	  <None Remove="Pages\Reports\" />
-	  <None Remove="PageModels\Reports\" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Pages\Common\" />
-	  <Folder Include="PageModels\Common\" />
-	  <Folder Include="Pages\Reports\" />
-	  <Folder Include="PageModels\Reports\" />
 	</ItemGroup>
 	<PropertyGroup>
 		<!-- Properties used to strip bitcode from frameworks when using Visual Studio for Mac -->

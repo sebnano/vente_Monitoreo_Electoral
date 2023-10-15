@@ -109,6 +109,28 @@ namespace ElectoralMonitoring
             return result;
         }
 
+        public async Task<Dictionary<string, List<Node>>?> EditNode(string nodeId, object values, CancellationToken cancellationToken)
+        {
+            var result = await AttemptAndRetry_Mobile(async () => {
+
+                return await _nodeApi.EditNode(nodeId, values).ConfigureAwait(false);
+
+            }, cancellationToken);
+
+            return result;
+        }
+
+        public async Task<Dictionary<string, List<Node>>?> GetNode(string nodeId, CancellationToken cancellationToken)
+        {
+            var result = await AttemptAndRetry_Mobile(async () => {
+
+                return await _nodeApi.GetNode(nodeId).ConfigureAwait(false);
+
+            }, cancellationToken);
+
+            return result;
+        }
+
         public async Task<List<FieldForm>?> GetReportForm(string contentType, CancellationToken cancellationToken)
         {
             var result = await AttemptAndRetry_Mobile(async () => {

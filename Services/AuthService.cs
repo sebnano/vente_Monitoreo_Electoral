@@ -1,5 +1,4 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
-using System.Threading;
 using ElectoralMonitoring.Helpers;
 using Plugin.Firebase.Auth;
 

@@ -47,6 +47,8 @@ public partial class ImageFieldControl : ContentView, IFieldControl
     readonly NodeService _nodeService;
     int _fid = -1;
 
+    public Action<string> PhotoUploaded { get; set; }
+
     public object GetValue()
     {
         return _fid;
@@ -54,7 +56,12 @@ public partial class ImageFieldControl : ContentView, IFieldControl
 
     public void SetValue(object value)
     {
-        throw new NotImplementedException();
+        if(value is Node node)
+        {
+            _ = int.TryParse(node.TargetId?.ToString(), out _fid);
+            FieldImage.Source = node.Url;
+        }
+
     }
 
     public bool HasValue()
@@ -136,11 +143,13 @@ public partial class ImageFieldControl : ContentView, IFieldControl
                         }
                     }
 
-                    // result imageFile and fid, imageUri
-                    FieldImage.Source = Helpers.AppSettings.BackendUrl + imageUri;
+                    var uri = Helpers.AppSettings.BackendUrl + imageUri;
+                    FieldImage.Source = uri;
                     FieldLabel.Text = fileName;
-                    _fid = fid; ClearStatusRequired();
+                    _fid = fid;
+                    ClearStatusRequired();
                     IsLoading = false;
+                    PhotoUploaded?.Invoke(uri);
                 },
                 Failure = () =>
                 {
@@ -180,10 +189,11 @@ public partial class ImageFieldControl : ContentView, IFieldControl
                     }
                 }
 
-
-                // result imageFile and fid, imageUri
-                FieldImage.Source = Helpers.AppSettings.BackendUrl + imageUri;
-                _fid = fid; ClearStatusRequired();
+                var uri = Helpers.AppSettings.BackendUrl + imageUri;
+                FieldImage.Source = uri;
+                _fid = fid;
+                ClearStatusRequired();
+                PhotoUploaded?.Invoke(uri);
             }
         }
     }

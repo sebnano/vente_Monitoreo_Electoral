@@ -20,7 +20,7 @@ namespace ElectoralMonitoring
                     {
                         "1" => true,
                         "0" => false,
-                        _ => throw new JsonException()
+                        _ => false
                     };
                 default:
                     throw new JsonException();

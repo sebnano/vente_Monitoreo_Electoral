@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ElectoralMonitoring.Resources.Lang;
 using Plugin.Firebase.Functions;
 
 namespace ElectoralMonitoring
@@ -9,6 +10,8 @@ namespace ElectoralMonitoring
     {
         readonly NodeService _nodeService;
         List<VotingCenter> _votingCenters;
+        List<FieldForm>? _form;
+
         int _fid;
         string _mesa;
         string _ccv;
@@ -66,9 +69,43 @@ namespace ElectoralMonitoring
             }
         }
 
-        public void ApplyQueryAttributes(IDictionary<string, object> query)
+        public async void ApplyQueryAttributes(IDictionary<string, object> query)
         {
-            if (query.ContainsKey("mesa") && query.ContainsKey("ccv") && !query.ContainsKey("fromsummary"))
+            if (query.ContainsKey("mesa") && query.ContainsKey("ccv") && query.ContainsKey("nodeId") && !query.ContainsKey("fromsummary"))
+            {
+
+                IsBusy = IsLoading = true;
+
+                _ccv = (string)query["ccv"];
+                _mesa = (string)query["mesa"];
+                var nodeId = (string)query["nodeId"];
+
+                _ = Task.Run(async () =>
+                {
+                    await Task.WhenAll(RenderForm(), LoadVotingCenters(), LoadNode(nodeId)).ContinueWith((_) =>
+                    {
+                        SetFieldTextDirect(_ccv, "field_centro_de_votacion");
+                        SetFieldTextDirect(_mesa, "field_mesa");
+                        if (NodeToEdit != null)
+                        {
+                            foreach (var item in NodeToEdit.Where(x => x.Key != "field_centro_de_votacion" && x.Key != "field_mesa" && x.Key != "field_image"))
+                            {
+                                var value = item.Value.FirstOrDefault()?.Value?.ToString() ?? string.Empty;
+                                SetFieldTextDirect(value, item.Key);
+                            }
+
+                            var fieldImageNode = NodeToEdit.FirstOrDefault(x => x.Key == "field_image").Value?.FirstOrDefault();
+                            var field = Fields.SingleOrDefault(x => (x as IFieldControl)?.Key == "field_image") as IFieldControl;
+                            if (field != null && fieldImageNode != null)
+                                field.SetValue(fieldImageNode);
+                        }
+
+
+                        IsLoading = IsBusy = false;
+                    }).ConfigureAwait(false);
+                });
+            }
+            else if (query.ContainsKey("mesa") && query.ContainsKey("ccv") && !query.ContainsKey("fromsummary"))
             {
                 IsBusy = IsLoading = true;
 
@@ -79,18 +116,19 @@ namespace ElectoralMonitoring
                 {
                     await Task.WhenAll(RenderForm(), LoadVotingCenters()).ContinueWith((_) =>
                     {
-                        IsLoading = IsBusy = false;
                         SetFieldTextDirect(_ccv, "field_centro_de_votacion");
                         SetFieldTextDirect(_mesa, "field_mesa");
+                        IsLoading = IsBusy = false;
                     }).ConfigureAwait(false);
                 });
             }
-            else if(query.ContainsKey("mesa") && query.ContainsKey("ccv") && query.ContainsKey("nodeId") && !query.ContainsKey("fromsummary"))
-            {
-                var nodeId = (string)query["nodeId"];
-                _nodeService.GetNode(nodeId,CancellationToken.None)
-                //node data for edition, todo set fields
-            }
+        }
+
+        Dictionary<string, List<Node>>? NodeToEdit { get; set; }
+
+        private async Task LoadNode(string nodeId)
+        {
+            NodeToEdit = await _nodeService.GetNode(nodeId, CancellationToken.None);
         }
 
         #region Scanner
@@ -98,7 +136,6 @@ namespace ElectoralMonitoring
         {
             try
             {
-                //todo verificar que datos ingresados de ccv y mesa coincidan con la foto
                 SetFieldTextAsc("PARTICIPANTES ", "PARTICIPANTES ".Length, "field_participantes_segun_cuader", 2);
                 SetFieldTextDesc("NULOS", 2, "field_votos_nulos", 1);
             }
@@ -243,6 +280,7 @@ namespace ElectoralMonitoring
 
 
                     var field = Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == cand.Key) as IFieldControl;
+                    var canScanned = _form?.Any(x => x.NeedScan && x.Key == cand.Key);
                     if (field != null && votesOfCandidate != null)
                         field.SetValue(votesOfCandidate.Text);
                 }
@@ -253,10 +291,9 @@ namespace ElectoralMonitoring
         #region Form
         private async Task RenderForm()
         {
-            var form = await _nodeService.GetMinutesFormFields(CancellationToken.None);
+            _form = await _nodeService.GetMinutesFormFields(CancellationToken.None);
             Fields ??= new();
-            var fieldsObjsToView = form?.Where(x =>
-            //campos que se deben enviar por debajo
+            var fieldsObjsToView = _form?.Where(x =>
             x.Key != "field_votacion_a_observar").ToList();
 
             if (fieldsObjsToView != null)
@@ -347,21 +384,28 @@ namespace ElectoralMonitoring
                     Key = item.Key,
                     IsRequiredField = item.Required
                 };
-                //when upload a photo
-                //GetContent(imageType, image)
-                //_ = Task.Run(async () =>
-                //{
-                //    IsBusy = IsLoading = true;
-                //    await GetContent(imageType, image).ContinueWith(async (t) =>
-                //    {
-                //        if (t.IsCompletedSuccessfully)
-                //        {
-                //            await SetFields();
+                field.PhotoUploaded += (uri) =>
+                {
+                    _ = Task.Run(async () =>
+                    {
+                        var result = await Shell.Current.Dispatcher.DispatchAsync(async() => await Shell.Current.DisplayAlert(AppRes.AlertTitle, "¿Desea escanear los valores del acta?", "SI", "NO"));
 
-                //            IsBusy = IsLoading = false;
-                //        }
-                //    }).ConfigureAwait(false);
-                //});
+                        if (result)
+                        {
+                            IsBusy = IsLoading = true;
+                            await GetContent(ImageType.URI, uri).ContinueWith(async (t) =>
+                            {
+                                if (t.IsCompletedSuccessfully)
+                                {
+                                    await SetFields();
+
+                                    IsBusy = IsLoading = false;
+                                }
+                            }).ConfigureAwait(false);
+                        }
+                    });
+                };
+                
                 Fields.Add(field);
             }
         }
@@ -450,8 +494,18 @@ namespace ElectoralMonitoring
                 IsLoading = false;
                 return;
             }
-
-            var result = await _nodeService.CreateNode(values, CancellationToken.None);
+            Task<Dictionary<string,List<Node>>?>? request = null;
+            if(NodeToEdit != null)
+            {
+                var nid = NodeToEdit["nid"].FirstOrDefault()?.Value;
+                values.Add("nid", new List<Node>() { new() { Value = nid } });
+                request = _nodeService.EditNode(nid?.ToString() ?? string.Empty, values, CancellationToken.None);
+            }
+            else
+            {
+                request = _nodeService.CreateNode(values, CancellationToken.None);
+            }
+            var result = await request;
             if (result != null)
             {
                 IsLoading = false;
