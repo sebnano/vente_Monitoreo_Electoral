@@ -9,7 +9,7 @@
              xmlns:res="clr-namespace:ElectoralMonitoring.Resources.Lang"
              xmlns:android="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;assembly=Microsoft.Maui.Controls"
              android:Application.WindowSoftInputModeAdjust="Resize">
-    <local:FixedScrollView>
+    <ScrollView>
         <StackLayout VerticalOptions="CenterAndExpand" Spacing="20" Style="{StaticResource PageLayoutBase}">
             <Image Source="app_logo" HeightRequest="140" Aspect="AspectFit"/>
             <Label FontSize="Title" Text="{x:Static res:AppRes.LoginPageTitle}"/>
@@ -17,5 +17,5 @@
             <local:InputFieldControl Icon="{StaticResource IconLockOutline}" MaxLenght="32" Text="{Binding Password}" FieldType="Password" Title="{x:Static res:AppRes.PasswordFieldTitle}" Placeholder="{x:Static res:AppRes.PasswordFieldPlaceholder}"></local:InputFieldControl>
             <Button Text="{x:Static res:AppRes.LoginBtn}" Command="{Binding LoginCommand}" />
         </StackLayout>
-    </local:FixedScrollView>
+    </ScrollView>
 </ContentPage>
