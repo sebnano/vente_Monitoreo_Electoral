@@ -4,6 +4,12 @@ using System.Text.Json.Serialization;
 
 namespace ElectoralMonitoring
 {
+    public class VotingCentersAttrs : NodeAttributes
+    {
+        public long field_codigo_centro_votacion { get; set; }
+        public long field_direccion_centro_votacion { get; set; }
+    }
+
     public class MinuteAttributes : NodeAttributes
     {
         public object field_boletas_escrutadas { get; set; }

@@ -13,7 +13,7 @@
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
     </ContentPage.ToolbarItems>
-    <VerticalStackLayout>
+    <StackLayout>
         <Border Grid.Row="0" Margin="10">
             <StackLayout Padding="12" Orientation="Horizontal" HeightRequest="100">
                 <StackLayout Spacing="10" HorizontalOptions="StartAndExpand">
@@ -44,7 +44,6 @@
                             <StackLayout Spacing="10" HorizontalOptions="StartAndExpand">
                                 <Label
                                     Text="{Binding OptionTitle}"
-                                    SemanticProperties.HeadingLevel="Level1"
                                     FontSize="18" VerticalOptions="CenterAndExpand" VerticalTextAlignment="Center"
                                     HorizontalOptions="Start" />
                             </StackLayout>
@@ -70,5 +69,5 @@
         </CollectionView>
         
 
-    </VerticalStackLayout>
+    </StackLayout>
 </ContentPage>

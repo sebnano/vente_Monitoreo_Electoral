@@ -24,7 +24,7 @@ namespace ElectoralMonitoring
 
             if(_authService is not null)
             {
-                string? token = await _authService?.GetAccessToken();
+                string token = await _authService?.GetAccessToken();
 
                 //potentially refresh token here if it has expired etc.
                 if (!string.IsNullOrEmpty(token))

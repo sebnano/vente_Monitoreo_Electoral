@@ -14,9 +14,6 @@ namespace ElectoralMonitoring
         readonly NodeService _nodeService;
 
         [ObservableProperty]
-        bool isAdding;
-
-        [ObservableProperty]
         ObservableCollection<DocumentDTO>? minutes;
 
         public MonitorListPageModel(NodeService nodeService, AuthService authService) : base(authService)
@@ -46,11 +43,9 @@ namespace ElectoralMonitoring
                 else {
                     Minutes = null;
                 }
+                IsBusy = false;
                 votingCenters = await _nodeService.GetVotingCenters(CancellationToken.None) ?? new();
 
-                await Task.Yield();
-
-                IsBusy = false;
             }
         }
 
@@ -95,11 +90,11 @@ namespace ElectoralMonitoring
             mesa = await Shell.Current.DisplayPromptAsync("Mesa", "Ingrese el número de mesa para continuar", AppRes.AlertAccept, AppRes.AlertCancel, "Ejemplo: 01", 2, Keyboard.Numeric);
             if (string.IsNullOrWhiteSpace(mesa)) return;
 
-            IsAdding = true;
+            IsBusy = true;
             var can = await CheckCanContinue();
             if (!can)
             {
-                IsAdding = false;
+                IsBusy = false;
                 return;
             }
 
@@ -109,7 +104,7 @@ namespace ElectoralMonitoring
                 { "ccv", ccv },
                 { "mesa", mesa },
             };
-            IsAdding = false;
+            IsBusy = false;
             await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter).ConfigureAwait(false);
         }
     }

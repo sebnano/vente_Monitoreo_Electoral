@@ -10,7 +10,7 @@ namespace ElectoralMonitoring
     {
         readonly NodeService _nodeService;
         List<FieldForm>? _form;
-
+        List<VotingCentersAttrs> _votingCenters;
         [ObservableProperty]
         AppOptions appOption;
 
@@ -142,8 +142,7 @@ namespace ElectoralMonitoring
             {
                 IsBusy = true;
                 AppOption = query["option"] as AppOptions;
-
-                await RenderForm().ContinueWith((t) =>
+                await Task.WhenAll(LoadVotingCenters(), RenderForm()).ContinueWith((t) =>
                 {
                     if (t.IsCompletedSuccessfully)
                     {
@@ -151,6 +150,16 @@ namespace ElectoralMonitoring
 
                     }
                 }).ConfigureAwait(false);
+
+            }
+        }
+
+        async Task LoadVotingCenters()
+        {
+            var request = await _nodeService.GetAllVotingCenters(CancellationToken.None);
+            if (request != null)
+            {
+                _votingCenters = request.data.Select(x => x.attributes).ToList();
             }
         }
 
@@ -184,18 +193,35 @@ namespace ElectoralMonitoring
                 {
                     if (values.ContainsKey(field.Key))
                         continue;
-                    var value = field.GetValue();
-                    if (int.TryParse(value.ToString(), out int valueInteger))
+                    if (field.Key == "field_centro_de_votacion")
                     {
-                        values.Add(field.Key, new List<Node>() { new() { Value = valueInteger } });
-                    }
-                    else if(value is List<Node> list)
-                    {
-                        values.Add(field.Key, list);
+                        var targetCdv = _votingCenters.FirstOrDefault(x => x.field_codigo_centro_votacion.ToString() == field.GetValue().ToString() || x.field_codigo_centro_votacion.ToString() == field.GetValue()?.ToString()?.TrimStart('0'));
+                        if (targetCdv != null)
+                        {
+                            values.Add("field_centro_de_votacion", new List<Node>() { new() { TargetId = targetCdv.field_codigo_centro_votacion.ToString() } });
+                        }
+                        else
+                        {
+                            await Shell.Current.DisplayAlert("Advertencia", $"No se encontró el centro de votación con el código {field.GetValue()}.", "Aceptar");
+                            IsBusy = false;
+                            return;
+                        }
                     }
                     else
                     {
-                        values.Add(field.Key, new List<Node>() { new() { Value = value } });
+                        var value = field.GetValue();
+                        if (int.TryParse(value.ToString(), out int valueInteger))
+                        {
+                            values.Add(field.Key, new List<Node>() { new() { Value = valueInteger } });
+                        }
+                        else if (value is List<Node> list)
+                        {
+                            values.Add(field.Key, list);
+                        }
+                        else
+                        {
+                            values.Add(field.Key, new List<Node>() { new() { Value = value } });
+                        }
                     }
 
                 }

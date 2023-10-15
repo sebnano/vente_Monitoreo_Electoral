@@ -71,9 +71,15 @@
 
             <Border Grid.Row="2" VerticalOptions="End" HeightRequest="80" Padding="0" StrokeThickness="0" Background="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" StrokeShape="RoundRectangle 20,20,0,0">
                 <StackLayout>
-                    <ActivityIndicator Color="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Primary}}" VerticalOptions="CenterAndExpand"  IsRunning="{Binding IsAdding}" IsVisible="{Binding IsAdding}"></ActivityIndicator>
-                    <Button Text="{x:Static res:AppRes.AddButton}" IsVisible="{Binding IsAdding, Converter={toolkit:InvertedBoolConverter}}" HeightRequest="{StaticResource BottomButtonHeight}" FontSize="Title" FontAttributes="Bold"
-                        Command="{Binding AddDocCommand}" IsEnabled="{Binding IsBusy, Converter={toolkit:InvertedBoolConverter}}"/>
+                    <ActivityIndicator Color="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Primary}}" VerticalOptions="CenterAndExpand"  IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"></ActivityIndicator>
+                    <Button
+                    Text="{x:Static res:AppRes.AddButton}"
+                    IsVisible="{Binding IsBusy, Converter={toolkit:InvertedBoolConverter}}"
+                    HeightRequest="{StaticResource BottomButtonHeight}"
+                    FontSize="Title"
+                    FontAttributes="Bold"
+                    Command="{Binding AddDocCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={toolkit:InvertedBoolConverter}}"/>
                 </StackLayout>
             </Border>
         </Grid>

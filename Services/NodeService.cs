@@ -21,6 +21,13 @@ namespace ElectoralMonitoring
             return result;
         }
 
+        public async Task<NodeResponse<VotingCentersAttrs, NodeRelationships>?> GetAllVotingCenters(CancellationToken cancellationToken)
+        {
+            var result = await AttemptAndRetry_Mobile(_nodeApi.GetVotingCenters, cancellationToken);
+
+            return result;
+        }
+
         public async Task<List<Minute>?> GetMinutesByUser(CancellationToken cancellationToken)
         {
             var result = await AttemptAndRetry_Mobile(async () => {

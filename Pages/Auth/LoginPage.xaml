@@ -4,7 +4,6 @@
              x:Class="ElectoralMonitoring.LoginPage"
              Title="{x:Static res:AppRes.LoginPageTitle}"
              Shell.NavBarIsVisible="False"
-             Shell.TabBarIsVisible="False"
              x:DataType="local:LoginPageModel"
              xmlns:local="clr-namespace:ElectoralMonitoring"
              xmlns:res="clr-namespace:ElectoralMonitoring.Resources.Lang">
