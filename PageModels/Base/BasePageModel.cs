@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ElectoralMonitoring.Resources.Lang;
 
 namespace ElectoralMonitoring
 {
@@ -18,7 +19,9 @@ namespace ElectoralMonitoring
         [RelayCommand(AllowConcurrentExecutions = false)]
         async Task Logout()
         {
-            await _authService.LogOut();
+            var opt = await Shell.Current.DisplayAlert(AppRes.AlertTitle, "¿Desea cerrar sesión?", "SI", "NO");
+            if(opt)
+                await _authService.LogOut();
         }
     }
 }
