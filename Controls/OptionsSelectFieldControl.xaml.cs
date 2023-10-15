@@ -89,9 +89,9 @@ public partial class OptionsSelectFieldControl : ContentView, IFieldControl
     public List<SelectOption> Options { get; set; }
 
     public OptionsSelectFieldControl()
-	{
-		InitializeComponent();
-	}
+    {
+        InitializeComponent();
+    }
 
     /// <summary>
     /// Inicializa el picker con las opciones como string a|Option 1,b|Option2,c|Option 3
@@ -158,12 +158,12 @@ public partial class OptionsSelectFieldControl : ContentView, IFieldControl
     {
         var index = Options.FindIndex(x => x.Key == value.ToString());
 
-        PickerSelect.SelectedIndex = index;
+        Shell.Current.Dispatcher.Dispatch(() => PickerSelect.SelectedIndex = index);
     }
 
     void PickerSelect_SelectedIndexChanged(System.Object sender, System.EventArgs e)
     {
-        if(sender is Picker picker)
+        if (sender is Picker picker)
         {
             if (picker.SelectedIndex > 0)
                 ClearStatusRequired();

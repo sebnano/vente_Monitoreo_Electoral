@@ -31,7 +31,10 @@
             </Border>
 
             <ActivityIndicator VerticalOptions="Start" HorizontalOptions="Center" Grid.Row="1" IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"></ActivityIndicator>
-            <CollectionView Grid.Row="1" ItemsSource="{Binding Reports}">
+            <CollectionView Grid.Row="1" ItemsSource="{Binding Reports}" Margin="10,0">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout ItemSpacing="10" Orientation="Vertical"/>
+                </CollectionView.ItemsLayout>
                 <CollectionView.EmptyView>
                     <ContentView>
                         <StackLayout Spacing="12">
@@ -42,7 +45,7 @@
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="local:DocumentDTO">
-                        <Border Margin="10,5" HorizontalOptions="FillAndExpand" VerticalOptions="Center">
+                        <Border HorizontalOptions="FillAndExpand" VerticalOptions="Center">
                             <Grid ColumnSpacing="10" Padding="10" RowDefinitions="*,*" ColumnDefinitions="Auto,*,Auto">
                                 <Label Style="{StaticResource LabelIcon}"
                                        Text="{Binding Icon}"

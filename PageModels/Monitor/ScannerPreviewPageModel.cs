@@ -98,7 +98,7 @@ namespace ElectoralMonitoring
                             }
 
                             var fieldImageNode = NodeToEdit.FirstOrDefault(x => x.Key == "field_image").Value?.FirstOrDefault();
-                            var field = Fields.SingleOrDefault(x => (x as IFieldControl)?.Key == "field_image") as IFieldControl;
+                            var field = Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == "field_image") as IFieldControl;
                             if (field != null && fieldImageNode != null)
                                 field.SetValue(fieldImageNode);
                         }
@@ -115,15 +115,13 @@ namespace ElectoralMonitoring
                 _ccv = (string)query["ccv"];
                 _mesa = (string)query["mesa"];
 
-                _ = Task.Run(async () =>
+                await Task.WhenAll(RenderForm(), LoadVotingCenters()).ContinueWith((_) =>
                 {
-                    await Task.WhenAll(RenderForm(), LoadVotingCenters()).ContinueWith((_) =>
-                    {
-                        SetFieldTextDirect(_ccv, "field_centro_de_votacion");
-                        SetFieldTextDirect(_mesa, "field_mesa");
-                        IsLoading = IsBusy = false;
-                    }).ConfigureAwait(false);
-                });
+                    SetFieldTextDirect(_ccv, "field_centro_de_votacion");
+                    SetFieldTextDirect(_mesa, "field_mesa");
+                    IsLoading = IsBusy = false;
+                }).ConfigureAwait(false);
+                
             }
         }
 
@@ -154,7 +152,7 @@ namespace ElectoralMonitoring
 
         public void SetFieldTextDirect(string text, string key)
         {
-            var field = Fields.SingleOrDefault(x => (x as IFieldControl)?.Key == key) as IFieldControl;
+            var field = Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == key) as IFieldControl;
             if (field != null)
                 field.SetValue(text);
 

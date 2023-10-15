@@ -36,10 +36,13 @@
 
         <Label Text="Menu" Margin="10,0"/>
         <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"></ActivityIndicator>
-        <CollectionView ItemsSource="{Binding Options}" VerticalOptions="FillAndExpand">
+        <CollectionView ItemsSource="{Binding Options}" VerticalOptions="FillAndExpand" Margin="10,0">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout ItemSpacing="10" Orientation="Vertical"/>
+            </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="local:AppOptions">
-                    <Border Grid.Row="0" Margin="10" Padding="0">
+                    <Border Grid.Row="0">
                         <Grid ColumnDefinitions="*,Auto" Padding="10" HeightRequest="60">
                             <StackLayout Grid.Column="0" Spacing="10" HorizontalOptions="StartAndExpand">
                                 <Label

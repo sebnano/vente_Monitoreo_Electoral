@@ -43,9 +43,9 @@ namespace ElectoralMonitoring
                 else {
                     Minutes = null;
                 }
-                IsBusy = false;
                 votingCenters = await _nodeService.GetVotingCenters(CancellationToken.None) ?? new();
 
+                IsBusy = false;
             }
         }
 
@@ -74,14 +74,16 @@ namespace ElectoralMonitoring
         [RelayCommand(AllowConcurrentExecutions = false)]
         public async Task AddDoc()
         {
-            if(votingCenters.Count > 1)
+            if (votingCenters is null) return;
+
+            if(votingCenters?.Count > 1)
             {
                 ccv = await Shell.Current.DisplayPromptAsync("Código del centro de votación", "Ingrese el código para continuar", AppRes.AlertAccept, AppRes.AlertCancel, "Ejemplo: 010101001", 9, Keyboard.Numeric);
                 
             }
             else
             {
-                var ccvAssigned = votingCenters.SingleOrDefault()?.CodCNECentroVotacion;
+                var ccvAssigned = votingCenters?.FirstOrDefault()?.CodCNECentroVotacion;
                 ccv = ccvAssigned ?? string.Empty;
             }
 
