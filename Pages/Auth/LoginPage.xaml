@@ -6,7 +6,9 @@
              Shell.NavBarIsVisible="False"
              x:DataType="local:LoginPageModel"
              xmlns:local="clr-namespace:ElectoralMonitoring"
-             xmlns:res="clr-namespace:ElectoralMonitoring.Resources.Lang">
+             xmlns:res="clr-namespace:ElectoralMonitoring.Resources.Lang"
+             xmlns:android="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;assembly=Microsoft.Maui.Controls"
+             android:Application.WindowSoftInputModeAdjust="Resize">
     <local:FixedScrollView>
         <StackLayout VerticalOptions="CenterAndExpand" Spacing="20" Style="{StaticResource PageLayoutBase}">
             <Image Source="app_logo" HeightRequest="140" Aspect="AspectFit"/>

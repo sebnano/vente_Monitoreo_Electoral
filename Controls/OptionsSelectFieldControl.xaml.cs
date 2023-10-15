@@ -131,7 +131,7 @@ public partial class OptionsSelectFieldControl : ContentView, IFieldControl
 
     public bool HasValue()
     {
-        return PickerSelect.SelectedIndex > 0;
+        return PickerSelect.SelectedIndex >= 0;
     }
 
     public bool IsRequired()

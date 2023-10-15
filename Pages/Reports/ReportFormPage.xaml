@@ -6,9 +6,11 @@
              Title="Reportes"
              x:DataType="local:ReportFormPageModel"
              xmlns:res="clr-namespace:ElectoralMonitoring.Resources.Lang"
-             xmlns:local="clr-namespace:ElectoralMonitoring">
+             xmlns:local="clr-namespace:ElectoralMonitoring"
+             xmlns:android="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;assembly=Microsoft.Maui.Controls"
+             android:Application.WindowSoftInputModeAdjust="Resize">
     <StackLayout>
-        <ScrollView VerticalOptions="FillAndExpand">
+        <local:FixedScrollView VerticalOptions="FillAndExpand">
             <StackLayout VerticalOptions="FillAndExpand">
                 <Label Text="{Binding AppOption.OptionTitle}" FontSize="Title" Margin="12"/>
                 <StackLayout Orientation="Horizontal" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" Margin="-10,0,0,0">
@@ -27,8 +29,9 @@
                     </CollectionView.ItemTemplate>
 
                 </CollectionView>
+                <StackLayout HeightRequest="200"/>
             </StackLayout>
-        </ScrollView>
+        </local:FixedScrollView>
         <Border VerticalOptions="End" HeightRequest="80" Padding="0" StrokeThickness="0" Background="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" StrokeShape="RoundRectangle 20,20,0,0">
             <StackLayout>
                 <ActivityIndicator Color="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Primary}}" VerticalOptions="CenterAndExpand"  IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"></ActivityIndicator>
