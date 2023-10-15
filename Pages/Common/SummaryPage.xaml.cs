@@ -7,4 +7,9 @@ public partial class SummaryPage : ContentPage
 		InitializeComponent();
         BindingContext = vm;
     }
+
+    protected override bool OnBackButtonPressed()
+    {
+        return true;
+    }
 }

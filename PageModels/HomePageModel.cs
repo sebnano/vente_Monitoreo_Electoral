@@ -20,6 +20,12 @@ namespace ElectoralMonitoring
             _nodeService = nodeService;
             AuthService.NamedChanged += AuthService_NamedChanged;
             Task.Run(Init);
+            AuthService.LoggedOut += AuthService_LoggedOut;
+        }
+
+        private void AuthService_LoggedOut(object? sender, EventArgs e)
+        {
+            Shell.Current.Dispatcher.Dispatch(async () => await Shell.Current.GoToAsync(nameof(LoginPageModel)));
         }
 
         async Task Init()

@@ -50,6 +50,9 @@ namespace ElectoralMonitoring
                     return false;
                 }
             }
+
+            if (NodeToEdit != null) return true;
+
             var list = await _nodeService.GetMinutesByCcvAndTable(ccv, mesa, CancellationToken.None);
             if (list != null && list.Count > 0)
             {
@@ -280,8 +283,8 @@ namespace ElectoralMonitoring
 
 
                     var field = Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == cand.Key) as IFieldControl;
-                    var canScanned = _form?.Any(x => x.NeedScan && x.Key == cand.Key);
-                    if (field != null && votesOfCandidate != null)
+                    bool canScanned = _form?.Any(x => x.NeedScan && x.Key == cand.Key) ?? false;
+                    if (field != null && votesOfCandidate != null && canScanned)
                         field.SetValue(votesOfCandidate.Text);
                 }
             }

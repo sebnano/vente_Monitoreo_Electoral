@@ -159,7 +159,9 @@ namespace ElectoralMonitoring
             var rolesUser = await _authApi.GetUserRoles(IdUser);
             var roles = rolesUser.Select(x => x.Role);
             var options = await _authApi.GetHomeOptions();
-
+#if DEBUG
+            return options;
+#endif
             var filtered = options.Where(option =>
             {
                 var rolOpts = option.Rol.Split(",");

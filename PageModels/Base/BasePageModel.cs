@@ -13,13 +13,6 @@ namespace ElectoralMonitoring
         public BasePageModel(AuthService authService)
 		{
             _authService = authService;
-            AuthService.LoggedOut += AuthService_LoggedOut;
-
-        }
-
-        private void AuthService_LoggedOut(object? sender, EventArgs e)
-        {
-            MainThread.BeginInvokeOnMainThread(async () => await Shell.Current.GoToAsync(nameof(LoginPageModel)));
         }
 
         [RelayCommand(AllowConcurrentExecutions = false)]
