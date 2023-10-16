@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace ElectoralMonitoring
 {
@@ -12,12 +13,14 @@ namespace ElectoralMonitoring
         public string Icon { get; set; }
     }
 
-    public class DocumentDTO
+    public partial class DocumentDTO : ObservableObject
     {
         public string Id { get; set; }
         public string Title { get; set; }
         public string SubTitle { get; set; }
-        public string Icon { get; set; }
+
+        [ObservableProperty]
+        string icon;
     }
 }
 

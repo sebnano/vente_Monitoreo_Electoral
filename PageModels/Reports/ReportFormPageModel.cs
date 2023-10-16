@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using Android.Renderscripts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.ApplicationModel;
+using MonkeyCache.FileStore;
 
 namespace ElectoralMonitoring
 {
@@ -137,7 +139,7 @@ namespace ElectoralMonitoring
 
         public async void ApplyQueryAttributes(IDictionary<string, object> query)
         {
-            if (query.ContainsKey("option"))
+            if (query.ContainsKey("option") && !query.ContainsKey("fromsummary"))
             {
                 IsBusy = true;
                 AppOption = query["option"] as AppOptions;
@@ -251,7 +253,23 @@ namespace ElectoralMonitoring
             {
                 var actions = new List<ActionButtonDTO>()
                 {
-                    new ActionButtonDTO("Guardar Offline", "ButtonPrimary", new AsyncRelayCommand(async () => await Shell.Current.Navigation.PopToRootAsync())),
+                    new ActionButtonDTO("Guardar Offline", "ButtonPrimary", new AsyncRelayCommand(async () =>
+                    {
+                        var savedNode = new SavedNode()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Title = AppOption.OptionTitle,
+                            SubTitle = DateTime.Now.ToShortDateString(),
+                            values = values
+                        };
+
+                        var storedSaved = Barrel.Current.Get<List<SavedNode>>($"{nameof(SavedNode)}/reportes/{AppOption.OptionKey}") ?? new();
+                        storedSaved.Add(savedNode);
+
+                        Barrel.Current.Add($"{nameof(SavedNode)}/reportes/{AppOption.OptionKey}", storedSaved, TimeSpan.MaxValue);
+
+                        await Shell.Current.Navigation.PopToRootAsync();
+                    })),
                     new ActionButtonDTO("Reintentar", "ButtonPrimary", new AsyncRelayCommand(async () =>
                     {
                         await Shell.Current.GoToAsync("..?fromsummary=true");

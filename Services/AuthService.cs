@@ -1,5 +1,8 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using ElectoralMonitoring.Helpers;
+using GoogleGson;
+using Java.Net;
+using MonkeyCache.FileStore;
 using Plugin.Firebase.Auth;
 
 namespace ElectoralMonitoring
@@ -100,11 +103,23 @@ namespace ElectoralMonitoring
             return registerResult;
         }
 
-        public async Task<User?> GetCurrentUser(CancellationToken cancellationToken)
+        public async Task<User?> GetCurrentUser(CancellationToken cancellationToken, bool forceRefresh = false)
         {
             var currentUserResult = await AttemptAndRetry_Mobile(async () => {
 
-                return await _authApi.GetUser(IdUser).ConfigureAwait(false);
+                User? user = null;
+                var refresh = forceRefresh && Connectivity.Current.NetworkAccess == NetworkAccess.Internet;
+
+                if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+                    user = Barrel.Current.Get<User>(nameof(GetCurrentUser));
+                else if (!refresh && !Barrel.Current.IsExpired(nameof(GetCurrentUser)))
+                    user = Barrel.Current.Get<User>(nameof(GetCurrentUser));
+
+                if (user != null) return user;
+
+                user = await _authApi.GetUser(IdUser).ConfigureAwait(false);
+                Barrel.Current.Add(nameof(GetCurrentUser), user, TimeSpan.FromSeconds(cacheSeconds));
+                return user;
 
             }, cancellationToken);
 
@@ -122,6 +137,7 @@ namespace ElectoralMonitoring
             IdUser = string.Empty;
             NameUser = string.Empty;
             IsAuthenticated = false;
+            Barrel.Current.EmptyAll();
             OnLoggedOut();
             OnNameChanged();
             return Task.CompletedTask;
@@ -161,14 +177,25 @@ namespace ElectoralMonitoring
             return AccessToken;
         }
 
-        public Task<List<AppOptions>?> GetUserOptions() => AttemptAndRetry_Mobile(async() =>
+        public Task<List<AppOptions>?> GetUserOptions(bool forceRefresh = false) => AttemptAndRetry_Mobile(async() =>
         {
+            List<AppOptions>? opts = null;
+            var refresh = forceRefresh && Connectivity.Current.NetworkAccess == NetworkAccess.Internet;
+
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+                opts = Barrel.Current.Get<List<AppOptions>>(nameof(GetUserOptions));
+            else if (!refresh && !Barrel.Current.IsExpired(nameof(GetUserOptions)))
+                opts = Barrel.Current.Get<List<AppOptions>>(nameof(GetUserOptions));
+
+
+            if (opts != null) return opts;
+
             var rolesUser = await _authApi.GetUserRoles(IdUser);
             var roles = rolesUser.Select(x => x.Role);
             var options = await _authApi.GetHomeOptions();
-#if DEBUG
-            return options;
-#endif
+//#if DEBUG
+//            return options;
+//#endif
             var filtered = options.Where(option =>
             {
                 var rolOpts = option.Rol.Split(",");
@@ -186,18 +213,31 @@ namespace ElectoralMonitoring
                 }
                 return false;
             });
-
-            return filtered.ToList();
+            opts = filtered.ToList();
+            Barrel.Current.Add(nameof(GetUserOptions), opts, TimeSpan.FromSeconds(cacheSeconds));
+            return opts;
         }, CancellationToken.None);
 
-        public Task<List<AppConfig>?> GetAppConfig() => AttemptAndRetry_Mobile(async () =>
+        public Task<List<AppConfig>?> GetAppConfig(bool forceRefresh = false) => AttemptAndRetry_Mobile(async () =>
         {
-            var config = await _authApi.GetConfiguration();
+            List<AppConfig>? opts = null;
 
-            return config;
+            var refresh = forceRefresh && Connectivity.Current.NetworkAccess == NetworkAccess.Internet;
+            
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+                opts = Barrel.Current.Get<List<AppConfig>>(nameof(GetAppConfig));
+            else if (!refresh && !Barrel.Current.IsExpired(nameof(GetAppConfig)))
+                opts = Barrel.Current.Get<List<AppConfig>>(nameof(GetAppConfig));
+
+            if (opts != null) return opts;
+
+            opts = await _authApi.GetConfiguration();
+            Barrel.Current.Add(nameof(GetUserOptions), opts, TimeSpan.FromSeconds(cacheSeconds));
+            return opts;
 
         }, CancellationToken.None);
 
+        double cacheSeconds = 14400;
     }
 }
 

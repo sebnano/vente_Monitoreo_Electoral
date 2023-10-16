@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ElectoralMonitoring.Resources.Lang;
+using MonkeyCache.FileStore;
 using Plugin.Firebase.Functions;
 
 namespace ElectoralMonitoring
@@ -442,7 +443,6 @@ namespace ElectoralMonitoring
                     await Shell.Current.DisplayAlert("Advertencia", "La suma de los votos de candidatos mas los votos nulos debe ser igual que las Boletas escrutadas", "Aceptar");
                     return;
                 }
-
             }
             IsLoading = true;
             Dictionary<string, List<Node>> values = new();
@@ -540,7 +540,28 @@ namespace ElectoralMonitoring
             {
                 var actions = new List<ActionButtonDTO>()
                 {
-                    new ActionButtonDTO("Guardar Offline", "ButtonPrimary", new AsyncRelayCommand(async () => await Shell.Current.Navigation.PopToRootAsync())),
+                    new ActionButtonDTO("Guardar Offline", "ButtonPrimary", new AsyncRelayCommand(async () =>
+                    {
+                        var savedNode = new SavedNode()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Title = _ccv,
+                            SubTitle = _mesa,
+                            values = values
+                        };
+                        if (NodeToEdit != null)
+                        {
+                            var nid = NodeToEdit["nid"].FirstOrDefault()?.Value;
+                            savedNode.NodeId = nid?.ToString();
+                        }
+                        
+                        var storedSaved = Barrel.Current.Get<List<SavedNode>>($"{nameof(SavedNode)}/actas") ?? new();
+                        storedSaved.Add(savedNode);
+
+                        Barrel.Current.Add($"{nameof(SavedNode)}/actas", storedSaved, TimeSpan.MaxValue);
+
+                        await Shell.Current.Navigation.PopToRootAsync();
+                    })),
                     new ActionButtonDTO("Reintentar", "ButtonPrimary", new AsyncRelayCommand(async () =>
                     {
                         await Shell.Current.GoToAsync("..?fromsummary=true");

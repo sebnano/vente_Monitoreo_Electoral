@@ -2,6 +2,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ElectoralMonitoring.Resources.Lang;
+using Firebase.Firestore.Model;
+using MonkeyCache.FileStore;
 
 namespace ElectoralMonitoring
 {
@@ -10,7 +12,7 @@ namespace ElectoralMonitoring
         string ccv;
         string mesa;
         List<VotingCenter> votingCenters;
-
+        List<SavedNode> savedNodes;
         readonly NodeService _nodeService;
 
         [ObservableProperty]
@@ -29,6 +31,7 @@ namespace ElectoralMonitoring
             {
                 IsBusy = true;
                 Minutes ??= new();
+                savedNodes = Barrel.Current.Get<List<SavedNode>>($"{nameof(SavedNode)}/actas") ?? new();
                 var list = await _nodeService.GetMinutesByUser(CancellationToken.None);
                 if (list != null && list.Count > 0)
                 {
@@ -37,12 +40,26 @@ namespace ElectoralMonitoring
                         Title = x.field_centro_de_votacion,
                         SubTitle = x.field_mesa,
                         Id = x.nid,
-                        Icon = IconFont.FileDocumentCheck
+                        Icon = savedNodes.Any(y=>y.NodeId == x.nid) ? IconFont.FileDocumentAlert : IconFont.FileDocumentCheck
                     }));
                 }
                 else {
                     Minutes = null;
                 }
+
+                //offline saved
+                if(savedNodes.Count > 0)
+                {
+                    Minutes ??= new();
+                    foreach (var x in savedNodes)
+                    {
+                        if (Minutes.Any(minute => minute.Id == x.NodeId))
+                            continue;
+
+                        Minutes.Add(new DocumentDTO() { Id = x.Id, Title = x.Title, SubTitle = x.SubTitle, Icon = IconFont.FileDocumentAlert });
+                    }
+                }
+                
                 votingCenters = await _nodeService.GetVotingCenters(CancellationToken.None) ?? new();
 
                 IsBusy = false;
@@ -69,6 +86,48 @@ namespace ElectoralMonitoring
             }
 
             return list is not null;
+        }
+
+        [RelayCommand]
+        public async Task Sync(DocumentDTO doc)
+        {
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet) return;
+            doc.Icon = IconFont.FileDocumentRefresh;
+            var saved = savedNodes.FirstOrDefault(x => x.Id == doc.Id);
+            if (saved is null) return;
+            if (!string.IsNullOrEmpty(saved.NodeId))
+            {
+                //need patch request
+                var nid = saved.values["nid"].FirstOrDefault().Value;
+                var result = await _nodeService.EditNode(nid.ToString(), saved.values, CancellationToken.None);
+                if (result != null)
+                {
+                    //success
+                    savedNodes.Remove(saved);
+                    Barrel.Current.Add($"{nameof(SavedNode)}/actas", savedNodes, TimeSpan.MaxValue);
+                    await Init().ConfigureAwait(false);
+                }
+                else
+                {
+                    doc.Icon = IconFont.FileDocumentAlert;
+                }
+            }
+            else
+            {
+                //need post request
+                var result = await _nodeService.CreateNode(saved.values, CancellationToken.None);
+                if(result != null)
+                {
+                    //success
+                    savedNodes.Remove(saved);
+                    Barrel.Current.Add($"{nameof(SavedNode)}/actas", savedNodes, TimeSpan.MaxValue);
+                    await Init().ConfigureAwait(false);
+                }
+                else
+                {
+                    doc.Icon = IconFont.FileDocumentAlert;
+                }
+            }
         }
 
         [RelayCommand(AllowConcurrentExecutions = false)]

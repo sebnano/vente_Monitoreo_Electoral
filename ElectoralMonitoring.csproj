@@ -107,6 +107,7 @@
 		<PackageReference Include="Plugin.Firebase" Version="1.3.0" />
 		<PackageReference Include="ImageCropper.Maui" Version="1.0.3" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.0" />
+		<PackageReference Include="MonkeyCache.FileStore" Version="2.0.1" />
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Update="Resources\Lang\AppRes.resx">

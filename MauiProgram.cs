@@ -3,6 +3,7 @@ using CommunityToolkit.Maui;
 using Microsoft.Maui.LifecycleEvents;
 using Plugin.Firebase.Shared;
 using Plugin.Firebase.Analytics;
+using MonkeyCache.FileStore;
 
 namespace ElectoralMonitoring;
 
@@ -50,6 +51,9 @@ public static class MauiProgram
         INodeApi nodeApi = RefitExtensions.For<INodeApi>(BaseApiService.GetApi(Fusillade.Priority.Explicit));
         builder.Services.AddSingleton(authApi);
         builder.Services.AddSingleton(nodeApi);
+
+        //cache
+        Barrel.ApplicationId = Helpers.AppSettings.AppId;
 
         return builder;
     }

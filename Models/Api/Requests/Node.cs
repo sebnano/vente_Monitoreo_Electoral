@@ -18,5 +18,14 @@ namespace ElectoralMonitoring
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string? Url { get; set; }
     }
+
+    public class SavedNode
+    {
+        public string Id { get; set; }
+        public string? NodeId { get; set; }
+        public string Title { get; set; }
+        public string SubTitle { get; set; }
+        public Dictionary<string,List<Node>> values { get; set; }
+    }
 }
 

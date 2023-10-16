@@ -65,7 +65,13 @@
                                        Text="{StaticResource IconUpload}"
                                        FontSize="32" HorizontalOptions="Start"
                                        Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
-                                       IsVisible="False"/>
+                                       IsVisible="{Binding Icon, Converter={toolkit:IsEqualConverter},ConverterParameter={StaticResource IconDocumentAlert}}">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding SyncCommand, Source={RelativeSource AncestorType={x:Type local:ReportListPageModel}}}"
+                                                  CommandParameter="{Binding .}"/>
+                                </Label.GestureRecognizers>
+
+                            </Label>
                             </Grid>
                         </Border>
                     </DataTemplate>
