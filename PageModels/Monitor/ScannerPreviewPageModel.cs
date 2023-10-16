@@ -120,16 +120,22 @@ namespace ElectoralMonitoring
                     SetFieldTextDirect(_ccv, "field_centro_de_votacion");
                     SetFieldTextDirect(_mesa, "field_mesa");
                     IsLoading = IsBusy = false;
+                    
                 }).ConfigureAwait(false);
-                
+                await LoadConfig().ConfigureAwait(false);
             }
         }
 
         Dictionary<string, List<Node>>? NodeToEdit { get; set; }
-
+        List<AppConfig>? _appConfig;
         private async Task LoadNode(string nodeId)
         {
             NodeToEdit = await _nodeService.GetNode(nodeId, CancellationToken.None);
+        }
+
+        private async Task LoadConfig()
+        {
+            _appConfig = await _authService.GetAppConfig();
         }
 
         #region Scanner
@@ -424,6 +430,19 @@ namespace ElectoralMonitoring
                 }
                 await Shell.Current.DisplayAlert("Advertencia", "Debe completar los campos", "Aceptar");
                 return;
+            }
+            var enabledValidation = _appConfig?.FirstOrDefault(x => x.Key == "form_actas_verificacion_total_votos");
+            if (enabledValidation is not null && enabledValidation.Value)
+            {
+                var voletasEscrutadas = (int)(Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == "field_boletas_escrutadas") as IFieldControl).GetValue();
+                var votosNulos = (int)(Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == "field_votos_nulos") as IFieldControl).GetValue();
+                var candidatos = Fields.Where(x => (x as IFieldControl)?.Key.Contains("field_votos_candidato_") == true).Sum(x => (int)(x as IFieldControl)?.GetValue());
+                if (voletasEscrutadas == (votosNulos + candidatos))
+                {
+                    await Shell.Current.DisplayAlert("Advertencia", "La suma de los votos de candidatos mas los votos nulos debe ser igual que las Boletas escrutadas", "Aceptar");
+                    return;
+                }
+
             }
             IsLoading = true;
             Dictionary<string, List<Node>> values = new();

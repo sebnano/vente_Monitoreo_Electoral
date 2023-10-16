@@ -20,6 +20,8 @@ namespace ElectoralMonitoring
                     {
                         "1" => true,
                         "0" => false,
+                        "true" => true,
+                        "false" => false,
                         _ => false
                     };
                 default:

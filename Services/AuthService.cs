@@ -190,6 +190,14 @@ namespace ElectoralMonitoring
             return filtered.ToList();
         }, CancellationToken.None);
 
+        public Task<List<AppConfig>?> GetAppConfig() => AttemptAndRetry_Mobile(async () =>
+        {
+            var config = await _authApi.GetConfiguration();
+
+            return config;
+
+        }, CancellationToken.None);
+
     }
 }
 

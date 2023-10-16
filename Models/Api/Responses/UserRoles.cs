@@ -15,6 +15,22 @@ namespace ElectoralMonitoring
         public string Role { get; set; }
     }
 
+    public class AppConfig
+    {
+        [JsonPropertyName("grupo")]
+        public string Grupo { get; set; }
+
+        [JsonPropertyName("sesion")]
+        public string Sesion { get; set; }
+
+        [JsonPropertyName("key")]
+        public string Key { get; set; }
+
+        [JsonPropertyName("value")]
+        [JsonConverter(typeof(BooleanConverter))]
+        public bool Value { get; set; }
+    }
+
     public class AppOptions
     {
         public static string MINUTES_ADD = "registro_de_actas_crear";

@@ -29,6 +29,9 @@ namespace ElectoralMonitoring
 
         [Get("/api-opciones-paginas/page_option_home_page?_format=json")]
         Task<List<AppOptions>> GetHomeOptions();
+
+        [Get("/api/configurador-json")]
+        Task<List<AppConfig>> GetConfiguration();
     }
 }
 
