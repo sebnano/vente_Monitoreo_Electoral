@@ -9,6 +9,7 @@ namespace ElectoralMonitoring
 {
     public partial class ScannerPreviewPageModel : BasePageModel, IQueryAttributable
     {
+        AnalyticsService _analyticsService;
         readonly NodeService _nodeService;
         List<VotingCenter> _votingCenters;
         List<FieldForm>? _form;
@@ -29,8 +30,9 @@ namespace ElectoralMonitoring
         [ObservableProperty]
         bool isLoading;
 
-        public ScannerPreviewPageModel(NodeService nodeService, AuthService authService) : base(authService)
+        public ScannerPreviewPageModel(AnalyticsService analyticsService, NodeService nodeService, AuthService authService) : base(authService)
         {
+            _analyticsService = analyticsService;
             _nodeService = nodeService;
         }
 
@@ -84,30 +86,28 @@ namespace ElectoralMonitoring
                 _mesa = (string)query["mesa"];
                 var nodeId = (string)query["nodeId"];
 
-                _ = Task.Run(async () =>
+                await Task.WhenAll(RenderForm(), LoadVotingCenters(), LoadNode(nodeId)).ContinueWith((_) =>
                 {
-                    await Task.WhenAll(RenderForm(), LoadVotingCenters(), LoadNode(nodeId)).ContinueWith((_) =>
+                    SetFieldTextDirect(_ccv, "field_centro_de_votacion");
+                    SetFieldTextDirect(_mesa, "field_mesa");
+                    if (NodeToEdit != null)
                     {
-                        SetFieldTextDirect(_ccv, "field_centro_de_votacion");
-                        SetFieldTextDirect(_mesa, "field_mesa");
-                        if (NodeToEdit != null)
+                        foreach (var item in NodeToEdit.Where(x => x.Key != "field_centro_de_votacion" && x.Key != "field_mesa" && x.Key != "field_image"))
                         {
-                            foreach (var item in NodeToEdit.Where(x => x.Key != "field_centro_de_votacion" && x.Key != "field_mesa" && x.Key != "field_image"))
-                            {
-                                var value = item.Value.FirstOrDefault()?.Value?.ToString() ?? string.Empty;
-                                SetFieldTextDirect(value, item.Key);
-                            }
-
-                            var fieldImageNode = NodeToEdit.FirstOrDefault(x => x.Key == "field_image").Value?.FirstOrDefault();
-                            var field = Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == "field_image") as IFieldControl;
-                            if (field != null && fieldImageNode != null)
-                                field.SetValue(fieldImageNode);
+                            var value = item.Value.FirstOrDefault()?.Value?.ToString() ?? string.Empty;
+                            SetFieldTextDirect(value, item.Key);
                         }
 
+                        var fieldImageNode = NodeToEdit.FirstOrDefault(x => x.Key == "field_image").Value?.FirstOrDefault();
+                        var field = Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == "field_image") as IFieldControl;
+                        if (field != null && fieldImageNode != null)
+                            field.SetValue(fieldImageNode);
+                    }
 
-                        IsLoading = IsBusy = false;
-                    }).ConfigureAwait(false);
-                });
+
+                    IsLoading = IsBusy = false;
+                }).ConfigureAwait(false);
+                await LoadConfig().ConfigureAwait(false);
             }
             else if (query.ContainsKey("mesa") && query.ContainsKey("ccv") && !query.ContainsKey("fromsummary"))
             {
@@ -121,7 +121,7 @@ namespace ElectoralMonitoring
                     SetFieldTextDirect(_ccv, "field_centro_de_votacion");
                     SetFieldTextDirect(_mesa, "field_mesa");
                     IsLoading = IsBusy = false;
-                    
+
                 }).ConfigureAwait(false);
                 await LoadConfig().ConfigureAwait(false);
             }
@@ -396,7 +396,7 @@ namespace ElectoralMonitoring
                 {
                     _ = Task.Run(async () =>
                     {
-                        var result = await Shell.Current.Dispatcher.DispatchAsync(async() => await Shell.Current.DisplayAlert(AppRes.AlertTitle, "¿Desea escanear los valores del acta?", "SI", "NO"));
+                        var result = await Shell.Current.Dispatcher.DispatchAsync(async () => await Shell.Current.DisplayAlert(AppRes.AlertTitle, "¿Desea escanear los valores del acta?", "SI", "NO"));
 
                         if (result)
                         {
@@ -413,7 +413,7 @@ namespace ElectoralMonitoring
                         }
                     });
                 };
-                
+
                 Fields.Add(field);
             }
         }
@@ -435,13 +435,20 @@ namespace ElectoralMonitoring
             var enabledValidation = _appConfig?.FirstOrDefault(x => x.Key == "form_actas_verificacion_total_votos");
             if (enabledValidation is not null && enabledValidation.Value)
             {
-                var voletasEscrutadas = (int)(Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == "field_boletas_escrutadas") as IFieldControl).GetValue();
-                var votosNulos = (int)(Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == "field_votos_nulos") as IFieldControl).GetValue();
-                var candidatos = Fields.Where(x => (x as IFieldControl)?.Key.Contains("field_votos_candidato_") == true).Sum(x => (int)(x as IFieldControl)?.GetValue());
-                if (voletasEscrutadas == (votosNulos + candidatos))
+                try
                 {
-                    await Shell.Current.DisplayAlert("Advertencia", "La suma de los votos de candidatos mas los votos nulos debe ser igual que las Boletas escrutadas", "Aceptar");
-                    return;
+                    var voletasEscrutadas = int.Parse((Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == "field_boletas_escrutadas") as IFieldControl).GetValue().ToString());
+                    var votosNulos = int.Parse((Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == "field_votos_nulos") as IFieldControl).GetValue().ToString());
+                    var candidatos = Fields.Where(x => (x as IFieldControl)?.Key.Contains("field_votos_candidato_") == true).Sum(x => int.Parse((x as IFieldControl)?.GetValue().ToString()));
+                    if (voletasEscrutadas != (votosNulos + candidatos))
+                    {
+                        await Shell.Current.DisplayAlert("Advertencia", "La suma de los votos de candidatos mas los votos nulos debe ser igual que las Boletas escrutadas", "Aceptar");
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _analyticsService.Report(ex);
                 }
             }
             IsLoading = true;
@@ -514,8 +521,8 @@ namespace ElectoralMonitoring
                 IsLoading = false;
                 return;
             }
-            Task<Dictionary<string,List<Node>>?>? request = null;
-            if(NodeToEdit != null)
+            Task<Dictionary<string, List<Node>>?>? request = null;
+            if (NodeToEdit != null)
             {
                 var nid = NodeToEdit["nid"].FirstOrDefault()?.Value;
                 values.Add("nid", new List<Node>() { new() { Value = nid } });
@@ -554,7 +561,7 @@ namespace ElectoralMonitoring
                             var nid = NodeToEdit["nid"].FirstOrDefault()?.Value;
                             savedNode.NodeId = nid?.ToString();
                         }
-                        
+
                         var storedSaved = Barrel.Current.Get<List<SavedNode>>($"{nameof(SavedNode)}/actas") ?? new();
                         storedSaved.Add(savedNode);
 
