@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Text.Json;
 using ElectoralMonitoring.Helpers;
 using MonkeyCache.FileStore;
 using Plugin.Firebase.Auth;
@@ -178,6 +179,7 @@ namespace ElectoralMonitoring
         public Task<List<AppOptions>?> GetUserOptions(bool forceRefresh = false) => AttemptAndRetry_Mobile(async() =>
         {
             List<AppOptions>? opts = null;
+            string? optsJson = null;
             var refresh = forceRefresh && Connectivity.Current.NetworkAccess == NetworkAccess.Internet;
 
             if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
@@ -185,15 +187,11 @@ namespace ElectoralMonitoring
             else if (!refresh && !Barrel.Current.IsExpired(nameof(GetUserOptions)))
                 opts = Barrel.Current.Get<List<AppOptions>>(nameof(GetUserOptions));
 
-
             if (opts != null) return opts;
 
             var rolesUser = await _authApi.GetUserRoles(IdUser);
             var roles = rolesUser.Select(x => x.Role);
             var options = await _authApi.GetHomeOptions();
-//#if DEBUG
-//            return options;
-//#endif
             var filtered = options.Where(option =>
             {
                 var rolOpts = option.Rol.Split(",");
@@ -230,7 +228,7 @@ namespace ElectoralMonitoring
             if (opts != null) return opts;
 
             opts = await _authApi.GetConfiguration();
-            Barrel.Current.Add(nameof(GetUserOptions), opts, TimeSpan.FromSeconds(cacheSeconds));
+            Barrel.Current.Add(nameof(GetAppConfig), opts, TimeSpan.FromSeconds(cacheSeconds));
             return opts;
 
         }, CancellationToken.None);
