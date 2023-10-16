@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ElectoralMonitoring.Resources.Lang;
-using Firebase.Firestore.Model;
 using MonkeyCache.FileStore;
 
 namespace ElectoralMonitoring

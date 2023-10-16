@@ -1,7 +1,4 @@
-﻿using AndroidX.Emoji2.Text.FlatBuffer;
-using MonkeyCache;
-using MonkeyCache.FileStore;
-using Org.W3c.Dom;
+﻿using MonkeyCache.FileStore;
 
 namespace ElectoralMonitoring
 {

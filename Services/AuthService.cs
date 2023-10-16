@@ -1,7 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using ElectoralMonitoring.Helpers;
-using GoogleGson;
-using Java.Net;
 using MonkeyCache.FileStore;
 using Plugin.Firebase.Auth;
 
