@@ -34,7 +34,7 @@
             </StackLayout>
         </Border>
 
-        <Label Text="Menu" Margin="10,0"/>
+        <Label Text="Menú" Margin="10,0"/>
         <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"></ActivityIndicator>
         <CollectionView ItemsSource="{Binding Options}" VerticalOptions="FillAndExpand" Margin="10,0">
             <CollectionView.ItemsLayout>

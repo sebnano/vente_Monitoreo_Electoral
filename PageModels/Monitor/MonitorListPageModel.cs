@@ -11,6 +11,7 @@ namespace ElectoralMonitoring
         string ccv;
         string mesa;
         List<VotingCenter> votingCenters;
+        List<string>? _userRoles;
         List<SavedNode> savedNodes;
         readonly NodeService _nodeService;
 
@@ -60,6 +61,7 @@ namespace ElectoralMonitoring
                 }
                 
                 votingCenters = await _nodeService.GetVotingCenters(CancellationToken.None) ?? new();
+                _userRoles = await _authService.GetUserRoles();
 
                 IsBusy = false;
             }
@@ -69,14 +71,22 @@ namespace ElectoralMonitoring
 
         async Task<bool> CheckCanContinue()
         {
-            if(votingCenters != null && votingCenters.Count > 0)
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+                return true;
+
+            if (_userRoles != null && _userRoles.Contains("Garante") == true && !_userRoles.Contains("Call Center") && !_userRoles.Contains("Administrador Call Center"))
             {
-                var hasAccess = votingCenters.Any(x => x.CodCNECentroVotacion == ccv || x.CodCNECentroVotacion == ccv.TrimStart('0'));
-                if (!hasAccess) {
-                    await Shell.Current.DisplayAlert("Mensaje", $"¡El centro de votación {ccv} no existe o no tiene permisos!", "OK");
-                    return false;
+                if (votingCenters != null)
+                {
+                    var hasAccess = votingCenters.Any(x => x.CodCNECentroVotacion == ccv || x.CodCNECentroVotacion == ccv.TrimStart('0'));
+                    if (!hasAccess)
+                    {
+                        await Shell.Current.DisplayAlert("Mensaje", $"¡El centro de votación {ccv} no existe o no tiene permisos!", "OK");
+                        return false;
+                    }
                 }
             }
+                
             var list = await _nodeService.GetMinutesByCcvAndTable(ccv, mesa, CancellationToken.None);
             if (list != null && list.Count > 0)
             {
@@ -132,17 +142,23 @@ namespace ElectoralMonitoring
         [RelayCommand(AllowConcurrentExecutions = false)]
         public async Task AddDoc()
         {
-            if (votingCenters is null) return;
-
-            if(votingCenters?.Count > 1)
+            if (_userRoles != null && _userRoles.Contains("Garante") == true && !_userRoles.Contains("Call Center") && !_userRoles.Contains("Administrador Call Center"))
             {
-                ccv = await Shell.Current.DisplayPromptAsync("Código del centro de votación", "Ingrese el código para continuar", AppRes.AlertAccept, AppRes.AlertCancel, "Ejemplo: 010101001", 9, Keyboard.Numeric);
-                
+                if (votingCenters is null) return;
+
+                if (votingCenters?.Count > 1)
+                {
+                    ccv = await Shell.Current.DisplayPromptAsync("Código del centro de votación", "Ingrese el código para continuar", AppRes.AlertAccept, AppRes.AlertCancel, "Ejemplo: 010101001", 9, Keyboard.Numeric);
+                }
+                else
+                {
+                    var ccvAssigned = votingCenters?.FirstOrDefault()?.CodCNECentroVotacion;
+                    ccv = ccvAssigned ?? string.Empty;
+                }
             }
             else
             {
-                var ccvAssigned = votingCenters?.FirstOrDefault()?.CodCNECentroVotacion;
-                ccv = ccvAssigned ?? string.Empty;
+                ccv = await Shell.Current.DisplayPromptAsync("Código del centro de votación", "Ingrese el código para continuar", AppRes.AlertAccept, AppRes.AlertCancel, "Ejemplo: 010101001", 9, Keyboard.Numeric);
             }
 
             if (string.IsNullOrWhiteSpace(ccv)) return;

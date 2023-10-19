@@ -11,8 +11,9 @@ namespace ElectoralMonitoring
     {
         AnalyticsService _analyticsService;
         readonly NodeService _nodeService;
-        List<VotingCenter> _votingCenters;
+        List<VotingCenter>? _votingCenters;
         List<FieldForm>? _form;
+        List<string>? _userRoles;
 
         int _fid;
         string _mesa;
@@ -44,13 +45,16 @@ namespace ElectoralMonitoring
             var mesa = (Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == "field_mesa") as IFieldControl)?.GetValue().ToString();
             var ccv = (Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == "field_centro_de_votacion") as IFieldControl)?.GetValue().ToString();
             if (mesa is null || ccv is null) return false;
-            if (_votingCenters != null && _votingCenters.Count > 0)
+            if (_userRoles != null && _userRoles.Contains("Garante") == true && !_userRoles.Contains("Call Center") && !_userRoles.Contains("Administrador Call Center"))
             {
-                var hasAccess = _votingCenters.Any(x => x.CodCNECentroVotacion == ccv || x.CodCNECentroVotacion == ccv.TrimStart('0'));
-                if (!hasAccess)
+                if (_votingCenters != null)
                 {
-                    await Shell.Current.DisplayAlert("Mensaje", $"¡El centro de votación {ccv} no existe o no tiene permisos!", "OK");
-                    return false;
+                    var hasAccess = _votingCenters.Any(x => x.CodCNECentroVotacion == ccv || x.CodCNECentroVotacion == ccv.TrimStart('0'));
+                    if (!hasAccess)
+                    {
+                        await Shell.Current.DisplayAlert("Mensaje", $"¡El centro de votación {ccv} no existe o no tiene permisos!", "OK");
+                        return false;
+                    }
                 }
             }
 
@@ -68,11 +72,8 @@ namespace ElectoralMonitoring
 
         async Task LoadVotingCenters()
         {
-            var request = await _nodeService.GetVotingCenters(CancellationToken.None);
-            if (request != null)
-            {
-                _votingCenters = request;
-            }
+            _userRoles = await _authService.GetUserRoles();
+            _votingCenters = await _nodeService.GetVotingCenters(CancellationToken.None);
         }
 
         public async void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -465,20 +466,48 @@ namespace ElectoralMonitoring
 
                     if (field.Key == "field_centro_de_votacion")
                     {
-                        var targetCdv = _votingCenters.FirstOrDefault(x => x.CodCNECentroVotacion == field.GetValue().ToString() || x.CodCNECentroVotacion == field.GetValue()?.ToString()?.TrimStart('0'));
-                        if (targetCdv != null)
+                        var val = field.GetValue().ToString();
+                        if (val != null)
                         {
-                            values.Add("field_centro_de_votacion", new List<Node>() { new() { TargetId = targetCdv.IdCentroVotacion } });
+                            // Garantes verifican desde los asignados
+                            if (_votingCenters != null && _userRoles != null && _userRoles.Contains("Garante") == true && !_userRoles.Contains("Call Center") && !_userRoles.Contains("Administrador Call Center"))
+                            {
+                                var targetCdv = _votingCenters.FirstOrDefault(x => x.CodCNECentroVotacion == val || x.CodCNECentroVotacion == val.TrimStart('0'));
+                                if (targetCdv != null)
+                                {
+                                    values.Add("field_centro_de_votacion", new List<Node>() { new() { TargetId = targetCdv.IdCentroVotacion } });
 
-                            values.Add("field_votacion_a_observar", new List<Node>() { new() { TargetId = targetCdv.IdVotacion } });
+                                    values.Add("field_votacion_a_observar", new List<Node>() { new() { TargetId = targetCdv.IdVotacion } });
+                                }
+                                else
+                                {
+                                    await Shell.Current.DisplayAlert("Advertencia", $"No se encontró el centro de votación con el código {val}.", "Aceptar");
+                                    IsLoading = false;
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                //Call Center y Administrador verifican desde api y se asigna directamente la votacion a observar
+                                var request = await _nodeService.GetAllVotingCentersByCode(val, CancellationToken.None);
+                                if (request != null)
+                                {
+                                    var _votingCenters = request.data.Select(x => x.attributes).ToList();
+                                    var targetCdvResult = _votingCenters.FirstOrDefault(x => x.field_codigo_centro_votacion.ToString() == val || x.field_codigo_centro_votacion.ToString() == val.ToString()?.TrimStart('0'));
+                                    if (targetCdvResult != null)
+                                    {
+                                        values.Add("field_centro_de_votacion", new List<Node>() { new() { TargetId = targetCdvResult.drupal_internal__nid } });
+                                        values.Add("field_votacion_a_observar", new List<Node>() { new() { TargetId = "44913" } });
+                                    }
+                                    else
+                                    {
+                                        await Shell.Current.DisplayAlert("Advertencia", $"No se encontró el centro de votación con el código {val}.", "Aceptar");
+                                        IsBusy = false;
+                                        return;
+                                    }
+                                }
+                            }
                         }
-                        else
-                        {
-                            await Shell.Current.DisplayAlert("Advertencia", $"No se encontró el centro de votación con el código {field.GetValue()}.", "Aceptar");
-                            IsLoading = false;
-                            return;
-                        }
-
                     }
                     else
                     {

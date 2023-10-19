@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using Android.Renderscripts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ElectoralMonitoring.Resources.Lang;
 using MonkeyCache.FileStore;
 
 namespace ElectoralMonitoring
@@ -11,6 +13,11 @@ namespace ElectoralMonitoring
         readonly NodeService _nodeService;
         int reportId = 1;
         List<SavedNode> savedNodes;
+        List<VotingCenter> votingCenters;
+        List<string>? _userRoles;
+
+        string ccv = string.Empty;
+
 
         [ObservableProperty]
         AppOptions appOption;
@@ -56,6 +63,8 @@ namespace ElectoralMonitoring
                     }
                 }
 
+                votingCenters = await _nodeService.GetVotingCenters(CancellationToken.None) ?? new();
+                _userRoles = await _authService.GetUserRoles();
                 IsBusy = false;
             }
         }
@@ -102,11 +111,61 @@ namespace ElectoralMonitoring
             }
         }
 
+        async Task<bool> CheckCanContinue()
+        {
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+                return true;
+
+            if (_userRoles != null && _userRoles.Contains("Garante") == true && !_userRoles.Contains("Call Center") && !_userRoles.Contains("Administrador Call Center"))
+            {
+                if (votingCenters != null)
+                {
+                    var hasAccess = votingCenters.Any(x => x.CodCNECentroVotacion == ccv || x.CodCNECentroVotacion == ccv.TrimStart('0'));
+                    if (!hasAccess)
+                    {
+                        await Shell.Current.DisplayAlert("Mensaje", $"¡El centro de votación {ccv} no existe o no tiene permisos!", "OK");
+                        return false;
+                    }
+                }
+            }
+                
+
+            return true;
+        }
+
         [RelayCommand]
         async Task Add()
         {
+            if (_userRoles != null && _userRoles.Contains("Garante") == true && !_userRoles.Contains("Call Center") && !_userRoles.Contains("Administrador Call Center"))
+            {
+                if (votingCenters is null) return;
+
+                if (votingCenters?.Count > 1)
+                {
+                    ccv = await Shell.Current.DisplayPromptAsync("Código del centro de votación", "Ingrese el código para continuar", AppRes.AlertAccept, AppRes.AlertCancel, "Ejemplo: 010101001", 9, Keyboard.Numeric);
+                }
+                else
+                {
+                    var ccvAssigned = votingCenters?.FirstOrDefault()?.CodCNECentroVotacion;
+                    ccv = ccvAssigned ?? string.Empty;
+                }
+
+                var can = await CheckCanContinue();
+                if (!can)
+                {
+                    IsBusy = false;
+                    return;
+                }
+            }
+            else
+            {
+                ccv = await Shell.Current.DisplayPromptAsync("Código del centro de votación", "Ingrese el código para continuar", AppRes.AlertAccept, AppRes.AlertCancel, "Ejemplo: 010101001", 9, Keyboard.Numeric);
+            }
+            
+
             await Shell.Current.GoToAsync(nameof(ReportFormPageModel), new Dictionary<string, object>()
             {
+                { "ccv", ccv },
                 { "option", AppOption }
             });
         }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using Android.Renderscripts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MonkeyCache.FileStore;
@@ -11,6 +12,8 @@ namespace ElectoralMonitoring
         List<FieldForm>? _form;
         [ObservableProperty]
         AppOptions appOption;
+        List<VotingCenter>? _votingCenters;
+        List<string>? _userRoles;
 
         [ObservableProperty]
         ObservableCollection<View> fields;
@@ -136,23 +139,39 @@ namespace ElectoralMonitoring
 
         public async void ApplyQueryAttributes(IDictionary<string, object> query)
         {
-            if (query.ContainsKey("option") && !query.ContainsKey("fromsummary"))
+            if (query.ContainsKey("option") && query.ContainsKey("ccv") && !query.ContainsKey("fromsummary"))
             {
                 IsBusy = true;
                 AppOption = query["option"] as AppOptions;
 
-                await RenderForm().ContinueWith((t) =>
+                var ccv = (string)query["ccv"];
+
+                await Task.WhenAll(RenderForm(), LoadVotingCenterAndRoles()).ContinueWith((t) =>
                 {
                     if (t.IsCompletedSuccessfully)
                     {
+                        SetFieldTextDirect(ccv, "field_centro_de_votacion");
                         IsBusy = false;
-
                     }
+                    
                 }).ConfigureAwait(false);
 
             }
         }
 
+        async Task LoadVotingCenterAndRoles()
+        {
+            _userRoles = await _authService.GetUserRoles();
+            _votingCenters = await _nodeService.GetVotingCenters(CancellationToken.None);
+        }
+
+        public void SetFieldTextDirect(string text, string key)
+        {
+            var field = Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == key) as IFieldControl;
+            if (field != null)
+                field.SetValue(text);
+
+        }
 
         [RelayCommand(AllowConcurrentExecutions = false)]
         public async Task SubmitForm()
@@ -188,22 +207,41 @@ namespace ElectoralMonitoring
                         var val = field.GetValue().ToString();
                         if(val != null)
                         {
-                            var request = await _nodeService.GetAllVotingCentersByCode(val, CancellationToken.None);
-                            if (request != null)
+                            // Garantes verifican desde los asignados
+                            if (_votingCenters != null && _userRoles != null && _userRoles.Contains("Garante") == true && !_userRoles.Contains("Call Center") && !_userRoles.Contains("Administrador Call Center"))
                             {
-                                var _votingCenters = request.data.Select(x => x.attributes).ToList();
-                                var targetCdv = _votingCenters.FirstOrDefault(x => x.field_codigo_centro_votacion.ToString() == field.GetValue().ToString() || x.field_codigo_centro_votacion.ToString() == field.GetValue()?.ToString()?.TrimStart('0'));
+                                var targetCdv = _votingCenters.FirstOrDefault(x => x.CodCNECentroVotacion == val || x.CodCNECentroVotacion == val.TrimStart('0'));
                                 if (targetCdv != null)
                                 {
-                                    values.Add("field_centro_de_votacion", new List<Node>() { new() { TargetId = targetCdv.drupal_internal__nid } });
+                                    values.Add("field_centro_de_votacion", new List<Node>() { new() { TargetId = targetCdv.IdCentroVotacion } });
                                 }
                                 else
                                 {
-                                    await Shell.Current.DisplayAlert("Advertencia", $"No se encontró el centro de votación con el código {field.GetValue()}.", "Aceptar");
+                                    await Shell.Current.DisplayAlert("Advertencia", $"No se encontró el centro de votación con el código {val}.", "Aceptar");
                                     IsBusy = false;
                                     return;
                                 }
                             }
+                            else
+                            {
+                                var request = await _nodeService.GetAllVotingCentersByCode(val, CancellationToken.None);
+                                if (request != null)
+                                {
+                                    var _votingCenters = request.data.Select(x => x.attributes).ToList();
+                                    var targetCdvResult = _votingCenters.FirstOrDefault(x => x.field_codigo_centro_votacion.ToString() == val || x.field_codigo_centro_votacion.ToString() == val?.TrimStart('0')); ;
+                                    if (targetCdvResult != null)
+                                    {
+                                        values.Add("field_centro_de_votacion", new List<Node>() { new() { TargetId = targetCdvResult.drupal_internal__nid } });
+                                    }
+                                    else
+                                    {
+                                        await Shell.Current.DisplayAlert("Advertencia", $"No se encontró el centro de votación con el código {field.GetValue()}.", "Aceptar");
+                                        IsBusy = false;
+                                        return;
+                                    }
+                                }
+                            }
+                            
                         }
                     }
                     else

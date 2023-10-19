@@ -176,10 +176,26 @@ namespace ElectoralMonitoring
             return AccessToken;
         }
 
+        public Task<List<string>?> GetUserRoles(bool forceRefresh = false) => AttemptAndRetry_Mobile(async () =>
+        {
+            List<string>? opts = null;
+            var refresh = forceRefresh && Connectivity.Current.NetworkAccess == NetworkAccess.Internet;
+
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+                opts = Barrel.Current.Get<List<string>>(nameof(GetUserRoles));
+            else if (!refresh && !Barrel.Current.IsExpired(nameof(GetUserRoles)))
+                opts = Barrel.Current.Get<List<string>>(nameof(GetUserRoles));
+
+            if (opts != null) return opts;
+
+            var rolesUser = await _authApi.GetUserRoles(IdUser);
+            return rolesUser.Select(x => x.Role).ToList();
+
+        }, CancellationToken.None);
+
         public Task<List<AppOptions>?> GetUserOptions(bool forceRefresh = false) => AttemptAndRetry_Mobile(async() =>
         {
             List<AppOptions>? opts = null;
-            string? optsJson = null;
             var refresh = forceRefresh && Connectivity.Current.NetworkAccess == NetworkAccess.Internet;
 
             if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
@@ -189,25 +205,21 @@ namespace ElectoralMonitoring
 
             if (opts != null) return opts;
 
-            var rolesUser = await _authApi.GetUserRoles(IdUser);
-            var roles = rolesUser.Select(x => x.Role);
+            var roles = await GetUserRoles(true);
             var options = await _authApi.GetHomeOptions();
             var filtered = options.Where(option =>
             {
                 var rolOpts = option.Rol.Split(",");
+                var options = 0;
                 foreach (var roleOpt in rolOpts)
                 {
                     var roleScape = roleOpt.TrimStart().TrimEnd();
-                    if (roles.Contains(roleScape))
+                    if (roles?.Contains(roleScape) == true)
                     {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
+                        options++;
                     }
                 }
-                return false;
+                return options > 0;
             });
             opts = filtered.ToList();
             Barrel.Current.Add(nameof(GetUserOptions), opts, TimeSpan.FromSeconds(cacheSeconds));
