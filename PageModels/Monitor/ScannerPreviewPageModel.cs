@@ -145,8 +145,8 @@ namespace ElectoralMonitoring
         {
             try
             {
-                SetFieldTextAsc("PARTICIPANTES ", "PARTICIPANTES ".Length, "field_participantes_segun_cuader", 2);
-                SetFieldTextDesc("NULOS", 2, "field_votos_nulos", 1);
+                //SetFieldTextAsc("PARTICIPANTES ", "PARTICIPANTES ".Length, "field_participantes_segun_cuader", 2);
+                //SetFieldTextDesc("NULOS", 2, "field_votos_nulos", 1);
             }
             catch (Exception ex)
             {
@@ -211,9 +211,10 @@ namespace ElectoralMonitoring
                 Console.WriteLine(ex.StackTrace);
             }
         }
-        List<Word> Words = new();
+
         void ScanMinute(Page page)
         {
+            List<Word> Words = new();
             var pageText = "";
             foreach (var block in page.Blocks)
             {
@@ -228,32 +229,20 @@ namespace ElectoralMonitoring
                         {
                             wordText += symbol.Text;
                         }
-                        Console.WriteLine(
-                            string.Format("\nWord text:\n {0}\nWord Confidence: {1})\n",
-                            wordText,
-                            word.Confidence)
-                        );
 
-                        Console.WriteLine(string.Format("Word bounding box: \n{0}", word.BoundingBox));
                         paraText = string.Format("{0} {1}", paraText, wordText);
                         word.Text = wordText;
                         Words.Add(word);
                     }
 
-                    // Console.WriteLine(string.Format("\nParagraph:\n {0}", paraText));
-                    // Console.WriteLine(string.Format("Paragraph Confidence: {0}\n", paragraph.Confidence));
-                    // Console.WriteLine(string.Format("Paragraph bounding box: \n{0}", paragraph.BoundingBox));
                     blockText += paraText;
                 }
 
-                //Console.WriteLine(string.Format("\nBlock:\n {0}", blockText));
-                //Console.WriteLine(string.Format("nBlock Confidence: {0}\n", block.Confidence));
-                //Console.WriteLine(string.Format("nBlock bounding box: \n{0}", block.BoundingBox));
                 pageText += blockText;
             }
 
 
-            Dictionary<string, string> candidates = new Dictionary<string, string>()
+            Dictionary<string, string> fieldsToScan = new Dictionary<string, string>()
             {
                 { "field_votos_candidato_1", "CALECA" },
                 { "field_votos_candidato_2", "VELASQUEZ" },
@@ -264,14 +253,18 @@ namespace ElectoralMonitoring
                 { "field_votos_candidato_7", "DELSA" },
                 { "field_votos_candidato_8", "FREDDY" },
                 { "field_votos_candidato_9", "GLORIA" },
-                { "field_votos_candidato_10", "FARIAS" },
-                { "field_votos_candidato_11", "CORINA" },
+                { "field_votos_candidato_10", "LUIS" },
+                { "field_votos_candidato_11", "MACHADO" },
                 { "field_votos_candidato_12", "ROBERTO" },
                 { "field_votos_candidato_13", "TAMARA" },
-                { "field_boletas_escrutadas", "ESCRUTADAS" }
+                { "field_boletas_escrutadas", "ESCRUTADAS" },
+                { "field_participantes_segun_cuader", "PARTICIPANTES" },
+                { "field_votos_nulos", "NULOS" },
+                //{ "field_votos_nulos", "CIERRE DE MESA" },
+                { "field_hora_fin_del_escrutinio", "ESCRUTINIO" }
             };
 
-            foreach (var cand in candidates)
+            foreach (var cand in fieldsToScan)
             {
                 var candidate = Words.FirstOrDefault(x => x.Text.ToUpper() == cand.Value.ToUpper());
                 if (candidate != null)
@@ -280,18 +273,36 @@ namespace ElectoralMonitoring
                     var votesOfCandidate = Words.FirstOrDefault(x =>
                     x.Text.ToUpper() != candidate.Text.ToUpper()
 
-                    && x.BoundingBox.Vertices[0].Y + 20 >= candidate.BoundingBox.Vertices[0].Y
-                    && x.BoundingBox.Vertices[0].Y <= candidate.BoundingBox.Vertices[0].Y + 10
 
-                    && x.BoundingBox.Vertices.Average(x => x.X) >= (candidate.BoundingBox.Vertices.Average(x => x.X) + 100)
+                    && (x.BoundingBox.Vertices.Average(x => x.Y) + 30) >= (candidate.BoundingBox.Vertices.Average(x => x.Y))
+                    && (x.BoundingBox.Vertices.Average(x => x.Y)) <= (candidate.BoundingBox.Vertices.Average(x => x.Y) + 30)
+
+                    && x.BoundingBox.Vertices.Average(x => x.X) >= (candidate.BoundingBox.Vertices.Average(x => x.X) + 40)
                     && x.BoundingBox.Vertices.Average(x => x.X) <= (candidate.BoundingBox.Vertices.Average(x => x.X) + 200)
                     );
-
 
                     var field = Fields.FirstOrDefault(x => (x as IFieldControl)?.Key == cand.Key) as IFieldControl;
                     bool canScanned = _form?.Any(x => x.NeedScan && x.Key == cand.Key) ?? false;
                     if (field != null && votesOfCandidate != null && canScanned)
-                        field.SetValue(votesOfCandidate.Text);
+                    {
+                        var textFound = votesOfCandidate?.Text;
+                        if (int.TryParse(textFound, out int result))
+                        {
+                            field.SetValue(result);
+                        }
+                        else
+                        {
+                            var normalized = textFound?.Replace(":", "");
+                            if (int.TryParse(normalized, out int result2))
+                            {
+                                field.SetValue(result2);
+                            }
+                            else
+                            {
+                                _analyticsService.Track($"SearchNotNumber", candidate.Text, normalized??string.Empty);
+                            }
+                        }
+                    }
                 }
             }
         }

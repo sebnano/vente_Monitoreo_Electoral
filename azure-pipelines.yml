@@ -4,7 +4,7 @@ trigger:
     - develop
 
 variables:
-    AppFullVersionNumber: 0.1.$(Build.BuildNumber)
+    AppFullVersionNumber: 1.0.$(Build.BuildNumber)
     AppBuildNumber: $(Build.BuildNumber)
     BuildConfiguration: Release
     DotNetVersion: 7.0.402
