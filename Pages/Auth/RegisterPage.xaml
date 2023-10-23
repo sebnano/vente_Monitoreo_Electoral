@@ -22,7 +22,7 @@
                 <Button Clicked="ClickGestureRecognizer_Clicked" Text="{x:Static res:AppRes.HereLabel}"
                     BackgroundColor="Transparent"
                     Padding="0" Margin="0" VerticalOptions="Start" CornerRadius="0"
-                    MinimumHeightRequest="-1" MinimumWidthRequest="-1" FontAttributes="Bold" TextColor="{DynamicResource Primary}"/>
+                    FontAttributes="Bold" TextColor="{DynamicResource Primary}"/>
             </StackLayout>
         </StackLayout>
     </local:FixedScrollView>

@@ -14,5 +14,14 @@ namespace ElectoralMonitoring
         [property: JsonPropertyName("nombre_ubicacion")] string NombreUbicacion,
         [property: JsonPropertyName("codCNE_centro_votacion")] string CodCNECentroVotacion
     );
+
+    public record Report(
+        [property: JsonPropertyName("title")] string Title,
+        [property: JsonPropertyName("nid")] string Nid,
+        [property: JsonPropertyName("data_creates")] string DataCreates,
+        [property: JsonPropertyName("field_tipo_de_reporte")] string FieldTipoDeReporte
+    );
+
+
 }
 

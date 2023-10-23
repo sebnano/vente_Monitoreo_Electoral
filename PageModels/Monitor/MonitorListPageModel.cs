@@ -2,9 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ElectoralMonitoring.Resources.Lang;
-using Microsoft.Maui.Graphics.Platform;
-using Plugin.Firebase.Functions;
-using Plugin.Firebase.Storage;
+using MonkeyCache.FileStore;
 
 namespace ElectoralMonitoring
 {
@@ -12,19 +10,19 @@ namespace ElectoralMonitoring
     {
         string ccv;
         string mesa;
-
+        List<VotingCenter> votingCenters;
+        List<string>? _userRoles;
+        List<SavedNode> savedNodes;
         readonly NodeService _nodeService;
 
         [ObservableProperty]
-        bool isAdding;
-
-        [ObservableProperty]
-        ObservableCollection<Minute>? minutes;
+        ObservableCollection<DocumentDTO>? minutes;
 
         public MonitorListPageModel(NodeService nodeService, AuthService authService) : base(authService)
         {
             _nodeService = nodeService;
             Minutes ??= new();
+            _ = Init();
         }
 
         public async Task Init()
@@ -33,20 +31,38 @@ namespace ElectoralMonitoring
             {
                 IsBusy = true;
                 Minutes ??= new();
+                savedNodes = Barrel.Current.Get<List<SavedNode>>($"{nameof(SavedNode)}/actas") ?? new();
                 var list = await _nodeService.GetMinutesByUser(CancellationToken.None);
                 if (list != null && list.Count > 0)
                 {
-                    Minutes = new(list.Select(x => new Minute()
+                    Minutes = new(list.Select(x => new DocumentDTO()
                     {
-                        field_centro_de_votacion = x.field_centro_de_votacion,
-                        field_mesa = x.field_mesa,
-                        nid = x.nid,
-                        Icon = IconFont.FileDocumentCheck
+                        Title = x.field_centro_de_votacion,
+                        SubTitle = x.field_mesa,
+                        Id = x.nid,
+                        Icon = savedNodes.Any(y=>y.NodeId == x.nid) ? IconFont.FileDocumentAlert : IconFont.FileDocumentCheck
                     }));
                 }
                 else {
                     Minutes = null;
                 }
+
+                //offline saved
+                if(savedNodes.Count > 0)
+                {
+                    Minutes ??= new();
+                    foreach (var x in savedNodes)
+                    {
+                        if (Minutes.Any(minute => minute.Id == x.NodeId))
+                            continue;
+
+                        Minutes.Add(new DocumentDTO() { Id = x.Id, Title = x.Title, SubTitle = x.SubTitle, Icon = IconFont.FileDocumentAlert });
+                    }
+                }
+                
+                votingCenters = await _nodeService.GetVotingCenters(CancellationToken.None) ?? new();
+                _userRoles = await _authService.GetUserRoles();
+
                 IsBusy = false;
             }
         }
@@ -55,15 +71,22 @@ namespace ElectoralMonitoring
 
         async Task<bool> CheckCanContinue()
         {
-            var cvs = await _nodeService.GetVotingCenters(CancellationToken.None);
-            if(cvs != null && cvs.Count > 0)
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+                return true;
+
+            if (_userRoles != null && _userRoles.Contains("Garante") == true && !_userRoles.Contains("Call Center") && !_userRoles.Contains("Administrador Call Center"))
             {
-                var hasAccess = cvs.Any(x => x.CodCNECentroVotacion == ccv || x.CodCNECentroVotacion == ccv.TrimStart('0'));
-                if (!hasAccess) {
-                    await Shell.Current.DisplayAlert("Mensaje", $"¡El centro de votación {ccv} no existe o no tiene permisos!", "OK");
-                    return false;
+                if (votingCenters != null)
+                {
+                    var hasAccess = votingCenters.Any(x => x.CodCNECentroVotacion == ccv || x.CodCNECentroVotacion == ccv.TrimStart('0'));
+                    if (!hasAccess)
+                    {
+                        await Shell.Current.DisplayAlert("Mensaje", $"¡El centro de votación {ccv} no existe o no tiene permisos!", "OK");
+                        return false;
+                    }
                 }
             }
+                
             var list = await _nodeService.GetMinutesByCcvAndTable(ccv, mesa, CancellationToken.None);
             if (list != null && list.Count > 0)
             {
@@ -74,186 +97,91 @@ namespace ElectoralMonitoring
             return list is not null;
         }
 
-        [RelayCommand(AllowConcurrentExecutions = false)]
-        public async Task TakePhoto()
+        [RelayCommand]
+        public async Task Sync(DocumentDTO doc)
         {
-            ccv = await Shell.Current.DisplayPromptAsync("Código del centro de votación", "Ingrese el código para continuar", AppRes.AlertAccept, AppRes.AlertCancel, "010101001", 9, Keyboard.Numeric);
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet) return;
+            doc.Icon = IconFont.FileDocumentRefresh;
+            var saved = savedNodes.FirstOrDefault(x => x.Id == doc.Id);
+            if (saved is null) return;
+            if (!string.IsNullOrEmpty(saved.NodeId))
+            {
+                //need patch request
+                var nid = saved.values["nid"].FirstOrDefault().Value;
+                var result = await _nodeService.EditNode(nid.ToString(), saved.values, CancellationToken.None);
+                if (result != null)
+                {
+                    //success
+                    savedNodes.Remove(saved);
+                    Barrel.Current.Add($"{nameof(SavedNode)}/actas", savedNodes, TimeSpan.MaxValue);
+                    await Init().ConfigureAwait(false);
+                }
+                else
+                {
+                    doc.Icon = IconFont.FileDocumentAlert;
+                }
+            }
+            else
+            {
+                //need post request
+                var result = await _nodeService.CreateNode(saved.values, CancellationToken.None);
+                if(result != null)
+                {
+                    //success
+                    savedNodes.Remove(saved);
+                    Barrel.Current.Add($"{nameof(SavedNode)}/actas", savedNodes, TimeSpan.MaxValue);
+                    await Init().ConfigureAwait(false);
+                }
+                else
+                {
+                    doc.Icon = IconFont.FileDocumentAlert;
+                }
+            }
+        }
+
+        [RelayCommand(AllowConcurrentExecutions = false)]
+        public async Task AddDoc()
+        {
+            if (_userRoles != null && _userRoles.Contains("Garante") == true && !_userRoles.Contains("Call Center") && !_userRoles.Contains("Administrador Call Center"))
+            {
+                if (votingCenters is null) return;
+
+                if (votingCenters?.Count > 1)
+                {
+                    ccv = await Shell.Current.DisplayPromptAsync("Código del centro de votación", "Ingrese el código para continuar", AppRes.AlertAccept, AppRes.AlertCancel, "Ejemplo: 010101001", 9, Keyboard.Numeric);
+                }
+                else
+                {
+                    var ccvAssigned = votingCenters?.FirstOrDefault()?.CodCNECentroVotacion;
+                    ccv = ccvAssigned ?? string.Empty;
+                }
+            }
+            else
+            {
+                ccv = await Shell.Current.DisplayPromptAsync("Código del centro de votación", "Ingrese el código para continuar", AppRes.AlertAccept, AppRes.AlertCancel, "Ejemplo: 010101001", 9, Keyboard.Numeric);
+            }
+
             if (string.IsNullOrWhiteSpace(ccv)) return;
 
-            mesa = await Shell.Current.DisplayPromptAsync("Mesa", "Ingrese el número de mesa para continuar", AppRes.AlertAccept, AppRes.AlertCancel, "01", 2, Keyboard.Numeric);
+            mesa = await Shell.Current.DisplayPromptAsync("Mesa", "Ingrese el número de mesa para continuar", AppRes.AlertAccept, AppRes.AlertCancel, "Ejemplo: 01", 2, Keyboard.Numeric);
             if (string.IsNullOrWhiteSpace(mesa)) return;
 
-            IsAdding = true;
+            IsBusy = true;
             var can = await CheckCanContinue();
             if (!can)
             {
-                IsAdding = false;
+                IsBusy = false;
                 return;
             }
 
-            await Shell.Current.DisplayAlert("Mensaje", "A continuación debe agregar la foto del acta", "OK");
 
-            await TakePhotoCropAndUpload().ConfigureAwait(false);
-        }
-
-        public async Task TakePhotoCropAndUpload()
-        {
-            //to work on simulator uncomment this.
-
-            //var navigationParameter = new Dictionary<string, object>
-            //            {
-            //                { "localFilePath", "https://devscevente.nsystech.it/sites/default/files/2023-10/filetest.png" },
-            //                { "image", "https://devscevente.nsystech.it/sites/default/files/2023-10/filetest.png" },
-            //                { "imageType", ImageType.URI },
-            //                { "fileId", 110 },
-            //                { "ccv", ccv },
-            //                { "mesa", mesa },
-            //            };
-            //IsAdding = false;
-            //await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter).ConfigureAwait(false);
-            //return;
-            if (MediaPicker.Default.IsCaptureSupported)
+            var navigationParameter = new Dictionary<string, object>
             {
-                new ImageCropper.Maui.ImageCropper()
-                {
-                    PageTitle = "Recorte la imagen",
-                    AspectRatioX = 2,
-                    MediaPickerOptions = new MediaPickerOptions()
-                    {
-                        Title = "Seleccione"
-                    },
-                    AspectRatioY = 3,
-                    CropShape = ImageCropper.Maui.ImageCropper.CropShapeType.Rectangle,
-                    SelectSourceTitle = "Seleccione",
-                    TakePhotoTitle = "Tomar foto",
-                    PhotoLibraryTitle = "Desde galería",
-                    CropButtonTitle = "Recortar",
-                    CancelButtonTitle = "Cancelar",
-                    Success = async (sourceUri) =>
-                    {
-                        int fid = -1;
-                        var imageUri = string.Empty;
-                        var imageFile = await SaveFileInLocalStorage(sourceUri);
-                        var stream = File.OpenRead(imageFile);
-                        var fileName = System.IO.Path.GetFileName(imageFile);
-                        var result = await _nodeService.UploadMinute(fileName, stream, CancellationToken.None);
-                        if (result != null)
-                        {
-                            if (result.TryGetValue("fid", out List<Node>? value) && value != null)
-                            {
-                                var fidNode = value.FirstOrDefault();
-                                int.TryParse(fidNode?.Value?.ToString(), out fid);
-                            }
-                            if (result.TryGetValue("uri", out List<Node>? valueUri) && valueUri != null)
-                            {
-                                imageUri = valueUri.FirstOrDefault()?.Url ?? string.Empty;
-                                Console.WriteLine($"ImageURI: {Helpers.AppSettings.BackendUrl + imageUri}");
-                            }
-                        }
-
-                        var navigationParameter = new Dictionary<string, object>
-                        {
-                            { "localFilePath", imageFile },
-                            { "image", Helpers.AppSettings.BackendUrl+imageUri },
-                            { "imageType", ImageType.URI },
-                            { "fileId", fid },
-                            { "ccv", ccv },
-                            { "mesa", mesa },
-                        };
-                        IsAdding = false;
-                        await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter).ConfigureAwait(false);
-
-                    },
-                    Failure = () =>
-                    {
-                        IsAdding = false;
-                    }
-                }.Show(ContextPage);
-            }
-        }
-
-        public async Task TakePhotoAndUpload()
-        {
-            if (MediaPicker.Default.IsCaptureSupported)
-            {
-                FileResult photo = await MediaPicker.Default.CapturePhotoAsync();
-
-                if (photo != null)
-                {
-                    var imageFile = await SaveFileInLocalStorage(photo);
-
-                    int fid = -1;
-                    var imageUri = string.Empty;
-
-                    var stream = File.OpenRead(imageFile);
-
-                    var fileName = System.IO.Path.GetFileName(imageFile);
-                    var result = await _nodeService.UploadMinute(fileName, stream, CancellationToken.None);
-                    if (result != null)
-                    {
-                        if (result.TryGetValue("fid", out List<Node> value) && value != null)
-                        {
-                            var fidNode = value.FirstOrDefault();
-                            if (int.TryParse(fidNode?.Value?.ToString(), out fid)) ;
-                        }
-                        if (result.TryGetValue("uri", out List<Node> valueUri) && value != null)
-                        {
-                            imageUri = valueUri.FirstOrDefault()?.Url ?? string.Empty;
-                        }
-                    }
-
-                    var navigationParameter = new Dictionary<string, object>
-                        {
-                            { "localFilePath", imageFile },
-                            { "image", Helpers.AppSettings.BackendUrl+imageUri },
-                            { "imageType", ImageType.URI },
-                            { "fileId", fid }
-                        };
-                    IsAdding = false;
-                    await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter);
-
-                }
-            }
-        }
-
-        static async Task<string> SaveFileInLocalStorage(FileResult photo)
-        {
-            string localFilePath = System.IO.Path.Combine(FileSystem.CacheDirectory, photo.FileName);
-
-            using (var sourceStream = await photo.OpenReadAsync())
-            {
-                using (var localFileStream = File.OpenWrite(localFilePath))
-                {
-                    var image = PlatformImage.FromStream(sourceStream);
-                    if (image != null)
-                    {
-                        var newImage = image.Downsize(1000, 2000, true);
-                        await newImage.SaveAsync(localFileStream);
-                    }
-                }
-            }
-
-            return localFilePath;
-        }
-        static async Task<string> SaveFileInLocalStorage(string photoUri)
-        {
-            string name = System.IO.Path.GetFileNameWithoutExtension(photoUri)+"2"+ System.IO.Path.GetExtension(photoUri);
-            string localFilePath = System.IO.Path.Combine(FileSystem.CacheDirectory, name);
-
-            using (var sourceStream = File.OpenRead(photoUri))
-            {
-                using (var localFileStream = File.OpenWrite(localFilePath))
-                {
-                    var image = PlatformImage.FromStream(sourceStream);
-                    if (image != null)
-                    {
-                        var newImage = image.Downsize(1000, 2000, true);
-                        await newImage.SaveAsync(localFileStream);
-                    }
-                }
-            }
-
-            return localFilePath;
+                { "ccv", ccv },
+                { "mesa", mesa },
+            };
+            IsBusy = false;
+            await Shell.Current.GoToAsync(nameof(ScannerPreviewPageModel), navigationParameter).ConfigureAwait(false);
         }
     }
 }

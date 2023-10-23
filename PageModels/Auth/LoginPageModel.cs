@@ -41,7 +41,7 @@ namespace ElectoralMonitoring
 			var result = await _authService.Login(Username, Password, CancellationToken.None);
 			if(result != null)
 			{
-				await Shell.Current.Navigation.PopToRootAsync();
+                await Shell.Current.Navigation.PopToRootAsync();
 			}
 		}
 	}

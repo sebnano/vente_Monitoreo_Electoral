@@ -19,4 +19,5 @@
     <x:String x:Key="IconUpload">&#xf113;</x:String>
     <x:String x:Key="IconAlertComment">&#xf114;</x:String>
     <x:String x:Key="IconCheckCircle">&#xf115;</x:String>
+    <x:String x:Key="IconChevronRightCircle">&#xf116;</x:String>
 </ResourceDictionary>

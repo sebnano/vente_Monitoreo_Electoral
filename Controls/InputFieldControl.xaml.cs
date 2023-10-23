@@ -18,7 +18,7 @@ public enum FieldType
 public partial class InputFieldControl : ContentView, IFieldControl
 {
     public static List<string> TypesAvailable = new()
-    { "number", "string_textfield", "string_textarea", "entity_reference_autocomplete", "options_select"
+    { "number", "string_textfield", "string_textarea", "entity_reference_autocomplete"
     };
 
     public static readonly BindableProperty MaxLenghtProperty = BindableProperty.Create(nameof(MaxLenght), typeof(int), typeof(InputFieldControl), 100);
@@ -30,6 +30,8 @@ public partial class InputFieldControl : ContentView, IFieldControl
     public static readonly BindableProperty FieldTypeProperty = BindableProperty.Create(nameof(FieldType), typeof(FieldType), typeof(InputFieldControl), FieldType.Text, propertyChanged: OnFieldTypePropertyChanged);
     public static readonly BindableProperty KeyboardTypeProperty = BindableProperty.Create(nameof(KeyboardType), typeof(Keyboard), typeof(InputFieldControl), Keyboard.Text);
     public static readonly BindableProperty IconProperty = BindableProperty.Create(nameof(Icon), typeof(string), typeof(InputFieldControl), null);
+
+    public static readonly BindableProperty IsRequiredFieldProperty = BindableProperty.Create(nameof(IsRequiredField), typeof(bool), typeof(InputFieldControl), null);
 
     static void OnFieldTypePropertyChanged(BindableObject bindable, object oldValue, object newValue)
     {
@@ -99,6 +101,12 @@ public partial class InputFieldControl : ContentView, IFieldControl
     {
         get => (DateTime)GetValue(DateProperty);
         set => SetValue(DateProperty, value);
+    }
+
+    public bool IsRequiredField
+    {
+        get => (bool)GetValue(IsRequiredFieldProperty);
+        set => SetValue(IsRequiredFieldProperty, value);
     }
 
     public string Icon
@@ -189,6 +197,7 @@ public partial class InputFieldControl : ContentView, IFieldControl
         {
             MyEntry.TextColor = App.Current?.RequestedTheme == AppTheme.Dark ? Colors.White : Colors.Black;
         }
+        ClearStatusRequired();
     }
 
     async void MyEntry_Completed(object? sender, EventArgs e)
@@ -241,6 +250,21 @@ public partial class InputFieldControl : ContentView, IFieldControl
         }
     }
 
+    public void SetRequiredStatus()
+    {
+        MyBorder.SetDynamicResource(Border.StrokeProperty, "Red");
+        RequiredLabel.IsVisible = true;
+    }
+
+    public void ClearStatusRequired()
+    {
+        if (!RequiredLabel.IsVisible) return;
+        RequiredLabel.IsVisible = false;
+        var dark = Color.FromArgb("#404040");
+        var light = Color.FromArgb("#ACACAC");
+        MyBorder.SetAppTheme(Border.StrokeProperty, light, dark);
+    }
+
     public object GetValue()
     {
         if (FieldType.DateTime == this.FieldType) return Date;
@@ -267,6 +291,11 @@ public partial class InputFieldControl : ContentView, IFieldControl
         }
 
         return !string.IsNullOrWhiteSpace(Text);
+    }
+
+    public bool IsRequired()
+    {
+        return IsRequiredField;
     }
 
     public string GetKey()

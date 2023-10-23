@@ -22,9 +22,9 @@ namespace ElectoralMonitoring
                 _authService = App.Current?.Handler?.MauiContext?.Services.GetService<AuthService>();
             }
 
-            if(_authService is not null)
+            if(_authService is not null && request?.RequestUri?.PathAndQuery.Contains("refresh") == false)
             {
-                string? token = await _authService?.GetAccessToken();
+                string token = await _authService?.GetAccessToken();
 
                 //potentially refresh token here if it has expired etc.
                 if (!string.IsNullOrEmpty(token))

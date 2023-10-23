@@ -11,7 +11,7 @@ namespace ElectoralMonitoring
         [Headers("Content-Type: application/x-www-form-urlencoded")]
         Task<TokenResponse> OAuth2Token([Body(BodySerializationMethod.UrlEncoded)] ClientCredentials credentials);
 
-        [Post("/oauth/token?refresh")]
+        [Post("/oauth/token?refresh=true")]
         [Headers("Content-Type: application/x-www-form-urlencoded")]
         Task<TokenResponse> OAuth2TokenRefresh([Body(BodySerializationMethod.UrlEncoded)] RefreshTokenCredentials credentials);
 
@@ -23,6 +23,15 @@ namespace ElectoralMonitoring
 
         [Get("/user/{userId}?_format=json")]
         Task<User> GetUser([AliasAs("userId")] string userId);
+
+        [Get("/role-by-user/{userId}?_format=json")]
+        Task<List<UserRoles>> GetUserRoles([AliasAs("userId")] string userId);
+
+        [Get("/api-opciones-paginas/page_option_home_page?_format=json")]
+        Task<List<AppOptions>> GetHomeOptions();
+
+        [Get("/api/configurador-json")]
+        Task<List<AppConfig>> GetConfiguration();
     }
 }
 

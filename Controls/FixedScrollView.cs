@@ -3,6 +3,7 @@ using Microsoft.Maui.Platform;
 using ElectoralMonitoring.Platforms.iOS.Utils;
 using UIKit;
 using CoreGraphics;
+using Foundation;
 #endif
 
 namespace ElectoralMonitoring
@@ -28,10 +29,11 @@ namespace ElectoralMonitoring
                     UIView control = this.ToPlatform(Handler.MauiContext).FindFirstResponder();
                     UIView rootUiView = page.Content.ToPlatform(Handler.MauiContext);
                     CGRect kbFrame = UIKeyboard.FrameEndFromNotification(args.Notification);
+
 #if IOS13_0_OR_GREATER
-                    double distance = control.GetOverlapDistance(rootUiView, kbFrame) + 10;
+                    double distance = control.GetOverlapDistance(rootUiView, kbFrame) + 20;
 #else
-                    double distance = 10;
+                    double distance = 20;
 #endif
                     if (distance > 0)
                     {

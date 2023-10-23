@@ -11,13 +11,13 @@ public partial class App : Application
 		MainPage = new AppShell();
 	}
 
-    protected override async void OnStart()
+    protected override void OnStart()
     {
         base.OnStart();
 
         if (!_authService.IsAuthenticated)
         {
-            await Shell.Current.GoToAsync(nameof(LoginPageModel));
+            Shell.Current.Dispatcher.Dispatch(async() => await Shell.Current.GoToAsync(nameof(LoginPageModel)));
         }
     }
 }

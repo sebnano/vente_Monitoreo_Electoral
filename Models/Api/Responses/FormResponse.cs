@@ -1,9 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace ElectoralMonitoring
 {
+    public class BooleanConverter : JsonConverter<bool>
+    {
+        public override bool Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            switch (reader.TokenType)
+            {
+                case JsonTokenType.True:
+                    return true;
+                case JsonTokenType.False:
+                    return false;
+                case JsonTokenType.String:
+                    return reader.GetString() switch
+                    {
+                        "1" => true,
+                        "0" => false,
+                        "true" => true,
+                        "false" => false,
+                        _ => false
+                    };
+                default:
+                    throw new JsonException();
+            }
+        }
+
+        public override void Write(Utf8JsonWriter writer, bool value, JsonSerializerOptions options)
+        {
+            writer.WriteBooleanValue(value);
+        }
+    }
+
     public class FieldForm
     {
         [JsonPropertyName("numero_candidato")]
@@ -18,14 +49,40 @@ namespace ElectoralMonitoring
         [JsonPropertyName("field_content_type")]
         public string FieldContentType { get; set; }
 
+        [JsonPropertyName("parent")]
+        public string ContentTypeParent { get; set; }
+
         [JsonPropertyName("weight")]
-        public string Weight { get; set; }
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
+        public int Weight { get; set; }
 
         [JsonPropertyName("grupo")]
         public string Grupo { get; set; }
 
         [JsonPropertyName("Field_type")]
         public string Type { get; set; }
+
+        [JsonPropertyName("form_default_value")]
+        public string? DefaultValue { get; set; }
+
+        [JsonPropertyName("form_value_available")]
+        public string? ValuesAvailable { get; set; }
+
+        [JsonConverter(typeof(BooleanConverter))]
+        [JsonPropertyName("campo_obligatorio")]
+        public bool Required { get; set; }
+
+        [JsonConverter(typeof(BooleanConverter))]
+        [JsonPropertyName("campo_para_escanear")]
+        public bool NeedScan { get; set; }
+
+        [JsonConverter(typeof(BooleanConverter))]
+        [JsonPropertyName("campo_activo")]
+        public bool Active { get; set; }
+
+        [JsonConverter(typeof(BooleanConverter))]
+        [JsonPropertyName("campo_oculto")]
+        public bool Hidden { get; set; }
 
         public const string NUMBER = "number"; 
         public const string TEXT = "string_textfield";

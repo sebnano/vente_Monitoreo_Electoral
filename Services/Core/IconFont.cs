@@ -19,6 +19,7 @@ namespace ElectoralMonitoring
         public const string Upload = "\uf113";
         public const string AlertComment = "\uf114";
         public const string CheckCircle = "\uf115";
+        public const string ChevronRightCircle = "\uf116";
     }
 }
 
